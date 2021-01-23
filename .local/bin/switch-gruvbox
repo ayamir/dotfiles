@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-    echo "Usage:"
-    echo "switch <mode> <wmname>"
-    echo "<mode>: l: light, n: nord"
-    echo "<wmname>: bspwm, i3, xmonad, spectrwm, sway, dwm"
-
 if [ $1 == "l" ]
 then
     # Fcitx5
