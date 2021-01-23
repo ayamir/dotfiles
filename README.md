@@ -115,6 +115,8 @@ All of details about how to switch you can see in it.
 
 Please refer this: [Gruvbox-Tg](https://github.com/ayamir/Gruvbox-Tg)
 
+<a id="fcitx5"></a>
+
 ### Fcitx5 Themes
 
 Please refer this: [Gruvbox-Fcitx5](https://github.com/ayamir/fcitx5-gruvbox)
