@@ -1,0 +1,8 @@
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS="@im=fcitx"
+export GLFW_IM_MODULE="ibus"
+export _JAVA_AWT_WM_NONREPARENTING=1
+setxkbmap -option "ctrl:swapcaps"
+xautolock -time 10 -locker '/usr/bin/betterlockscreen -l' -corners ---- -cornersize 30 &
+xsettingsd &
