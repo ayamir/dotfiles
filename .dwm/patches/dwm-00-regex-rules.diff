@@ -1,0 +1,91 @@
+- Author: Eric Pruitt (https://www.codevat.com/, https://github.com/ericpruitt/)
+
+Enables the use of regular expressions for window rules' "class", "title" and
+"instance" attributes.
+
+diff --git a/dwm.c b/dwm.c
+index b2bc9bd..dc1c39c 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -22,6 +22,7 @@
+  */
+ #include <errno.h>
+ #include <locale.h>
++#include <regex.h>
+ #include <signal.h>
+ #include <stdarg.h>
+ #include <stdio.h>
+@@ -150,6 +151,7 @@ static void arrangemon(Monitor *m);
+ static void attach(Client *c);
+ static void attachstack(Client *c);
+ static void buttonpress(XEvent *e);
++static void compileregexes(void);
+ static void checkotherwm(void);
+ static void cleanup(void);
+ static void cleanupmon(Monitor *mon);
+@@ -275,6 +277,8 @@ static Window root;
+ /* compile-time check if all tags fit into an unsigned int bit array. */
+ struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+ 
++static regex_t regexcache[LENGTH(rules)][3];
++
+ /* function implementations */
+ void
+ applyrules(Client *c)
+@@ -294,10 +298,10 @@ applyrules(Client *c)
+ 
+ 	for (i = 0; i < LENGTH(rules); i++) {
+ 		r = &rules[i];
+-		if ((!r->title || strstr(c->name, r->title))
+-		&& (!r->class || strstr(class, r->class))
+-		&& (!r->instance || strstr(instance, r->instance)))
+-		{
++		if((!r->title || !regexec(&regexcache[i][2], c->name, 0, NULL, 0)) &&
++		   (!r->class || !regexec(&regexcache[i][0], class, 0, NULL, 0)) &&
++		   (!r->instance || !regexec(&regexcache[i][1], instance, 0, NULL, 0))) {
++
+ 			c->isfloating = r->isfloating;
+ 			c->tags |= r->tags;
+ 			for (m = mons; m && m->num != r->monitor; m = m->next);
+@@ -542,6 +546,36 @@ clientmessage(XEvent *e)
+ }
+ 
+ void
++compileregexes(void)
++{
++	char regex_error_buffer[256];
++	int i;
++	int status;
++	const Rule *r;
++	for(i = 0; i < LENGTH(rules); i++) {
++		r = &rules[i];
++		if (r->class) {
++			if ((status = regcomp(&regexcache[i][0], r->class, REG_EXTENDED | REG_NOSUB))) {
++				regerror(status, &regexcache[i][0], regex_error_buffer, sizeof(regex_error_buffer));
++				die("Error compiling /%s/: %s", r->class, regex_error_buffer);
++			}
++		}
++		if (r->instance) {
++			if ((status = regcomp(&regexcache[i][1], r->instance, REG_EXTENDED | REG_NOSUB))) {
++				regerror(status, &regexcache[i][1], regex_error_buffer, sizeof(regex_error_buffer));
++				die("Error compiling /%s/: %s", r->instance, regex_error_buffer);
++			}
++		}
++		if (r->title) {
++			if ((status = regcomp(&regexcache[i][2], r->title, REG_EXTENDED | REG_NOSUB))) {
++				regerror(status, &regexcache[i][2], regex_error_buffer, sizeof(regex_error_buffer));
++				die("Error compiling /%s/: %s", r->title, regex_error_buffer);
++			}
++		}
++	}
++}
++
++void
+ configure(Client *c)
+ {
+ 	XConfigureEvent ce;
+@@ -2167,4 +2201,5 @@ main(int argc, char *argv[])
++	compileregexes();
+ 	checkotherwm();
+ 	setup();
+ 	scan();
