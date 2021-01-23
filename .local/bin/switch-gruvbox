@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+    echo "Usage:"
+    echo "switch <mode> <wmname>"
+    echo "<mode>: l: light, n: nord"
+    echo "<wmname>: bspwm, i3, xmonad, spectrwm, sway, dwm"
+
 if [ $1 == "l" ]
 then
     # Fcitx5
@@ -48,7 +53,7 @@ then
 elif [ $1 == "n" ]
 then
     # Fcitx5
-    sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
+    sed -i "s/Gruvbox-Light/Gruvbox-Dark/g" ~/.config/fcitx5/conf/classicui.conf
     killall fcitx5
     # Wallpaper
     #feh --bg-fill ~/Pictures/nord/ign-0001.png
