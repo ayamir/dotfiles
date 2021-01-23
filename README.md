@@ -6,9 +6,9 @@
     2.  [Patches](#org2026491)
     3.  [Keybinding](#orgdf423ab)
     4.  [Other](#org1958ae2)
-        1.  [Xsessions config](#org1745859)
-        2.  [Switch](#switch)
-        3.  [Recompile](#org3f8fde8)
+        1.  [Recompile](#org3f8fde8)
+        2.  [Xsessions](#org1745859)
+        3.  [Switch](#switch)
         4.  [Telegram Themes](#tg)
 
 
@@ -67,17 +67,22 @@ You can see all of 8 patches I have applied in `./patches` dir.
 
 ## Keybinding
 
-You can see all of keybindings in `./config.def.h` clearly.
+You can see all of keybindings in `.dwm/config.def.h` clearly.
 
 
 <a id="org1958ae2"></a>
 
 ## Other
 
+<a id="org3f8fde8"></a>
+
+### Recompile
+
+The script called `recompile` need your user can execute `sudo` command without password.
 
 <a id="org1745859"></a>
 
-### Xsessions config
+### Xsessions
 
 Execute `recompile` script first.
 
@@ -102,12 +107,6 @@ Type=XSession
 The simple script in `.local/bin/` called `switch-gruvbox` can switch `gruvbox-light` and `gruvbox-dark` theme through a shortcut defined in `.dwm/config.def.h`.
 
 All of details about how to switch you can see in it.
-
-<a id="org3f8fde8"></a>
-
-### Recompile
-
-The script called `recompile` need your user can execute `sudo` command without password.
 
 <a id="tg"></a>
 
