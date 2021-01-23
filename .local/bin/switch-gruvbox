@@ -11,8 +11,7 @@ then
     sed -i "s/Gruvbox-Dark/Gruvbox-Light/g" ~/.config/fcitx5/conf/classicui.conf
     killall fcitx5
     # Wallpaper
-    #feh --bg-fill ~/Pictures/Background/NordDay.png
-    #sed -i "s/bg ~\/Pictures\/Background\/NordNight.png fill/bg ~\/Pictures\/Background\/NordDay.png fill/g" ~/.config/sway/config
+    feh --bg-fill ~/Pictures/Background/linux-gruvbox-1920×1080.jpg
     # Dunst
     cp ~/.config/dunst/dunstrc-gruvbox-light ~/.config/dunst/dunstrc
     killall dunst
@@ -49,15 +48,14 @@ then
     # Daemons
     sh ~/.local/bin/startdaemon
     # Notify
-    notify-send "Switch to Light Now!" -i ~/Pictures/nord.png -t 3000
+    notify-send "Switch to Light Now!" -t 3000
 elif [ $1 == "n" ]
 then
     # Fcitx5
     sed -i "s/Gruvbox-Light/Gruvbox-Dark/g" ~/.config/fcitx5/conf/classicui.conf
     killall fcitx5
     # Wallpaper
-    #feh --bg-fill ~/Pictures/nord/ign-0001.png
-    #sed -i "s/bg ~\/Pictures\/Background\/NordDay.png fill/bg ~\/Pictures\/Background\/NordNight.png fill/g" ~/.config/sway/config
+    feh --bg-fill ~/Pictures/Background/gruvbox_pacman.png
     # Dunst
     cp ~/.config/dunst/dunstrc-gruvbox-dark ~/.config/dunst/dunstrc
     killall dunst
@@ -94,7 +92,7 @@ then
     # Daemons
     sh ~/.local/bin/startdaemon
     # Notify
-    notify-send "Switch to Nord Now!" -i ~/Pictures/nord.png -t 3000
+    notify-send "Switch to Dark Now!" -t 3000
 fi
 
 kitty --single-instance -e kitty_reload_x

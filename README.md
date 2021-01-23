@@ -10,6 +10,7 @@
         2.  [Xsessions](#org1745859)
         3.  [Switch](#switch)
         4.  [Telegram Themes](#tg)
+        5.  [Fcitx5 Themes](#fcitx5)
 
 
 
@@ -113,3 +114,7 @@ All of details about how to switch you can see in it.
 ### Telegram Themes
 
 Please refer this: [Gruvbox-Tg](https://github.com/ayamir/Gruvbox-Tg)
+
+### Fcitx5 Themes
+
+Please refer this: [Gruvbox-Fcitx5](https://github.com/ayamir/fcitx5-gruvbox)
