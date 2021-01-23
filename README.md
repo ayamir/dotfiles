@@ -7,7 +7,9 @@
     3.  [Keybinding](#orgdf423ab)
     4.  [Other](#org1958ae2)
         1.  [Xsessions config](#org1745859)
-        2.  [Recompile](#org3f8fde8)
+        2.  [Switch](#switch)
+        3.  [Recompile](#org3f8fde8)
+        4.  [Telegram Themes](#tg)
 
 
 
@@ -20,7 +22,11 @@
 
 ## Color Scheme
 
-Gruvbox Dark
+Gruvbox
+
+![light](./shot/light.png)
+
+![dark](./shot/dark.png)
 
 <a id="org2026491"></a>
 
@@ -89,9 +95,22 @@ Icon=dwm
 Type=XSession
 ```
 
+<a id="switch"></a>
+
+### Switch
+
+The simple script in `.local/bin/` called `switch-gruvbox` can switch `gruvbox-light` and `gruvbox-dark` theme through a shortcut defined in `.dwm/config.def.h`.
+
+All of details about how to switch you can see in it.
+
 <a id="org3f8fde8"></a>
 
 ### Recompile
 
 The script called `recompile` need your user can execute `sudo` command without password.
 
+<a id="tg"></a>
+
+### Telegram Themes
+
+Please refer this: [Gruvbox-Tg](https://github.com/ayamir/Gruvbox-Tg)
