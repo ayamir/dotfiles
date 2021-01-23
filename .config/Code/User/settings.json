@@ -1,0 +1,29 @@
+{
+    "sync.gist": "d4361eeebea0de999b2bf1d627a41b57",
+    "editor.fontFamily": "'Input Nerd Font', 'JetBrainsMono Nerd Font', 'monospace', monospace, 'Droid Sans Fallback'",
+    "explorer.confirmDelete": false,
+    "workbench.editor.closeOnFileDelete": true,
+    "update.mode": "none",
+    "vim.hlsearch": true,
+    "vim.leader": "</Space>",
+    "vim.vimrc.enable": true,
+    "vim.useSystemClipboard": true,
+    "vim.vimrc.path": "$HOME/.vimrc",
+    "http.proxy": "http://127.0.0.1:8889",
+    "editor.minimap.enabled": false,
+    "[html]": {
+        "editor.defaultFormatter": "HookyQR.beautify"
+    },
+    "editor.fontWeight": "normal",
+    "editor.fontSize": 15,
+    "go.formatTool": "goimports",
+    "workbench.colorTheme": "Gruvbox Material Dark",
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.largeFileOptimizations": false,
+    "C_Cpp.updateChannel": "Insiders",
+}
