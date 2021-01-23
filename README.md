@@ -11,6 +11,7 @@
         3.  [Switch](#switch)
         4.  [Telegram Themes](#tg)
         5.  [Fcitx5 Themes](#fcitx5)
+        6.  [Browser Themes](#browser)
 
 
 
@@ -120,3 +121,13 @@ Please refer this: [Gruvbox-Tg](https://github.com/ayamir/Gruvbox-Tg)
 ### Fcitx5 Themes
 
 Please refer this: [Gruvbox-Fcitx5](https://github.com/ayamir/fcitx5-gruvbox)
+
+<a id="browser"></a>
+
+### Browser Themes
+
+Set your browser just use default GTK theme.
+
+You can use `Dark Reader` extension to realize web pages' gruvbox color.
+
+![browser](./shot/browser.png)
