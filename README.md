@@ -25,9 +25,9 @@
 
 Gruvbox
 
-![light](./shot/light.png)
+![apps](./shot/apps.png)
 
-![dark](./shot/dark.png)
+![desktop](./shot/desktop.png)
 
 <a id="org2026491"></a>
 
