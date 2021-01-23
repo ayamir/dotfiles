@@ -32,7 +32,7 @@ Gruvbox
 
 ## Patches
 
-You can see all of 8 patches I have applied in `./patches` dir.
+You can see all of 7 patches I have applied in `.dwm/patches` dir.
 
 -   dwm-00-regex-rules.diff
     
