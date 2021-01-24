@@ -15,7 +15,7 @@ Plug 'ap/vim-css-color'
 Plug 'elzr/vim-json'
 Plug 'rakr/vim-one'
 Plug 'puremourning/vimspector'
-Plug 'sainnhe/gruvbox-material'
+Plug 'morhetz/gruvbox'
 
 " Plug 'Yggdroot/indentLine'
 " Plug 'gorodinskiy/vim-coloresque'
