@@ -21,6 +21,7 @@ static const char *fonts[]     = {"RobotoMono:size=9:antialias=true:autohint=tru
                                   "JoyPixels:size=10:antialias=true:autohint=true"
 						     	};
 static const char dmenufont[]       = "Sarasa UI SC:size=10:antialias=true:autohint=true";
+
 static const char col_gray1[]       = "#282828";
 static const char col_gray2[]       = "#3c3836";
 static const char col_gray3[]       = "#ebdbb2";
@@ -59,10 +60,12 @@ static const Rule rules[] = {
 	{ "netease-cloud-music",            NULL,                       NULL,               1 << 3,       0,           -1 },
 	{ "Steam",                          NULL,                       NULL,               1 << 4,       0,           -1 },
 	{ "VirtualBox Machine",             NULL,                       NULL,               1 << 5,       0,           -1 },
+	{ "Alacritty",                      "Alacritty",                NULL,               1 << 6,       0,           -1 },
 	{ "Qq",                             "qq",                       NULL,               1 << 6,       1,           -1 },
 	{ "Freechat",                       "freechat",                 NULL,               1 << 6,       0,           -1 },
 	{ "TelegramDesktop",                NULL,                       NULL,               1 << 7,       0,           -1 },
 	{ "qv2ray",                         NULL,                       NULL,               1 << 8,       0,           -1 },
+	{ NULL,                             "kitty-reload",             NULL,               1 << 8,       0,           -1 },
 
 	{ "xdman-Main",                     NULL,                       NULL,               0,            1,           -1 },
 	{ "Nitrogen",                       NULL,                       NULL,               0,            1,           -1 },
@@ -144,7 +147,7 @@ static Key keys[] = {
     { MODKEY|ShiftMask,             XK_q,           spawn,          CMD("xkill") },
     { MODKEY|ShiftMask,             XK_s,           spawn,          CMD("flameshot gui") },
     { MODKEY|ShiftMask,             XK_n,           spawn,          CMD("thunar") },
-    { MODKEY|ShiftMask,             XK_m,           spawn,          CMD("kitty --class kitty-music -e ncmpcpp") },
+    { MODKEY|ShiftMask,             XK_m,           spawn,          CMD("alacritty --class kitty-music -e ncmpcpp") },
     { MODKEY|ShiftMask,             XK_h,           spawn,          CMD("alacritty -e htop") },
     { MODKEY|ShiftMask,             XK_e,           spawn,          CMD("emacs") },
     { MODKEY|ShiftMask,             XK_v,           spawn,          CMD("VBoxManage startvm 'Windows7' --type gui") },
@@ -159,14 +162,14 @@ static Key keys[] = {
     { Mod1Mask,                     XK_a,           spawn,          CMD("studio") },
     { Mod1Mask,                     XK_g,           spawn,          CMD("goland") },
 
-    /* Switch nord and light */
-    { MODKEY|ControlMask,           XK_n,           spawn,          CMD("sh ~/.local/bin/switch n dwm") },
-    { MODKEY|ControlMask,           XK_l,           spawn,          CMD("sh ~/.local/bin/switch l dwm") },
-
     /* Mpd control */
     { MODKEY|ControlMask,           XK_p,           spawn,          CMD("mpc toggle") },
     { MODKEY|ControlMask,           XK_Left,        spawn,          CMD("mpc prev") },
     { MODKEY|ControlMask,           XK_Right,       spawn,          CMD("mpc next") },
+
+    /* Switch */
+    { MODKEY|ControlMask,           XK_n,           spawn,          CMD("sh ~/.local/bin/switch-gruvbox n") },
+    { MODKEY|ControlMask,           XK_l,           spawn,          CMD("sh ~/.local/bin/switch-gruvbox l") },
 
     /* Touchpad */
     { MODKEY|ControlMask,           XK_e,           spawn,          CMD("xinput enable 'DELL0828:00 06CB:7E7E Touchpad'")},

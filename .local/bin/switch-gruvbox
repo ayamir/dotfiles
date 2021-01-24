@@ -95,4 +95,4 @@ then
     notify-send "Switch to Dark Now!" -t 3000
 fi
 
-kitty --single-instance -e kitty_reload_x
+kitty --class kitty-reload --single-instance -e kitty_reload_x
