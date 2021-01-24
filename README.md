@@ -95,7 +95,7 @@ You can see all of keybindings in `.dwm/config.def.h` clearly.
   + Dark: [Gruvbox-Material-Dark](./usr/share/themes/Gruvbox-Material-Dark)
 + Qt themes:
   + use `qt5ct` and `qt5-styleplugins` to set qt theme follow gtk2 theme
-+ Icon theme: Material-Originals-dark
++ Icon theme: [Material-Originals-dark](./usr/share/icons/Material-Originals-dark)
 
 <a id="usage"></a>
 

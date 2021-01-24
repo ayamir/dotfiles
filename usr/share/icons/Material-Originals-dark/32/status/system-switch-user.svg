@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="0.92.5 (6c0c36ef5a, 2020-05-15, custom)"
+   sodipodi:docname="system-switch-user.svg"
+   id="svg12"
+   version="1.1"
+   height="32"
+   width="32">
+  <defs
+     id="defs16">
+    <linearGradient
+       id="linearGradient4928"
+       x1="70.108002"
+       x2="115"
+       y1="-77.893997"
+       y2="-77.893997"
+       gradientTransform="translate(-21.671,-25)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#19326e"
+         offset="0"
+         id="stop1565" />
+      <stop
+         stop-color="#285abe"
+         offset="1"
+         id="stop1567" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4924"
+       x1="18.523001"
+       x2="30.427"
+       y1="-27.715"
+       y2="-27.715"
+       gradientTransform="matrix(3.7796,0,0,3.7796,-21.671,-25)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#2369b4"
+         offset="0"
+         id="stop1555" />
+      <stop
+         stop-color="#3296e6"
+         offset="1"
+         id="stop1557" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     inkscape:current-layer="svg12"
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:cy="12.432954"
+     inkscape:cx="14.694663"
+     inkscape:zoom="20.85965"
+     showgrid="false"
+     id="namedview14"
+     inkscape:window-height="1000"
+     inkscape:window-width="1920"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#c8c8c8" />
+  <metadata
+     id="metadata2">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="system-switch-user-3"
+     transform="translate(-205.30584)">
+    <rect
+       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       id="rect956"
+       width="32"
+       height="32"
+       x="163.21501"
+       y="1.1381393e-07"
+       rx="0"
+       ry="0" />
+    <g
+       id="g1774"
+       transform="translate(-2.2922849e-6,-0.5000069)">
+      <rect
+         ry="0"
+         y="13.000008"
+         x="166.21501"
+         height="1"
+         width="26"
+         id="rect1715"
+         style="opacity:1;fill:#eaeaea;fill-opacity:1;stroke:none;stroke-width:0.93094933;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <rect
+         rx="0"
+         ry="0"
+         y="-127.01704"
+         x="137.81604"
+         height="1"
+         width="8"
+         id="rect1725"
+         style="opacity:1;fill:#eaeaea;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.41421354;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3;stroke-opacity:1;paint-order:stroke fill markers"
+         transform="rotate(45)" />
+      <rect
+         transform="scale(1,-1)"
+         style="opacity:1;fill:#eaeaea;fill-opacity:1;stroke:none;stroke-width:0.93094933;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect1747"
+         width="26"
+         height="1"
+         x="166.21501"
+         y="-20.000004"
+         ry="0" />
+      <rect
+         ry="0"
+         y="-104.09673"
+         x="130.9668"
+         height="1"
+         width="8"
+         id="rect1749"
+         style="opacity:1;fill:#eaeaea;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.41421354;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:3;stroke-opacity:1;paint-order:stroke fill markers"
+         transform="rotate(45)" />
+    </g>
+  </g>
+  <g
+     transform="translate(-163)"
+     id="system-switch-user-36">
+    <rect
+       style="opacity:0;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       id="rect956-4"
+       width="32"
+       height="32"
+       x="163"
+       y="-1.2024288e-06"
+       rx="0"
+       ry="0" />
+    <g
+       id="g3983"
+       transform="translate(-6,36.499999)">
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#191919;stroke-width:0.999997;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="circle3957"
+         cx="185"
+         cy="-20.5"
+         r="14.5" />
+      <g
+         transform="translate(-35,3.9999229)"
+         id="g3977">
+        <circle
+           style="fill:none;stroke:#191919;stroke-width:1.9999;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="circle3882"
+           cx="220"
+           cy="-27.999949"
+           r="4.000051" />
+        <path
+           style="fill:none;fill-opacity:1;stroke:#191919;stroke-width:1.7777;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="path3963"
+           sodipodi:type="arc"
+           sodipodi:cx="220"
+           sodipodi:cy="-16.888746"
+           sodipodi:rx="7.1111512"
+           sodipodi:ry="7.1111512"
+           sodipodi:start="3.1415927"
+           sodipodi:end="0"
+           sodipodi:open="true"
+           sodipodi:arc-type="arc"
+           d="M 212.88885,-16.888746 A 7.1111512,7.1111512 0 0 1 220,-23.999897 a 7.1111512,7.1111512 0 0 1 7.11115,7.111151" />
+      </g>
+    </g>
+  </g>
+</svg>
