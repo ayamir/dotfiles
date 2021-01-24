@@ -5,7 +5,9 @@
     1.  [Color Scheme](#org4976554)
     2.  [Patches](#org2026491)
     3.  [Keybinding](#orgdf423ab)
-    4.  [Other](#org1958ae2)
+    4.  [Dependency](#dependency)
+    5.  [Usage](#usage)
+    5.  [Other](#org1958ae2)
         1.  [Recompile](#org3f8fde8)
         2.  [Xsessions](#org1745859)
         3.  [Switch](#switch)
@@ -70,6 +72,37 @@ You can see all of 7 patches I have applied in `.dwm/patches` dir.
 ## Keybinding
 
 You can see all of keybindings in `.dwm/config.def.h` clearly.
+
+<a id="dependency"></a>
+
+## Dependency
+
++ Launcher: dmenu
++ Terminal: alacritty&kitty
++ Editor: 
+  + vim
+  + doom emacs
+  + vscode
+  + sublime-text-nightly
++ Compositor: picom-jonaburg-git
++ Shell: fish
++ PDF reader: zathura
++ Player: mpd&ncmpcpp
++ Notification daemon: dunst
++ Theme controler: xsettingsd
++ Gtk themes:
+  + Light: [Pop-gruvbox](./usr/share/themes/Pop-gruvbox)
+  + Dark: [Gruvbox-Material-Dark](./usr/share/themes/Gruvbox-Material-Dark)
++ Qt themes:
+  + use `qt5ct` and `qt5-styleplugins` to set qt theme follow gtk2 theme
++ Icon theme: Material-Originals-dark
+
+<a id="usage"></a>
+
+## Usage
+1. Backup all of your old config files.
+2. Install apps metioned in [Dependency](#dependency)
+3. Copy all my config files to corresponding directories follow my repo's structure.
 
 
 <a id="org1958ae2"></a>
