@@ -15,7 +15,7 @@ then
     sed -i "s/col_gray2\[\]       \= \"\#3c3836\"/col_gray2\[\]       = \"\#ebdbb2\"/g" ~/.dwm/config.def.h
     sed -i "s/col_gray3\[\]       \= \"\#ebdbb2\"/col_gray3\[\]       = \"\#3c3836\"/g" ~/.dwm/config.def.h
     sed -i "s/col_gray4\[\]       \= \"\#fdf1c7\"/col_gray4\[\]       = \"\#282828\"/g" ~/.dwm/config.def.h
-    sed -i "s/col_cyan\[\]        \= \"\#d79921\"/col_cyan\[\]        = \"\#fabd2f\"/g" ~/.dwm/config.def.h
+    sed -i "s/col_cyan\[\]        \= \"\#427b58\"/col_cyan\[\]        = \"\#689d6a\"/g" ~/.dwm/config.def.h
     source ~/.config/fish/functions/dwm_recompile.fish
     pkill -1 dwm
     # Alacritty
@@ -59,7 +59,7 @@ then
     sed -i "s/col_gray2\[\]       \= \"\#ebdbb2\"/col_gray2\[\]       = \"\#3c3836\"/g" ~/.dwm/config.def.h
     sed -i "s/col_gray3\[\]       \= \"\#3c3836\"/col_gray3\[\]       = \"\#ebdbb2\"/g" ~/.dwm/config.def.h
     sed -i "s/col_gray4\[\]       \= \"\#282828\"/col_gray4\[\]       = \"\#fdf1c7\"/g" ~/.dwm/config.def.h
-    sed -i "s/col_cyan\[\]        \= \"\#fabd2f\"/col_cyan\[\]        = \"\#d79921\"/g" ~/.dwm/config.def.h
+    sed -i "s/col_cyan\[\]        \= \"\#689d6a\"/col_cyan\[\]        = \"\#427b58\"/g" ~/.dwm/config.def.h
     source ~/.config/fish/functions/dwm_recompile.fish
     pkill -1 dwm
     # Alacritty
