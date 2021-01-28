@@ -101,9 +101,9 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[3] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *windowswitchcmd[] = { "rofi", "-show", "window", NULL };
 static const char *clipmenucmd[]    = { "clipmenu", "-i", "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray4, "-sb", col_cyan, "-sf", col_gray2, NULL};
 static const char *dmenucmd[]    = { "dmenu_run_history", "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray4, "-sb", col_cyan, "-sf", col_gray2, NULL};
-//static const char *dmenucmd[] = { "rofi", "-show", "drun", NULL };
 static const char *termcmd[]  = { "kitty", "--single-instance", NULL };
 
 static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+3%",     NULL };
@@ -115,6 +115,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_d,           spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_c,           spawn,          {.v = clipmenucmd } },
 	{ MODKEY,                       XK_Return,      spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_w,           spawn,          {.v = windowswitchcmd } },
 	{ MODKEY,                       XK_b,           togglebar,      {0} },
     { MODKEY|ControlMask,           XK_m,           focusmaster,    {0} },
 	{ MODKEY,                       XK_j,           focusstack,     {.i = +1 } },
@@ -141,7 +142,7 @@ static Key keys[] = {
 
     /* My Own App Start Ways */
     { Mod1Mask,                     XK_c,           spawn,          CMD("code") },
-    { MODKEY,                       XK_w,           spawn,          CMD("google-chrome-stable") },
+    { MODKEY,                       XK_e,           spawn,          CMD("google-chrome-stable") },
     { MODKEY,                       XK_z,           spawn,          CMD("zathura") },
     { MODKEY|ShiftMask,             XK_Return,      spawn,          CMD("alacritty") },
     { MODKEY|ShiftMask,             XK_q,           spawn,          CMD("xkill") },

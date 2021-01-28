@@ -10,6 +10,8 @@ then
     # Dunst
     cp ~/.config/dunst/dunstrc-gruvbox-light ~/.config/dunst/dunstrc
     killall dunst
+    # Rofi
+    sed -i "s/grubox-dark/gruvbox-light/g" ~/.config/rofi/config.rasi
     # Dwm
     sed -i "s/col_gray1\[\]       \= \"\#282828\"/col_gray1\[\]       = \"\#fdf1c7\"/g" ~/.dwm/config.def.h
     sed -i "s/col_gray2\[\]       \= \"\#3c3836\"/col_gray2\[\]       = \"\#ebdbb2\"/g" ~/.dwm/config.def.h
@@ -54,6 +56,8 @@ then
     # Dunst
     cp ~/.config/dunst/dunstrc-gruvbox-dark ~/.config/dunst/dunstrc
     killall dunst
+    # Rofi
+    sed -i "s/grubox-light/gruvbox-dark/g" ~/.config/rofi/config.rasi
     # Dwm
     sed -i "s/col_gray1\[\]       \= \"\#fdf1c7\"/col_gray1\[\]       = \"\#282828\"/g" ~/.dwm/config.def.h
     sed -i "s/col_gray2\[\]       \= \"\#ebdbb2\"/col_gray2\[\]       = \"\#3c3836\"/g" ~/.dwm/config.def.h

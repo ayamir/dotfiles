@@ -22,6 +22,7 @@
  */
 #include <errno.h>
 #include <locale.h>
+#include <regex.h>
 #include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -158,6 +159,7 @@ static void arrangemon(Monitor *m);
 static void attach(Client *c);
 static void attachstack(Client *c);
 static void buttonpress(XEvent *e);
+static void compileregexes(void);
 static void checkotherwm(void);
 static void cleanup(void);
 static void cleanupmon(Monitor *mon);
@@ -298,6 +300,8 @@ static Window root, wmcheckwin;
 /* compile-time check if all tags fit into an unsigned int bit array. */
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
+static regex_t regexcache[LENGTH(rules)][3];
+
 /* function implementations */
 void
 applyrules(Client *c)
@@ -317,10 +321,10 @@ applyrules(Client *c)
 
 	for (i = 0; i < LENGTH(rules); i++) {
 		r = &rules[i];
-		if ((!r->title || strstr(c->name, r->title))
-		&& (!r->class || strstr(class, r->class))
-		&& (!r->instance || strstr(instance, r->instance)))
-		{
+		if((!r->title || !regexec(&regexcache[i][2], c->name, 0, NULL, 0)) &&
+		   (!r->class || !regexec(&regexcache[i][0], class, 0, NULL, 0)) &&
+		   (!r->instance || !regexec(&regexcache[i][1], instance, 0, NULL, 0))) {
+
 			c->isfloating = r->isfloating;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
@@ -570,6 +574,36 @@ clientmessage(XEvent *e)
 	} else if (cme->message_type == netatom[NetActiveWindow]) {
 		if (c != selmon->sel && !c->isurgent)
 			seturgent(c, 1);
+	}
+}
+
+void
+compileregexes(void)
+{
+	char regex_error_buffer[256];
+	int i;
+	int status;
+	const Rule *r;
+	for(i = 0; i < LENGTH(rules); i++) {
+		r = &rules[i];
+		if (r->class) {
+			if ((status = regcomp(&regexcache[i][0], r->class, REG_EXTENDED | REG_NOSUB))) {
+				regerror(status, &regexcache[i][0], regex_error_buffer, sizeof(regex_error_buffer));
+				die("Error compiling /%s/: %s", r->class, regex_error_buffer);
+			}
+		}
+		if (r->instance) {
+			if ((status = regcomp(&regexcache[i][1], r->instance, REG_EXTENDED | REG_NOSUB))) {
+				regerror(status, &regexcache[i][1], regex_error_buffer, sizeof(regex_error_buffer));
+				die("Error compiling /%s/: %s", r->instance, regex_error_buffer);
+			}
+		}
+		if (r->title) {
+			if ((status = regcomp(&regexcache[i][2], r->title, REG_EXTENDED | REG_NOSUB))) {
+				regerror(status, &regexcache[i][2], regex_error_buffer, sizeof(regex_error_buffer));
+				die("Error compiling /%s/: %s", r->title, regex_error_buffer);
+			}
+		}
 	}
 }
 
@@ -2456,6 +2490,7 @@ main(int argc, char *argv[])
 		fputs("warning: no locale support\n", stderr);
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
+	compileregexes();
 	checkotherwm();
 	setup();
 #ifdef __OpenBSD__

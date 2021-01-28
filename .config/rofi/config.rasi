@@ -1,0 +1,11 @@
+configuration {
+  modi: "window,combi,ssh,drun,run,windowcd,keys";
+	width: 800;
+	lines: 10;
+	columns: 2;
+	font: "SFNS Display 14";
+	show-icons: true;
+	icon-theme: "papirus";
+	theme: "~/.config/rofi/gruvbox-dark.rasi";
+	display-drun: "App";
+}

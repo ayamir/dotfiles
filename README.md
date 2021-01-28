@@ -36,7 +36,7 @@ Gruvbox
 
 ## Patches
 
-You can see all of 7 patches I have applied in `.dwm/patches` dir.
+You can see all of 8 patches I have applied in `.dwm/patches` dir.
 
 -   dwm-00-regex-rules.diff
     
@@ -66,6 +66,10 @@ You can see all of 7 patches I have applied in `.dwm/patches` dir.
     
     gap appears only two or more windows appear
 
+-   dwm-focusonnetactive-6.2.diff
+
+    automatically switch to urgent window
+
 
 <a id="orgdf423ab"></a>
 
@@ -88,6 +92,7 @@ You can see all of keybindings in `.dwm/config.def.h` clearly.
 + Shell: fish
 + PDF reader: zathura
 + Player: mpd&ncmpcpp
++ Window switcher: rofi
 + Notification daemon: dunst
 + Theme controler: xsettingsd
 + Gtk themes:
