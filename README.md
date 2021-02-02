@@ -2,25 +2,35 @@
 # Table of Contents
 
 1.  [My Own Dwm Config](#org27716e3)
-    1.  [Color Scheme](#org4976554)
-    2.  [Patches](#org2026491)
-    3.  [Keybinding](#orgdf423ab)
-    4.  [Dependency](#dependency)
-    5.  [Usage](#usage)
-    5.  [Other](#org1958ae2)
+    1.  [Intro](#intro)
+    2.  [Color Scheme](#org4976554)
+    3.  [Patches](#org2026491)
+    4.  [Keybinding](#orgdf423ab)
+    5.  [Dependency](#dependency)
+    6.  [Usage](#usage)
+    7.  [Other](#org1958ae2)
         1.  [Recompile](#org3f8fde8)
         2.  [Xsessions](#org1745859)
         3.  [Switch](#switch)
         4.  [Telegram Themes](#tg)
         5.  [Fcitx5 Themes](#fcitx5)
         6.  [Browser Themes](#browser)
-
+    8.  [Credits](#credits)
 
 
 <a id="org27716e3"></a>
 
 # My Own Dwm Config
 
+<a id="intro"></a>
+
+## Intro
+
+This repo collects app's gruvbox theme. 
+
+I will switch my color scheme to Nord sometimes, so this repo's update might not in time.
+
+So you can also see [this repo](https://github.com/ayamir/nord-and-light) to get my Nord configs.
 
 <a id="org4976554"></a>
 
@@ -169,3 +179,9 @@ Set your browser just use default GTK theme.
 You can use `Dark Reader` extension to realize web pages' gruvbox color.
 
 ![browser](./shot/browser.png)
+
+<a id="credits"></a>
+
+## Credits
+
+My Pop-gruvbox theme is a fork of [Pop-gruvbox](https://github.com/salimundo/Pop-gruvbox) with topbar's color changed to yellow.
