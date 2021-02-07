@@ -334,6 +334,8 @@ ramp-headphones-1 = 
 type = internal/backlight
 
 card = intel_backlight
+;; sudo chmod o+w /path/to/brightness
+enable-scroll = true
 
 format = <ramp> <label>
 
