@@ -1,0 +1,44 @@
+From 3e020d93df3aaec92d2daa142cd1f0d5301b3197 Mon Sep 17 00:00:00 2001
+From: Mateus Auler <mateusauler@protonmail.com>
+Date: Fri, 17 Jul 2020 12:36:36 -0300
+Subject: [PATCH] Ability to map a key combination to switch focus to
+ the master window.
+
+---
+ dwm.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/dwm.c b/dwm.c
+index 9fd0286..be01927 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -235,6 +235,8 @@ static int xerrordummy(Display *dpy, XErrorEvent *ee);
+ static int xerrorstart(Display *dpy, XErrorEvent *ee);
+ static void zoom(const Arg *arg);
+ 
++static void focusmaster(const Arg *arg);
++
+ /* variables */
+ static const char broken[] = "broken";
+ static char stext[256];
+@@ -2150,3 +2152,17 @@ main(int argc, char *argv[])
+ 	XCloseDisplay(dpy);
+ 	return EXIT_SUCCESS;
+ }
++
++void
++focusmaster(const Arg *arg)
++{
++	Client *c;
++
++	if (selmon->nmaster < 1)
++		return;
++
++	c = nexttiled(selmon->clients);
++
++	if (c)
++		focus(c);
++}
+-- 
+2.27.0
+

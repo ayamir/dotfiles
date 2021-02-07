@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+if [ $1 == "l" ]
+then
+    # Fcitx5
+    sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
+    killall fcitx5
+    # Wallpaper
+    feh --bg-fill ~/Pictures/Background/NordDay.png
+    sed -i "s/bg ~\/Pictures\/Background\/NordNight.png fill/bg ~\/Pictures\/Background\/NordDay.png fill/g" ~/.config/sway/config
+    # Dunst
+    cp ~/.config/dunst/dunstrc-nord-light ~/.config/dunst/dunstrc
+    killall dunst
+    # Dwm
+    sed -i "s/normbgcolor\[\]           \= \"\#2E3440\"/normbgcolor\[\]           \= \"\#ECEFF4\"/g" ~/.dwm/config.def.h
+    sed -i "s/normbordercolor\[\]       \= \"\#3B4252\"/normbordercolor\[\]       \= \"\#D8DEE9\"/g" ~/.dwm/config.def.h
+    sed -i "s/normfgcolor\[\]           \= \"\#ECEFF4\"/normfgcolor\[\]           \= \"\#2E3440\"/g" ~/.dwm/config.def.h
+    sed -i "s/selfgcolor\[\]            \= \"\#D8DEE9\"/selfgcolor\[\]            \= \"\#3B4252\"/g" ~/.dwm/config.def.h
+    sed -i "s/selbordercolor\[\]        \= \"\#5E81AC\"/selbordercolor\[\]        \= \"\#88C0D0\"/g" ~/.dwm/config.def.h
+    source ~/.config/fish/functions/dwm_recompile.fish
+    # Dmenu
+    sed -i "s/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
+    source ~/.config/fish/functions/dmenu_recompile.fish
+    pkill -1 dwm
+    # Alacritty
+    cp ~/.config/alacritty/alacritty-nord-light.yml ~/.config/alacritty/alacritty.yml
+    # Kitty
+    sed -i "s/dark/light/g" ~/.config/kitty/kitty.conf
+    # Fish
+    fish -c nord-light
+    # Global theme
+    sed -i "s/Nord/Orchis-light/g" ~/.config/xsettingsd/xsettingsd.conf
+    sed -i "s/Nord/Orchis-light/g" ~/.gtkrc-2.0
+    sed -i "s/Nord/Orchis-light/g" ~/.config/gtk-3.0/settings.ini
+    pkill -1 xsettingsd
+    # Rofi
+    sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
+    # Vim
+    sed -i "s/colorscheme nord/colorscheme one/g" ~/.vimrc
+    sed -i 's/airline_theme=\"nord\"/airline_theme=\"silver\"/g' ~/.vimrc
+    # Emacs
+    sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
+    emacsclient -e '(kill-emacs)'
+    # Code
+    sed -i "s/Nord/Atom One Light/g" ~/.config/Code/User/settings.json
+    # Sublime
+    sed -i "s/Nord\/Nord.sublime-color-scheme/One Half Color Schemes\/OneHalfLight.tmTheme/g" ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+    # Zathura
+    cp ~/.config/zathura/zathurarc-nord-light ~/.config/zathura/zathurarc
+    # Daemons
+    sh ~/.local/bin/startdaemon
+    # Notify
+    notify-send "Switch to Light Now!" -i ~/Pictures/nord.png -t 3000
+elif [ $1 == "n" ]
+then
+    # Fcitx5
+    sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
+    killall fcitx5
+    # Wallpaper
+    feh --bg-fill ~/Pictures/Background/NordNight.png
+    sed -i "s/bg ~\/Pictures\/Background\/NordDay.png fill/bg ~\/Pictures\/Background\/NordNight.png fill/g" ~/.config/sway/config
+    # Dunst
+    cp ~/.config/dunst/dunstrc-nord-dark ~/.config/dunst/dunstrc
+    # Mako
+    killall dunst
+    # Dwm
+    sed -i "s/normbgcolor\[\]           \= \"\#ECEFF4\"/normbgcolor\[\]           \= \"\#2E3440\"/g" ~/.dwm/config.def.h
+    sed -i "s/normbordercolor\[\]       \= \"\#D8DEE9\"/normbordercolor\[\]       \= \"\#3B4252\"/g" ~/.dwm/config.def.h
+    sed -i "s/normfgcolor\[\]           \= \"\#2E3440\"/normfgcolor\[\]           \= \"\#ECEFF4\"/g" ~/.dwm/config.def.h
+    sed -i "s/selfgcolor\[\]            \= \"\#3B4252\"/selfgcolor\[\]            \= \"\#D8DEE9\"/g" ~/.dwm/config.def.h
+    sed -i "s/selbordercolor\[\]        \= \"\#88C0D0\"/selbordercolor\[\]        \= \"\#5E81AC\"/g" ~/.dwm/config.def.h
+    source ~/.config/fish/functions/dwm_recompile.fish
+    # Dmenu
+    sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
+    source ~/.config/fish/functions/dmenu_recompile.fish
+    pkill -1 dwm
+    # Alacritty
+    cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
+    # Kitty
+    sed -i "s/light/dark/g" ~/.config/kitty/kitty.conf
+    sed -i "s/light/dark/g" ~/.config/kitty/kitty-w.conf
+    # Fish
+    fish -c nord-dark
+    # Global theme
+    sed -i "s/Orchis-light/Nord/g" ~/.config/xsettingsd/xsettingsd.conf
+    sed -i 's/Orchis-light/Nord/g' ~/.gtkrc-2.0
+    sed -i "s/Orchis-light/Nord/g" ~/.config/gtk-3.0/settings.ini
+    pkill -1 xsettingsd
+    # Rofi
+    sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
+    # Vim
+    sed -i 's/colorscheme one/colorscheme nord/g' ~/.vimrc
+    sed -i 's/airline_theme=\"silver\"/airline_theme=\"nord\"/g' ~/.vimrc
+    # Emacs
+    sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
+    emacsclient -e '(kill-emacs)'
+    # Code
+    sed -i "s/Atom One Light/Nord/g" ~/.config/Code/User/settings.json
+    # Sublime
+    sed -i "s/One Half Color Schemes\/OneHalfLight.tmTheme/Nord\/Nord.sublime-color-scheme/g" ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+    # Zathura
+    cp ~/.config/zathura/zathurarc-nord-dark ~/.config/zathura/zathurarc
+    # Daemons
+    sh ~/.local/bin/startdaemon
+    # Notify
+    notify-send "Switch to Nord Now!" -i ~/Pictures/nord.png -t 3000
+fi
+
+kitty --single-instance -e ~/.local/bin/kitty_reload_x

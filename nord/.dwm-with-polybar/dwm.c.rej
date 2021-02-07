@@ -1,0 +1,98 @@
+--- dwm.c
++++ dwm.c
+@@ -125,8 +139,10 @@ typedef struct {
+ 	void (*arrange)(Monitor *);
+ } Layout;
+ 
++
+ struct Monitor {
+ 	char ltsymbol[16];
++	char lastltsymbol[16];
+ 	float mfact;
+ 	int nmaster;
+ 	int num;
+@@ -136,14 +152,17 @@ struct Monitor {
+ 	unsigned int seltags;
+ 	unsigned int sellt;
+ 	unsigned int tagset[2];
++	TagState tagstate;
+ 	int showbar;
+ 	int topbar;
+ 	Client *clients;
+ 	Client *sel;
++	Client *lastsel;
+ 	Client *stack;
+ 	Monitor *next;
+ 	Window barwin;
+ 	const Layout *lt[2];
++	const Layout *lastlt;
+ };
+ 
+ typedef struct {
+@@ -278,17 +300,27 @@ static void (*handler[LASTEvent]) (XEvent *) = {
+ 	[UnmapNotify] = unmapnotify
+ };
+ static Atom wmatom[WMLast], netatom[NetLast];
++static int epoll_fd;
++static int dpy_fd;
+ static int running = 1;
+ static Cur *cursor[CurLast];
+ static Clr **scheme;
+ static Display *dpy;
+ static Drw *drw;
+-static Monitor *mons, *selmon;
++static Monitor *mons, *selmon, *lastselmon;
+ static Window root, wmcheckwin;
+ 
++#include "ipc.h"
++
+ /* configuration, allows nested code to access above variables */
+ #include "config.h"
+ 
++#ifdef VERSION
++#include "IPCClient.c"
++#include "yajl_dumps.c"
++#include "ipc.c"
++#endif
++
+ /* compile-time check if all tags fit into an unsigned int bit array. */
+ struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+ 
+@@ -1677,8 +1774,37 @@ setup(void)
+ 	XSelectInput(dpy, root, wa.event_mask);
+ 	grabkeys();
+ 	focus(NULL);
++	setupepoll();
+ }
+ 
++void
++setupepoll(void)
++{
++	epoll_fd = epoll_create1(0);
++	dpy_fd = ConnectionNumber(dpy);
++	struct epoll_event dpy_event;
++
++	// Initialize struct to 0
++	memset(&dpy_event, 0, sizeof(dpy_event));
++
++	DEBUG("Display socket is fd %d\n", dpy_fd);
++
++	if (epoll_fd == -1) {
++		fputs("Failed to create epoll file descriptor", stderr);
++	}
++
++	dpy_event.events = EPOLLIN;
++	dpy_event.data.fd = dpy_fd;
++	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, dpy_fd, &dpy_event)) {
++		fputs("Failed to add display file descriptor to epoll", stderr);
++		close(epoll_fd);
++		exit(1);
++	}
++
++	if (ipc_init(ipcsockpath, epoll_fd, ipccommands, LENGTH(ipccommands)) < 0) {
++		fputs("Failed to initialize IPC\n", stderr);
++	}
++}
+ 
+ void
+ seturgent(Client *c, int urg)

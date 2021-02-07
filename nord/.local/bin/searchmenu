@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Search using various search engines
+# Can search using primary selection
+
+# file to save search history to
+# keep it in /run to make it non persistant
+
+BROWSER="google-chrome-stable"
+
+hfile="$XDG_RUNTIME_DIR/selsearchhistory"
+
+# if hfile file doesent exist make it
+[ -f "$hfile" ] || touch "$hfile"
+
+# get primary selection and search history from $hfile and pass into dmenu
+selection=$(echo "$(xclip -o)" | tac - $hfile | awk 'NF' | dmenu -i -l 10 -p "Search Term: " | tr ' ' '+' ) || exit 1
+
+
+se[0]="Google"
+se[1]="Github"
+se[2]="Translate"
+se[3]="Youtube"
+se[4]="Wikipedia"
+se[5]="DuckDuckGo"
+se[6]="GentooWiki"
+se[7]="ArchWiki"
+se[8]="HTTPS"
+se[9]="Images"
+
+# get choice of search engine using dmenu
+substr=${selection:0:30}
+choice=$(printf "%s\n" "${se[@]}" | dmenu -i -p "Search \"$(echo "$substr")\": ") || exit 1
+
+
+# get apropriate url for choice
+if [ "$choice" = "${se[0]}" ]; then
+    url="https://www.google.com/search?q=$selection"
+elif [ "$choice" = "${se[1]}" ]; then
+    url="https://github.com/search?utf8=%E2%9C%93&q=$selection"
+elif [ "$choice" = "${se[2]}" ]; then
+    url="https://translate.google.cn/?sl=en&tl=zh-CN&text=$selection&op=translate"
+elif [ "$choice" = "${se[3]}" ]; then
+    url="https://www.youtube.com/results?search_query=$selection"
+elif [ "$choice" = "${se[4]}" ]; then
+    url="https://en.wikipedia.org/wiki/$selection"
+elif [ "$choice" = "${se[5]}" ]; then
+    url="https://duckduckgo.com/?q=$selection&kae=d&kp=-2&kz=1&kav=1&kn=1&k1=-1&kaj=m&kam=osm&kay=b&kak=-1&kax=-1&kaq=-1&kap=-1&kao=-1&kau=-1&kba=-1&kw=n&kh=1&k5=2&t=h_&iax=images&ia=images"
+elif [ "$choice" = "${se[6]}" ]; then
+    url="https://wiki.gentoo.org/index.php?search=$selection"
+elif [ "$choice" = "${se[7]}" ]; then
+    url="https://wiki.archlinux.org/index.php?search=$selection"
+elif [ "$choice" = "${se[8]}" ]; then
+    url="$selection"
+elif [ "$choice" = "${se[9]}" ]; then
+    url="https://www.imdb.com/find?ref_=nv_sr_fn&q=$selection&s=all"
+fi
+
+"$BROWSER" "$url"
+
+# append searchterm to history file
+echo "$selection" >> $hfile

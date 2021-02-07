@@ -1,0 +1,63 @@
+From 2550931c66e10e667ce56a6761cbadd12b331c52 Mon Sep 17 00:00:00 2001
+From: bakkeby <bakkeby@gmail.com>
+Date: Mon, 10 Aug 2020 16:45:00 +0200
+Subject: [PATCH] Steam patch
+
+Steam, and steam windows (games), trigger a ConfigureNotify request every time the window
+gets focus. More so, the configure event passed along from Steam tends to have the wrong
+x and y coordinates which can make the window, if floating, jump around the screen.
+
+This patch works around this age-old issue by ignoring the x and y co-ordinates for
+ConfigureNotify requests relating to Steam windows.
+---
+ dwm.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/dwm.c b/dwm.c
+index 4465af1..598d36d 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -93,6 +93,7 @@ struct Client {
+ 	int bw, oldbw;
+ 	unsigned int tags;
+ 	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
++	int issteam;
+ 	Client *next;
+ 	Client *snext;
+ 	Monitor *mon;
+@@ -291,6 +292,9 @@ applyrules(Client *c)
+ 	class    = ch.res_class ? ch.res_class : broken;
+ 	instance = ch.res_name  ? ch.res_name  : broken;
+
++	if (strstr(class, "Steam") || strstr(class, "steam_app_"))
++		c->issteam = 1;
++
+ 	for (i = 0; i < LENGTH(rules); i++) {
+ 		r = &rules[i];
+ 		if ((!r->title || strstr(c->name, r->title))
+@@ -588,13 +592,15 @@ configurerequest(XEvent *e)
+ 			c->bw = ev->border_width;
+ 		else if (c->isfloating || !selmon->lt[selmon->sellt]->arrange) {
+ 			m = c->mon;
+-			if (ev->value_mask & CWX) {
+-				c->oldx = c->x;
+-				c->x = m->mx + ev->x;
+-			}
+-			if (ev->value_mask & CWY) {
+-				c->oldy = c->y;
+-				c->y = m->my + ev->y;
++			if (!c->issteam) {
++				if (ev->value_mask & CWX) {
++					c->oldx = c->x;
++					c->x = m->mx + ev->x;
++				}
++				if (ev->value_mask & CWY) {
++					c->oldy = c->y;
++					c->y = m->my + ev->y;
++				}
+ 			}
+ 			if (ev->value_mask & CWWidth) {
+ 				c->oldw = c->w;
+--
+2.19.1
+
