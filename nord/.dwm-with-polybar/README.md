@@ -5,16 +5,10 @@
     1.  [Color Scheme](#org4976554)
     2.  [Patches](#org2026491)
     3.  [Keybinding](#orgdf423ab)
-    4.  [Dependency](#dependency)
-    5.  [Usage](#usage)
-    6.  [Other](#org1958ae2)
+    4.  [Other](#org1958ae2)
         1.  [Xsessions config](#org1745859)
         2.  [Recompile](#org3f8fde8)
         3.  [Switch](#switch)
-        4.  [Telegram Themes](#tg)
-        5.  [Fcitx5 Themes](#fcitx5)
-        6.  [Browser Themes](#browser)
-    7.  [Credits](#credits)
 
 
 <a id="org27716e3"></a>
@@ -119,41 +113,6 @@ You can see all of 18 patches I have applied in `./patches` dir.
 
 You can see all of keybindings in `./config.def.h` clearly.
 
-<a id="dependency"></a>
-
-## Dependency
-
-+ Launcher: dmenu&rofi
-+ Terminal: alacritty&kitty
-+ Editor: 
-  + vim
-  + doom emacs
-  + vscode
-  + sublime-text-nightly
-+ Compositor: picom-jonaburg-git
-+ Shell: fish
-+ Bar: polybar
-+ PDF reader: zathura
-+ Player: mpd&ncmpcpp
-+ Window switcher: rofi
-+ Notification daemon: dunst
-+ Screen locker: i3lock-color
-+ Theme controler: xsettingsd
-+ Gtk themes:
-  + Light: [Orchis-light](https://www.gnome-look.org/p/1357889/)
-  + Dark: [Nordic](https://www.gnome-look.org/p/1267246/)
-+ Qt themes:
-  + use `qt5ct` and `qt5-styleplugins` to set qt theme follow gtk2 theme
-+ Icon theme: [Papirus](https://www.gnome-look.org/p/1166289/)
-
-<a id="usage"></a>
-
-## Usage
-1. Backup all of your old config files.
-2. Install apps metioned in [Dependency](#dependency)
-3. Copy all my config files to corresponding directories follow my repo's structure.
-
-
 <a id="org1958ae2"></a>
 
 ## Other
@@ -192,29 +151,3 @@ The script called `recompile` need your user can execute `sudo` command without 
 The simple script in `.local/bin/` called `switch-po` can switch `nord-light` and `nord-dark` theme through a shortcut defined in `.dwm/config.def.h`.
 
 All of details about how to switch you can see in it.
-
-<a id="tg"></a>
-
-### Telegram Themes
-
-Please refer this: [Nord-Tg](https://github.com/gilbertw1/telegram-nord-theme)
-
-<a id="fcitx5"></a>
-
-### Fcitx5 Themes
-
-Please refer this: [Nord-Fcitx5](https://github.com/tonyfettes/fcitx5-nord)
-
-<a id="browser"></a>
-
-### Browser Themes
-
-Set your browser just use default GTK theme.
-
-You can use `Midnight Lizard` extension to realize web pages' nord color.
-
-<a id="credits"></a>
-
-## Credits
-
-+ [Bento](https://github.com/MiguelRAvila/Bento) as my start page's template.

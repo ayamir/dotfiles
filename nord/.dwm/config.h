@@ -211,7 +211,7 @@ static Key keys[] = {
     { MODKEY|ShiftMask,             XK_e,           spawn,          CMD("emacs") },
     { MODKEY|ShiftMask,             XK_v,           spawn,          CMD("VBoxManage startvm 'Windows7' --type gui") },
 
-    { Mod1Mask|ControlMask,         XK_Delete,      spawn,          CMD("betterlockscreen -l") },
+    { Mod1Mask|ControlMask,         XK_Delete,      spawn,          CMD("sh ~/.local/bin/lock") },
     { Mod1Mask|ControlMask,         XK_s,           spawn,          CMD("sh /usr/local/bin/suspend") },
 
     /*IDE start*/
@@ -222,8 +222,8 @@ static Key keys[] = {
     { Mod1Mask,                     XK_g,           spawn,          CMD("goland") },
 
     /* Switch nord and light */
-    { MODKEY|ControlMask,           XK_n,           spawn,          CMD("sh ~/.local/bin/switch-nord n dwm") },
-    { MODKEY|ControlMask,           XK_l,           spawn,          CMD("sh ~/.local/bin/switch-nord l dwm") },
+    { MODKEY|ControlMask,           XK_n,           spawn,          CMD("sh ~/.local/bin/switch n dwm") },
+    { MODKEY|ControlMask,           XK_l,           spawn,          CMD("sh ~/.local/bin/switch l dwm") },
 
     /* Mpd control */
     { MODKEY|ControlMask,           XK_p,           spawn,          CMD("mpc toggle") },
