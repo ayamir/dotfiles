@@ -64,7 +64,7 @@ Nord and Light
 1. Backup all of your old config files.
 2. Install apps metioned in [Dependency](#dependency)
 3. Copy all my config files to corresponding directories follow my repo's structure.
-
+4. Please apply [polybar-dwm-module](https://github.com/mihirlad55/polybar-dwm-module) if you use the polybar version.
 
 <a id="org1958ae2"></a>
 
@@ -95,3 +95,7 @@ You can use `Midnight Lizard` extension to realize web pages' nord color.
 ## Credits
 
 + [Bento](https://github.com/MiguelRAvila/Bento) as my start page's template.
+
+![dark](./Pictures/shot/dark-page.png)
+
+![light](./Pictures/shot/light-page.png)
