@@ -22,8 +22,6 @@
 
 Nord and Light
 
-This directory use polybar as default bar which config is in `../.config/polybar`.
-
 ![Nord Dark](../Pictures/shot/dark-dwmpo.png)
 
 ![Nord Light](../Pictures/shot/light-dwmpo.png)
@@ -151,3 +149,11 @@ The script called `recompile` need your user can execute `sudo` command without 
 The simple script in `.local/bin/` called `switch-po` can switch `nord-light` and `nord-dark` theme through a shortcut defined in `.dwm/config.def.h`.
 
 All of details about how to switch you can see in it.
+
+### Polybar
+
+The script `../.dwmpobar` is used to start/restart polybar.
+
+You should apply [polybar-dwm-module](https://github.com/mihirlad55/polybar-dwm-module) first to make polybar's dwm module work.
+
+Polybar's config is in `../.config/polybar`. If you want to change config's dir, please change `../dwmpobar` too.
