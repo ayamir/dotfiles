@@ -5,6 +5,10 @@ then
     # Fcitx5
     sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
     killall fcitx5
+    # Conky
+    sed -i "s/bottom_right/top_left/g" ~/.config/conky/conky.conf
+    sed -i "s/5E81AC/88C0D0/g" ~/.config/conky/conky.conf
+    sed -i "s/ECEFF4/2E3440/g" ~/.config/conky/conky.conf
     # Wallpaper
     feh --bg-fill ~/Pictures/wallpapers/1.png
     # Dunst
@@ -51,6 +55,10 @@ then
     # Fcitx5
     sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
     killall fcitx5
+    # Conky
+    sed -i "s/top_left/bottom_right/g" ~/.config/conky/conky.conf
+    sed -i "s/88C0D0/5E81AC/g" ~/.config/conky/conky.conf
+    sed -i "s/2E3440/ECEFF4/g" ~/.config/conky/conky.conf
     # Wallpaper
     feh --bg-fill ~/Pictures/wallpapers/4-nord.png
     # Dunst
