@@ -49,7 +49,8 @@ Nord and Light
 + Player: mpd&ncmpcpp
 + Window switcher: rofi
 + Notification daemon: dunst
-+ Screen locker: i3lock-color
++ Screen locker: i3lock-color&xautolock
++ System monitor: conky
 + Theme controler: xsettingsd
 + Gtk themes:
   + Light: [Orchis-light](https://www.gnome-look.org/p/1357889/)
