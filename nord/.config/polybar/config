@@ -59,8 +59,8 @@ font-4 = Sarasa UI SC:size=12;2
 
 
 modules-left = dwm
-modules-center = mpd
-modules-right = cpu memory volume backlight battery date  
+modules-center = 
+modules-right = mpd volume backlight battery date  
 
 separator =
 spacing = 0
@@ -141,7 +141,7 @@ secondary-layout-symbol = [M]
 label-title = %title%
 label-title-padding = 1
 label-title-foreground = ${color.CYAN}
-label-title-maxlen = 30
+label-title-maxlen = 60
 
 ; Symbol of current layout
 ; Available tokens:
@@ -558,15 +558,15 @@ label-song-ellipsis = true
 icon-play = " "
 icon-play-font = 2
 icon-play-foreground = ${color.GREEN}
-icon-pause = " "
+icon-pause = "  "
 icon-pause-font = 2
 icon-pause-foreground = ${color.YELLOW}
 icon-stop = " "
 icon-stop-foreground = ${color.RED}
-icon-prev = 玲
+icon-prev = "玲"
 icon-prev-font = 2
 icon-prev-foreground = ${color.CYAN}
-icon-next = 怜
+icon-next = "怜"
 icon-next-font = 2
 icon-next-foreground = ${color.CYAN}
 
