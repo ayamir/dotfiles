@@ -1,5 +1,5 @@
 [mpd]
-mpd_music_dir = "/home/ayamir/Music/mpd3/"
+mpd_music_dir = "/home/ayamir/Music/"
 mpd_host = "localhost"
 mpd_port = "6600"
 mpd_crossfade_time = "2"
