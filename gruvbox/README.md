@@ -15,7 +15,6 @@
         4.  [Telegram Themes](#tg)
         5.  [Fcitx5 Themes](#fcitx5)
         6.  [Browser Themes](#browser)
-    8.  [Credits](#credits)
 
 
 <a id="org27716e3"></a>
@@ -106,11 +105,11 @@ You can see all of keybindings in `.dwm/config.def.h` clearly.
 + Notification daemon: dunst
 + Theme controler: xsettingsd
 + Gtk themes:
-  + Light: [Pop-gruvbox](./usr/share/themes/Pop-gruvbox)
-  + Dark: [Gruvbox-Material-Dark](./usr/share/themes/Gruvbox-Material-Dark)
+  + Light: Pop-gruvbox
+  + Dark: Gruvbox-Material-Dark
 + Qt themes:
   + use `qt5ct` and `qt5-styleplugins` to set qt theme follow gtk2 theme
-+ Icon theme: [Material-Originals-dark](./usr/share/icons/Material-Originals-dark)
++ Icon theme: Material-Originals-dark
 
 <a id="usage"></a>
 
@@ -179,9 +178,3 @@ Set your browser just use default GTK theme.
 You can use `Dark Reader` extension to realize web pages' gruvbox color.
 
 ![browser](./shot/browser.png)
-
-<a id="credits"></a>
-
-## Credits
-
-My Pop-gruvbox theme is a fork of [Pop-gruvbox](https://github.com/salimundo/Pop-gruvbox) with topbar's color changed to yellow.
