@@ -21,6 +21,7 @@ then
     sed -i "s/dwm.selfgcolor: #D8DEE9/dwm.selfgcolor: #3B4252/g" ~/.Xresources
     sed -i "s/dwm.selbgcolor: #5E81AC/dwm.selbgcolor: #88C0D0/g" ~/.Xresources
     xrdb ~/.Xresources
+    pkill -1 dwm
     # Dmenu
     sed -i "s/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/g" ~/.dmenu/config.def.h
     sed -i "s/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
@@ -76,6 +77,7 @@ then
     sed -i "s/dwm.selfgcolor: #3B4252/dwm.selfgcolor: #D8DEE9/g" ~/.Xresources
     sed -i "s/dwm.selbgcolor: #88C0D0/dwm.selbgcolor: #5E81AC/g" ~/.Xresources
     xrdb ~/.Xresources
+    pkill -1 dwm
     # Dmenu
     sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
     sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
