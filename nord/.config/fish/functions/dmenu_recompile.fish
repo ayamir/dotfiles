@@ -1,0 +1,1 @@
+cd ~/.dmenu && sh ./recompile

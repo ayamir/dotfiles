@@ -33,7 +33,7 @@ Nord and Light
 
 ## Patches
 
-You can see all of 15 patches I have applied in `./patches` dir.
+You can see all of 16 patches I have applied in `./patches` dir.
 
 -   dwm-00-regex-rules.diff
     
@@ -42,6 +42,10 @@ You can see all of 15 patches I have applied in `./patches` dir.
 -   dwm-attachasideandbelow-20200702-f04cac6.diff
 
     new windows are spawned on the bottom of the stack
+
+-   dwm-awesomebar-20200907-6.2.diff
+
+    make dwmbar have awesomebar's effect
 
 -   dwm-bottomstack-20160719-56a31dc.diff
 

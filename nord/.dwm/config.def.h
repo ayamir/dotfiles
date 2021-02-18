@@ -8,15 +8,16 @@ static const unsigned int gappx     = 5;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const int user_bh            = 30;        /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
 /*  Display modes of the tab bar: never shown, always shown, shown only in  */
 /*  monocle mode in the presence of several windows.                        */
 /*  Modes after showtab_nmodes are disabled.                                */
 enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always};
 static const int showtab			= showtab_auto;        /* Default tab bar show mode */
-static const int toptab				= True;               /* False means bottom tab bar */
+static const int toptab				= False;               /* False means bottom tab bar */
 
-static const char *fonts[]     = {"Liga SFMono Nerd Font:size=9:antialias=true:autohint=true",
-                                  "Sarasa UI SC:size=8:antialias=true:autohint=true",
+static const char *fonts[]     = {"Liga SFMono Nerd Font:size=10:antialias=true:autohint=true",
+                                  "Sarasa UI SC:size=10:antialias=true:autohint=true",
                                   "JoyPixels:size=10:antialias=true:autohint=true"
 						     	};
 static const char dmenufont[]       = "Sarasa UI SC:size=10:antialias=true:autohint=true";
@@ -64,6 +65,7 @@ static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+       [SchemeHid]  = { selbgcolor,  normbgcolor, selbordercolor  },
 };
 
 /* tagging */
@@ -80,6 +82,7 @@ static const Rule rules[] = {
 	{ "jetbrains-*",                    "sun-awt-X11-XFramePeer",   NULL,               1 << 1,       0,           -1 },
 	{ "jetbrains-*",                    "jetbrains-*",              "win0",             1 << 1,       1,           -1 },
 	{ "jetbrains-*",                    NULL,                       "Welcome to*",      1 << 1,       1,           -1 },
+    { NULL,                             NULL,                       "Android Emulator - Pixel_3a_API_30_x86:5554",      1 << 1,       1,           -1 },
 
     { "Google-chrome",                 "google-chrome",             NULL,               1 << 2,       0,           -1 },
 	{ "Vivaldi-stable",                 "vivaldi-stable",           NULL,               1 << 2,       0,           -1 },
@@ -100,6 +103,7 @@ static const Rule rules[] = {
 
 	{ "Qq",                             "qq",                       NULL,               1 << 6,       1,           -1 },
 	{ "Freechat",                       "freechat",                 NULL,               1 << 6,       0,           -1 },
+	{ "Postman",                        "postman",                  NULL,               1 << 6,       0,           -1 },
 
 	{ "TelegramDesktop",                NULL,                       NULL,               1 << 7,       0,           -1 },
 
@@ -165,18 +169,24 @@ static Key keys[] = {
 	{ MODKEY,                       XK_d,           spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_p,           spawn,          {.v = rofidruncmd } },
 	{ MODKEY,                       XK_c,           spawn,          {.v = clipmenucmd } },
-	{ MODKEY,                       XK_s,           spawn,          {.v = searchmenucmd } },
+//	{ MODKEY,                       XK_s,           spawn,          {.v = searchmenucmd } },
 	{ MODKEY,                       XK_r,           spawn,          {.v = recordmenucmd } },
 	{ MODKEY,                       XK_w,           spawn,          {.v = windowswitchcmd } },
 
 	{ MODKEY,                       XK_b,           togglebar,      {0} },
     { MODKEY|ControlMask,           XK_m,           focusmaster,    {0} },
-	{ MODKEY,                       XK_j,           focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_k,           focusstack,     {.i = -1 } },
+    { MODKEY,                       XK_j,           focusstackvis,  {.i = +1 } },
+	{ MODKEY,                       XK_k,           focusstackvis,  {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_j,           focusstackhid,  {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_k,           focusstackhid,  {.i = -1 } },
+	{ MODKEY,                       XK_s,           show,           {0} },
+	{ MODKEY,                       XK_h,           hide,           {0} },
+ 
+ 
 //	{ MODKEY,                       XK_i,           incnmaster,     {.i = +1 } },
 //	{ MODKEY,                       XK_o,           incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,           setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,           setmfact,       {.f = +0.05} },
+	{ MODKEY,                       XK_comma,       setmfact,       {.f = -0.05} },
+	{ MODKEY,                       XK_period,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ControlMask,           XK_Return,      zoom,           {0} },
 	{ MODKEY,                       XK_Tab,         view,           {0} },
 	{ MODKEY,                       XK_q,           killclient,     {0} },
@@ -258,6 +268,7 @@ static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
+	{ ClkWinTitle,          0,              Button1,        togglewin,      {0} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
