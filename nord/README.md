@@ -25,7 +25,7 @@ This repo collects apps' nord theme and 2 version dwm build.
 
 [One](./.dwm) with original dwm bar, [the other](./.dwm-with-polybar) with polybar(through patches).
 
-Please use symlink to `~/.dwm`, so you can use [switch-dwm](./.local/bin/switch-dwm) to switch the two version quickly.
+Please use symlink to `~/.dwm`, so you can use [switch-dwm](./.local/bin/switch-dwm) to switch the two versions quickly.
 
 ```sh
 # If you want to use original version
