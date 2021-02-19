@@ -1,0 +1,13 @@
+#!/bin/bash
+
+rm ~/.dwm
+if [[ `ps -ef | rg polybar | rg -v rg | wc -l` == 1 ]]
+then
+    ln -s ~/.dwm-ori ~/.dwm
+    killall polybar
+else
+    ln -s ~/.dwm-po ~/.dwm
+fi
+
+source ~/.config/fish/functions/dwm_recompile.fish
+pkill -1 dwm

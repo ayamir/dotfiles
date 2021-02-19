@@ -25,6 +25,15 @@ This repo collects apps' nord theme and 2 version dwm build.
 
 [One](./.dwm) with original dwm bar, [the other](./.dwm-with-polybar) with polybar(through patches).
 
+Please use symlink to `~/.dwm`, so you can use [switch-dwm](./.local/bin/switch-dwm) to switch the two version quickly.
+
+```sh
+# If you want to use original version
+ln -s ./.dwm-ori ~/.dwm
+# If you want to use ploybar version
+ln -s ./.dwm-po ~/.dwm
+```
+
 <a id="org4976554"></a>
 
 ## Color Scheme

@@ -17,7 +17,7 @@ static const char *altbarcmd        = "$HOME/.dwmpobar"; /* Alternate bar launch
 /*  Modes after showtab_nmodes are disabled.                                */
 enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always};
 static const int showtab			= showtab_auto;        /* Default tab bar show mode */
-static const int toptab				= True;               /* False means bottom tab bar */
+static const int toptab				= False;               /* False means bottom tab bar */
 
 static const char *fonts[]     = {"Liga SFMono Nerd Font:size=9:antialias=true:autohint=true",
                                   "Sarasa UI SC:size=8:antialias=true:autohint=true",
@@ -84,6 +84,7 @@ static const Rule rules[] = {
 	{ "jetbrains-*",                    "sun-awt-X11-XFramePeer",   NULL,               1 << 1,       0,           -1 },
 	{ "jetbrains-*",                    "jetbrains-*",              "win0",             1 << 1,       1,           -1 },
 	{ "jetbrains-*",                    NULL,                       "Welcome to*",      1 << 1,       1,           -1 },
+	{ NULL,                             NULL,                       "Android Emulator - Pixel_3a_API_30_x86:5554",      1 << 1,       1,           -1 },
 
     { "Google-chrome",                 "google-chrome",             NULL,               1 << 2,       0,           -1 },
 	{ "Vivaldi-stable",                 "vivaldi-stable",           NULL,               1 << 2,       0,           -1 },
@@ -104,6 +105,7 @@ static const Rule rules[] = {
 
 	{ "Qq",                             "qq",                       NULL,               1 << 6,       1,           -1 },
 	{ "Freechat",                       "freechat",                 NULL,               1 << 6,       0,           -1 },
+	{ "Alacritty",                      "htop",                     NULL,               1 << 6,       0,           -1 },
 
 	{ "TelegramDesktop",                NULL,                       NULL,               1 << 7,       0,           -1 },
 
@@ -184,6 +186,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_Return,      zoom,           {0} },
 	{ MODKEY,                       XK_Tab,         view,           {0} },
 	{ MODKEY,                       XK_q,           killclient,     {0} },
+    { MODKEY,                       XK_y,           tabmode,        {-1} },
 	{ MODKEY,                       XK_t,           setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,           setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,           setlayout,      {.v = &layouts[2]} },
@@ -211,23 +214,27 @@ static Key keys[] = {
     { MODKEY|ShiftMask,             XK_s,           spawn,          CMD("flameshot gui") },
     { MODKEY|ShiftMask,             XK_n,           spawn,          CMD("thunar") },
     { MODKEY|ShiftMask,             XK_m,           spawn,          CMD("kitty --class kitty-music -e ncmpcpp") },
-    { MODKEY|ShiftMask,             XK_h,           spawn,          CMD("alacritty -e htop") },
+    { MODKEY|ShiftMask,             XK_h,           spawn,          CMD("alacritty --class htop -e htop") },
     { MODKEY|ShiftMask,             XK_e,           spawn,          CMD("emacs") },
-    { MODKEY|ShiftMask,             XK_v,           spawn,          CMD("VBoxManage startvm 'Windows7' --type gui") },
-
+    { MODKEY|ShiftMask,             XK_v,           spawn,          CMD("VBoxManage startvm 'Windows10' --type gui") },
+   
     { Mod1Mask|ControlMask,         XK_Delete,      spawn,          CMD("sh ~/.local/bin/lock") },
     { Mod1Mask|ControlMask,         XK_s,           spawn,          CMD("sh /usr/local/bin/suspend") },
 
-    /*IDE start*/
+    { Mod1Mask|ShiftMask,           XK_p,           spawn,          CMD("sh ~/.dwmpobar") },
+
+    /*IDE start
     { Mod1Mask,                     XK_i,           spawn,          CMD("idea") },
     { Mod1Mask,                     XK_l,           spawn,          CMD("clion") },
     { Mod1Mask,                     XK_p,           spawn,          CMD("pycharm") },
     { Mod1Mask,                     XK_a,           spawn,          CMD("studio") },
     { Mod1Mask,                     XK_g,           spawn,          CMD("goland") },
+    */
 
     /* Switch nord and light */
-    { MODKEY|ControlMask,           XK_n,           spawn,          CMD("sh ~/.local/bin/switch-po n dwm") },
-    { MODKEY|ControlMask,           XK_l,           spawn,          CMD("sh ~/.local/bin/switch-po l dwm") },
+    { MODKEY|ControlMask,           XK_n,           spawn,          CMD("sh ~/.local/bin/switch-nord n dwm") },
+    { MODKEY|ControlMask,           XK_l,           spawn,          CMD("sh ~/.local/bin/switch-nord l dwm") },
+    { MODKEY|ControlMask,           XK_s,           spawn,          CMD("sh ~/.local/bin/switch-dwm") },
 
     /* Mpd control */
     { MODKEY|ControlMask,           XK_p,           spawn,          CMD("mpc toggle") },

@@ -234,6 +234,7 @@ static Key keys[] = {
     /* Switch nord and light */
     { MODKEY|ControlMask,           XK_n,           spawn,          CMD("sh ~/.local/bin/switch n dwm") },
     { MODKEY|ControlMask,           XK_l,           spawn,          CMD("sh ~/.local/bin/switch l dwm") },
+    { MODKEY|ControlMask,           XK_s,           spawn,          CMD("sh ~/.local/bin/switch-dwm") },
 
     /* Mpd control */
     { MODKEY|ControlMask,           XK_p,           spawn,          CMD("mpc toggle") },
