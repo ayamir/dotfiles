@@ -37,6 +37,8 @@ then
     # Vim
     sed -i "s/colorscheme nord/colorscheme one/g" ~/.vimrc
     sed -i 's/airline_theme=\"nord\"/airline_theme=\"silver\"/g' ~/.vimrc
+    # Nvim
+    sed -i "s/nord/one/g" ~/.config/nvim/plugin/c_colorscheme.vim
     # Emacs
     sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
     emacsclient -e '(kill-emacs)'
@@ -74,7 +76,7 @@ then
     sed -i "s/light/dark/g" ~/.config/kitty/kitty.conf
     # Fish
     fish -c nord-dark
-    # Polybar 
+    # Polybar
     cp ~/.config/polybar/colors-nord-dark ~/.config/polybar/colors
     sh ~/.dwmpobar
     # Global theme
@@ -87,6 +89,8 @@ then
     # Vim
     sed -i 's/colorscheme one/colorscheme nord/g' ~/.vimrc
     sed -i 's/airline_theme=\"silver\"/airline_theme=\"nord\"/g' ~/.vimrc
+    # Nvim
+    sed -i "s/one/nord/g" ~/.config/nvim/plugin/c_colorscheme.vim
     # Emacs
     sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
     emacsclient -e '(kill-emacs)'
