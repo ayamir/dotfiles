@@ -10,5 +10,7 @@
   "rust-analyzer.enable": true,
   "rust-analyzer.server.path": "/home/ayamir/.cargo/bin/rust-analyzer",
   "rust-analyzer.updates.prompt": true,
-  "rust-analyzer.updates.channel": "stable"
+  "rust-analyzer.updates.channel": "stable",
+
+  "tabnine.priority": 1000
 }

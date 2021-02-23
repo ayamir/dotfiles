@@ -78,6 +78,7 @@ set showtabline=2
 set noshowmode
 set nohlsearch
 set nofoldenable
+let g:webdevicons_enable_startify = 1
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
@@ -129,15 +130,13 @@ Plug 'junegunn/goyo.vim'
 Plug 'jreybert/vimagit'
 Plug 'airblade/vim-gitgutter'
 
-Plug 'thinca/vim-quickrun'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'codota/tabnine-vim'
+Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'sheerun/vim-polyglot'
 Plug 'ap/vim-css-color'
 
-Plug 'rust-lang/rust.vim'
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'cespare/vim-toml'
 
 Plug 'iamcco/markdown-preview.vim'
@@ -163,13 +162,16 @@ augroup RELOAD
 augroup END
 
 " Init.vim Setting
-    nnoremap <leader><leader>v :tabedit $MYVIMRC<cr>
+    nnoremap <leader><leader>v :tabe $MYVIMRC<cr>
 	nnoremap <leader><leader>s :source $MYVIMRC<cr>
 
 " Plug Setting
 	nnoremap <leader><leader>i :PlugInstall<cr>
 	nnoremap <leader><leader>u :PlugUpdate<cr>
 	nnoremap <leader><leader>c :PlugClean<cr>
+
+" Common Settings
+    nnoremap <A-r> :@:<cr>
 
 " Clipboard
 	set go=a
@@ -236,3 +238,6 @@ augroup END
 
 " Sudo on files that require root permission
     cnoremap w!! execute 'silent! write !doas tee % >/dev/null' <bar> edit!
+
+" Languages Settings
+    let g:rustfmt_autosave = 1
