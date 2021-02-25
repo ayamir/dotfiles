@@ -124,7 +124,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 
 Plug 'rbgrouleff/bclose.vim'
-Plug 'junegunn/fzf.vim'
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plug 'junegunn/goyo.vim'
 
 Plug 'jreybert/vimagit'
@@ -207,6 +207,10 @@ augroup END
 	noremap <A-k> :bp<cr>
     noremap <A-q> :bw<cr>
 
+" Curor Navigation
+    map <leader><leader>w <Plug>(easymotion-w)
+    map <leader>f <Plug>(easymotion-bd-f)
+    nmap <leader>f <Plug>(easymotion-overwin-f)
 " Keep selection after shift
     vnoremap < <gv
     vnoremap > >gv
@@ -228,7 +232,7 @@ augroup END
 	nnoremap <F5> :UndotreeToggle<cr>
 
 " Files on ctrl+p
-	nnoremap <C-p> :Files<cr>
+    let g:Lf_ShortcutF = '<c-p>'
 
 " Neoterm
     nnoremap <leader>ot :Ttoggle<cr>
