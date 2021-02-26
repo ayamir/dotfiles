@@ -53,6 +53,7 @@ set undodir=~/.nvim/undodir
 set undofile
 nnoremap c "_c
 
+set nocompatible
 set langmenu=zh_CN.UTF-8
 set helplang=cn
 set termencoding=utf-8
@@ -106,6 +107,7 @@ call plug#begin('~/.config/nvim/plugged')
 
 Plug 'rakr/vim-one'
 Plug 'arcticicestudio/nord-vim'
+Plug 'b4skyx/serenade'
 Plug 'ryanoasis/vim-devicons'
 
 Plug 'kassio/neoterm'
@@ -134,11 +136,12 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
 Plug 'sheerun/vim-polyglot'
-Plug 'ap/vim-css-color'
 
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
 
+Plug 'ap/vim-css-color'
 Plug 'iamcco/markdown-preview.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'easymotion/vim-easymotion'
@@ -196,16 +199,16 @@ augroup END
 " Split Navigation shortcuts
 	noremap <leader>wv :vsplit<cr>
 	noremap <leader>ws :split<cr>
-    noremap <leader>wd :q<cr>
-	noremap <leader>wh <C-w>h
-	noremap <leader>wj <C-w>j
-	noremap <leader>wk <C-w>k
-	noremap <leader>wl <C-w>l
+	noremap <C-h> <C-w>h
+	noremap <C-j> <C-w>j
+	noremap <C-k> <C-w>k
+	noremap <C-l> <C-w>l
 
 " Buffer Navigation
 	noremap <A-j> :bn<cr>
 	noremap <A-k> :bp<cr>
     noremap <A-q> :bw<cr>
+    noremap <A-S-q> :bw!<cr>
 
 " Curor Navigation
     map <leader><leader>w <Plug>(easymotion-w)
@@ -229,7 +232,7 @@ augroup END
 	set list lcs=tab:\|\ ""
 
 " UndoTree
-	nnoremap <F5> :UndotreeToggle<cr>
+	nnoremap <leader>u :UndotreeToggle<cr>
 
 " Files on ctrl+p
     let g:Lf_ShortcutF = '<c-p>'
@@ -245,3 +248,5 @@ augroup END
 
 " Languages Settings
     let g:rustfmt_autosave = 1
+    noremap <leader>mbr :RustRun<cr>
+    noremap <leader>mbt :RustTest<cr>
