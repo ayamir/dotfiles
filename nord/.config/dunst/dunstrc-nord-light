@@ -73,21 +73,6 @@
 [experimental]
     per_monitor_dpi = false
 
-[log_notifs]
-    script = ~/.local/bin/dunst_logger.sh
-
-[qtile]
-    appname = Qtile
-    new_icon = /usr/share/icons/Nord-Icon/48x48/apps/python.svg
-
-[pomodoro]
-    summary = Pomodoro
-    new_icon = /usr/share/icons/Nord-Icon/48x48/apps/pomodoro-indicator.svg
-
-[slack]
-    desktop_entry = Slack
-    new_icon = /usr/share/icons/Nord-Icon/48x48/apps/slack.svg
-
 [dunst_icon]
     appname = dunst
     new_icon = /usr/share/icons/Nord-Icon/48x48/apps/bell.svg
@@ -95,7 +80,6 @@
 [shortcuts]
     close = ctrl+space
     close_all = ctrl+shift+space
-    #context = ctrl+shift+period
     history = ctrl+grave
 
 [urgency_low]
