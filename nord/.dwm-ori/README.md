@@ -36,7 +36,7 @@ Nord and Light
 You can see all of 17 patches I have applied in `./patches` dir.
 
 -   dwm-00-regex-rules.diff
-    
+
     to enable `config.def.h` 's regex rules
 
 -   dwm-attachasideandbelow-20200702-f04cac6.diff
@@ -56,34 +56,34 @@ You can see all of 17 patches I have applied in `./patches` dir.
     add two stack layout that master on top and other windows on bottom
 
 -   dwm-gridmode-20170909-ceac8c9.diff
-    
+
     add a grid layout
 
 -   dwm-6.2-tab-v2b.diff
-    
+
     convert monocule layout to tab layout
 
 -   dwm-restartsig-20180523-6.2.diff
-    
+
     make dwm can restart through a shortcut
 
 -   dwm-autostart-20200610-cb3f58a.diff
-    
+
     enable autostart apps when dwm start or restart(my script ensures apps only start when dwm starts for the first time)
 
 -   dwm-focusmaster-20200717-bb2e722.diff
-    
+
     let you can focus master window through a shortcut
 
--   dwm-uselessgap-6.2.diff
-    
-    gap appears only two or more windows appear
+-   dwm-fullgaps-toggle-20200830.diff
+
+    adds gaps between client windows in tile mode
 
 -   dwm-focusonnetactive-6.2.diff
 
     automatically switch to urgent window
 
--   dwm-pertag-perseltag-6.2.diff 
+-   dwm-pertag-perseltag-6.2.diff
 
     maintain layout for pertag
 

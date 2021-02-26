@@ -4,7 +4,7 @@
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const unsigned int gappx     = 5;        /* gaps between windows */
+static const Gap default_gap        = {.isgap = 1, .realgap = 10, .gappx = 10};
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -108,7 +108,6 @@ static const Rule rules[] = {
 	{ "TelegramDesktop",                NULL,                       NULL,               1 << 7,       0,           -1 },
 
 	{ "qv2ray",                         NULL,                       NULL,               1 << 8,       0,           -1 },
-	{ "Alacritty",                      "Alacritty",                NULL,               1 << 8,       0,           -1 },
 
 	{ "xdman-Main",                     NULL,                       NULL,               0,            1,           -1 },
 	{ "Nitrogen",                       NULL,                       NULL,               0,            1,           -1 },
@@ -181,8 +180,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_k,           focusstackhid,  {.i = -1 } },
 	{ MODKEY,                       XK_s,           show,           {0} },
 	{ MODKEY,                       XK_h,           hide,           {0} },
- 
- 
+
+
 //	{ MODKEY,                       XK_i,           incnmaster,     {.i = +1 } },
 //	{ MODKEY,                       XK_o,           incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_comma,       setmfact,       {.f = -0.05} },
@@ -205,6 +204,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period,      focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,       tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period,      tagmon,         {.i = +1 } },
+	{ MODKEY,                       XK_minus,  		setgaps,        {.i = -5 } },
+	{ MODKEY,                       XK_equal,  		setgaps,        {.i = +5 } },
+	{ MODKEY|ShiftMask,             XK_minus,  		setgaps,        {.i = GAP_RESET } },
+	{ MODKEY|ShiftMask,             XK_equal,  		setgaps,        {.i = GAP_TOGGLE} },
 	{ MODKEY,                       XK_F5,          xrdb,           {.v = NULL } },
 
 
@@ -212,7 +215,8 @@ static Key keys[] = {
     { Mod1Mask,                     XK_c,           spawn,          CMD("visual-studio-code") },
     { MODKEY,                       XK_e,           spawn,          CMD("google-chrome-stable") },
     { MODKEY,                       XK_z,           spawn,          CMD("zathura") },
-    { MODKEY|ShiftMask,             XK_Return,      spawn,          CMD("alacritty") },
+    { MODKEY,                       XK_v,           spawn,          CMD("kitty -e nvim") },
+    { MODKEY|ShiftMask,             XK_Return,      spawn,          CMD("alacritty -e zsh") },
     { MODKEY|ShiftMask,             XK_q,           spawn,          CMD("xkill") },
     { MODKEY|ShiftMask,             XK_s,           spawn,          CMD("flameshot gui") },
     { MODKEY|ShiftMask,             XK_n,           spawn,          CMD("thunar") },
@@ -260,7 +264,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                           7)
 	TAGKEYS(                        XK_9,                           8)
 	{ MODKEY|ShiftMask,             XK_Escape,      quit,           {0} },
-	{ MODKEY|ShiftMask,             XK_r,           quit,           {1} }, 
+	{ MODKEY|ShiftMask,             XK_r,           quit,           {1} },
 };
 
 /* button definitions */
