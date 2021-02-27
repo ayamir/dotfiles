@@ -1,0 +1,65 @@
+From 8a3e3d9f0de95c55321761e2763cf43666da312d Mon Sep 17 00:00:00 2001
+From: Michael Buch <michaelbuch12@gmail.com>
+Date: Sat, 2 Feb 2019 14:52:56 +0000
+Subject: [PATCH] Add ability to open clipboard with configured program
+
+---
+ config.def.h |  1 +
+ st.h         |  1 +
+ x.c          | 19 +++++++++++++++++++
+ 3 files changed, 21 insertions(+)
+
+diff --git a/config.def.h b/config.def.h
+index 0e01717..c273252 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -178,6 +178,7 @@ static Shortcut shortcuts[] = {
+ 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
+ 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
+ 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
++	{ MODKEY,               XK_o,           opencopied,     {.v = "xdg-open"} },
+ };
+ 
+ /*
+diff --git a/st.h b/st.h
+index 38c61c4..a0d7a83 100644
+--- a/st.h
++++ b/st.h
+@@ -80,6 +80,7 @@ void die(const char *, ...);
+ void redraw(void);
+ void draw(void);
+ 
++void opencopied(const Arg *);
+ void printscreen(const Arg *);
+ void printsel(const Arg *);
+ void sendbreak(const Arg *);
+diff --git a/x.c b/x.c
+index 0422421..af75e85 100644
+--- a/x.c
++++ b/x.c
+@@ -1953,3 +1953,22 @@ run:
+ 
+ 	return 0;
+ }
++
++void
++opencopied(const Arg *arg)
++{
++	size_t const max_cmd = 2048;
++	char * const clip = xsel.clipboard;
++	if(!clip) {
++		fprintf(stderr, "Warning: nothing copied to clipboard\n");
++		return;
++	}
++
++	/* account for space/quote (3) and \0 (1) and & (1) */
++	/* e.g.: xdg-open "https://st.suckless.org"& */
++	size_t const cmd_size = max_cmd + strlen(clip) + 5;
++	char cmd[cmd_size];
++
++	snprintf(cmd, cmd_size, "%s \"%s\"&", (char *)arg->v, clip);
++	system(cmd);
++}
+-- 
+2.20.1
+

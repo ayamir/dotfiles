@@ -1,0 +1,97 @@
+From ae14b869d7bc0e0cd8ed16157837ad09aaacacc0 Mon Sep 17 00:00:00 2001
+From: David Gricar <coppie@protonmail.com>
+Date: Tue, 17 Mar 2020 13:38:05 +0100
+Subject: [PATCH] Add switch to provide initial working directory
+
+This patch adds -p switch which takes one argument 'path' and can be
+used to set the initial working directory of the new st instance.
+It acts the same as running 'cd path' command after starting the st
+instance.
+---
+ st.1 |  8 ++++++++
+ x.c  | 13 +++++++++----
+ 2 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/st.1 b/st.1
+index e8d6059..a901122 100644
+--- a/st.1
++++ b/st.1
+@@ -6,6 +6,8 @@ st \- simple terminal
+ .RB [ \-aiv ]
+ .RB [ \-c
+ .IR class ]
++.RB [ \-d
++.IR path ]
+ .RB [ \-f
+ .IR font ]
+ .RB [ \-g
+@@ -30,6 +32,8 @@ st \- simple terminal
+ .RB [ \-aiv ]
+ .RB [ \-c
+ .IR class ]
++.RB [ \-d
++.IR path ]
+ .RB [ \-f
+ .IR font ]
+ .RB [ \-g
+@@ -58,6 +62,10 @@ disable alternate screens in terminal
+ .BI \-c " class"
+ defines the window class (default $TERM).
+ .TP
++.BI \-d " path"
++changes the working directory to
++.IR path .
++.TP
+ .BI \-f " font"
+ defines the
+ .I font
+diff --git a/x.c b/x.c
+index 48a6676..fab2ddc 100644
+--- a/x.c
++++ b/x.c
+@@ -250,6 +250,7 @@ static char *opt_io    = NULL;
+ static char *opt_line  = NULL;
+ static char *opt_name  = NULL;
+ static char *opt_title = NULL;
++static char *opt_dir   = NULL;
+ 
+ static int oldbutton = 3; /* button event on startup: 3 = release */
+ 
+@@ -1958,12 +1959,12 @@ run(void)
+ void
+ usage(void)
+ {
+-	die("usage: %s [-aiv] [-c class] [-f font] [-g geometry]"
+-	    " [-n name] [-o file]\n"
++	die("usage: %s [-aiv] [-c class] [-d path] [-f font]"
++	    " [-g geometry] [-n name] [-o file]\n"
+ 	    "          [-T title] [-t title] [-w windowid]"
+ 	    " [[-e] command [args ...]]\n"
+-	    "       %s [-aiv] [-c class] [-f font] [-g geometry]"
+-	    " [-n name] [-o file]\n"
++	    "       %s [-aiv] [-c class] [-d path] [-f font]"
++	    " [-g geometry] [-n name] [-o file]\n"
+ 	    "          [-T title] [-t title] [-w windowid] -l line"
+ 	    " [stty_args ...]\n", argv0, argv0);
+ }
+@@ -2015,6 +2016,9 @@ main(int argc, char *argv[])
+ 	case 'v':
+ 		die("%s " VERSION "\n", argv0);
+ 		break;
++	case 'd':
++		opt_dir = EARGF(usage());
++		break;
+ 	default:
+ 		usage();
+ 	} ARGEND;
+@@ -2034,6 +2038,7 @@ run:
+ 	xinit(cols, rows);
+ 	xsetenv();
+ 	selinit();
++	chdir(opt_dir);
+ 	run();
+ 
+ 	return 0;
+-- 
+2.25.1
+

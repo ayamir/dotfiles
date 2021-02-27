@@ -1,0 +1,34 @@
+From 63e717e51dcd2f59c7a3aa75b659926aa92e08f3 Mon Sep 17 00:00:00 2001
+From: Jacob Louis Prosser <geriatricjacob@cumallover.me>
+Date: Mon, 5 Aug 2019 18:20:25 +1000
+Subject: [st] [patch] Exposed variable to easily change mouse scroll increment.
+
+---
+ config.def.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index ad20c4c..47e4b66 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -154,6 +154,7 @@ static unsigned int defaultattr = 11;
+  * Internal mouse shortcuts.
+  * Beware that overloading Button1 will disable the selection.
+  */
++const unsigned int mousescrollincrement = 1;
+ static MouseShortcut mshortcuts[] = {
+ 	/* button               mask            string */
+ 	{ Button4,              XK_NO_MOD,      "\031" },
+@@ -162,8 +163,8 @@ static MouseShortcut mshortcuts[] = {
+
+ MouseKey mkeys[] = {
+ 	/* button               mask            function        argument */
+-	{ Button4,              ShiftMask,      kscrollup,      {.i =  1} },
+-	{ Button5,              ShiftMask,      kscrolldown,    {.i =  1} },
++	{ Button4,              ShiftMask,      kscrollup,      {.i =  mousescrollincrement} },
++	{ Button5,              ShiftMask,      kscrolldown,    {.i =  mousescrollincrement} },
+ };
+
+ /* Internal keyboard shortcuts. */
+--
+2.22.0

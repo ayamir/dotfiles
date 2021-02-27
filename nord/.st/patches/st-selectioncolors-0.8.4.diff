@@ -1,0 +1,102 @@
+diff -up st-0.8.4-ori/config.def.h st-0.8.4/config.def.h
+--- st-0.8.4-ori/config.def.h	2020-06-19 14:59:45.000000000 +0530
++++ st-0.8.4/config.def.h	2020-07-20 19:39:32.310996650 +0530
+@@ -119,7 +119,7 @@ static const char *colorname[] = {
+ 
+ 	/* more colors can be added after 255 to use with DefaultXX */
+ 	"#cccccc",
+-	"#555555",
++	"#2e3440",
+ };
+ 
+ 
+@@ -130,7 +130,14 @@ static const char *colorname[] = {
+ unsigned int defaultfg = 7;
+ unsigned int defaultbg = 0;
+ static unsigned int defaultcs = 256;
+-static unsigned int defaultrcs = 257;
++static unsigned int defaultrcs = 256;
++
++/* Colors used for selection */
++unsigned int selectionbg = 257;
++unsigned int selectionfg = 7;
++/* If 0 use selectionfg as foreground in order to have a uniform foreground-color */
++/* Else if 1 keep original foreground-color of each cell => more colors :) */
++static int ignoreselfg = 1;
+ 
+ /*
+  * Default shape of cursor
+diff -up st-0.8.4-ori/st.h st-0.8.4/st.h
+--- st-0.8.4-ori/st.h	2020-06-19 14:59:45.000000000 +0530
++++ st-0.8.4/st.h	2020-07-20 19:39:32.310996650 +0530
+@@ -33,6 +33,7 @@ enum glyph_attribute {
+ 	ATTR_WRAP       = 1 << 8,
+ 	ATTR_WIDE       = 1 << 9,
+ 	ATTR_WDUMMY     = 1 << 10,
++        ATTR_SELECTED   = 1 << 11,
+ 	ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
+ };
+ 
+diff -up st-0.8.4-ori/x.c st-0.8.4/x.c
+--- st-0.8.4-ori/x.c	2020-06-19 14:59:45.000000000 +0530
++++ st-0.8.4/x.c	2020-07-20 19:46:23.081759264 +0530
+@@ -1425,6 +1425,12 @@ xdrawglyphfontspecs(const XftGlyphFontSp
+ 		bg = temp;
+ 	}
+ 
++	if (base.mode & ATTR_SELECTED) {
++		bg = &dc.col[selectionbg];
++		if (!ignoreselfg)
++			fg = &dc.col[selectionfg];
++	}
++
+ 	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
+ 		fg = bg;
+ 
+@@ -1491,7 +1497,7 @@ xdrawcursor(int cx, int cy, Glyph g, int
+ 
+ 	/* remove the old cursor */
+ 	if (selected(ox, oy))
+-		og.mode ^= ATTR_REVERSE;
++                og.mode ^= ATTR_SELECTED;
+ 	xdrawglyph(og, ox, oy);
+ 
+ 	if (IS_SET(MODE_HIDE))
+@@ -1504,23 +1510,13 @@ xdrawcursor(int cx, int cy, Glyph g, int
+ 
+ 	if (IS_SET(MODE_REVERSE)) {
+ 		g.mode |= ATTR_REVERSE;
++                g.fg = defaultcs;
+ 		g.bg = defaultfg;
+-		if (selected(cx, cy)) {
+-			drawcol = dc.col[defaultcs];
+-			g.fg = defaultrcs;
+-		} else {
+-			drawcol = dc.col[defaultrcs];
+-			g.fg = defaultcs;
+-		}
++                drawcol = dc.col[defaultrcs];
+ 	} else {
+-		if (selected(cx, cy)) {
+-			g.fg = defaultfg;
+-			g.bg = defaultrcs;
+-		} else {
+-			g.fg = defaultbg;
+-			g.bg = defaultcs;
+-		}
+-		drawcol = dc.col[g.bg];
++                g.fg = defaultbg;
++                g.bg = defaultcs;
++                drawcol = dc.col[defaultcs];
+ 	}
+ 
+ 	/* draw the new one */
+@@ -1612,7 +1608,7 @@ xdrawline(Line line, int x1, int y1, int
+ 		if (new.mode == ATTR_WDUMMY)
+ 			continue;
+ 		if (selected(x, y1))
+-			new.mode ^= ATTR_REVERSE;
++			new.mode ^= ATTR_SELECTED;
+ 		if (i > 0 && ATTRCMP(base, new)) {
+ 			xdrawglyphfontspecs(specs, base, i, ox, y1);
+ 			specs += i;
