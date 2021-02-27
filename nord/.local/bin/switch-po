@@ -17,7 +17,11 @@ then
     # Dmenu
     sed -i "s/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/g" ~/.dmenu/config.def.h
     sed -i "s/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
-    source ~/.config/fish/functions/dmenu_recompile.fish
+    fish -c dmenu_recompile
+    # St
+    sed -i "s/\"#2e3440\", \/\* back/\"#d8dee9\", \/\* back/g" ~/.st/config.def.h
+    sed -i "s/\"#d8dee9\", \/\* fore/\"#2e3440\", \/\* fore/g" ~/.st/config.def.h
+    fish -c st_recompile
     # Alacritty
     cp ~/.config/alacritty/alacritty-nord-light.yml ~/.config/alacritty/alacritty.yml
     # Kitty
@@ -69,7 +73,11 @@ then
     # Dmenu
     sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
     sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
-    source ~/.config/fish/functions/dmenu_recompile.fish
+    fish -c dmenu_recompile
+    # St
+    sed -i "s/\"#d8dee9\", \/\* back/\"#2e3440\", \/\* back/g" ~/.st/config.def.h
+    sed -i "s/\"#2e3440\", \/\* fore/\"#d8dee9\", \/\* fore/g" ~/.st/config.def.h
+    fish -c st_recompile
     # Alacritty
     cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
     # Kitty

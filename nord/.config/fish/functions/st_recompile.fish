@@ -1,0 +1,1 @@
+cd ~/.st; sh ./recompile
