@@ -77,7 +77,6 @@ set cmdheight=2
 set laststatus=2
 set showtabline=2
 set noshowmode
-set nohlsearch
 set nofoldenable
 let g:webdevicons_enable_startify = 1
 
@@ -110,7 +109,7 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'b4skyx/serenade'
 Plug 'ryanoasis/vim-devicons'
 
-Plug 'kassio/neoterm'
+Plug 'nikvdp/neomux'
 Plug 'mhinz/vim-startify'
 Plug 'godlygeek/tabular'
 Plug 'itchyny/lightline.vim'
@@ -164,6 +163,9 @@ augroup RELOAD
 	autocmd BufWritePre * %s/\s\+$//e
 augroup END
 
+    " Automatically change work directory
+    autocmd BufEnter * silent! lcd %:p:h
+
 " Init.vim Setting
     nnoremap <leader><leader>v :tabe $MYVIMRC<cr>
 	nnoremap <leader><leader>s :source $MYVIMRC<cr>
@@ -199,10 +201,10 @@ augroup END
 " Split Navigation shortcuts
 	noremap <leader>wv :vsplit<cr>
 	noremap <leader>ws :split<cr>
-	noremap <C-h> <C-w>h
-	noremap <C-j> <C-w>j
-	noremap <C-k> <C-w>k
-	noremap <C-l> <C-w>l
+	noremap <leader>wh <C-w>h
+	noremap <leader>wj <C-w>j
+	noremap <leader>wk <C-w>k
+	noremap <leader>wl <C-w>l
 
 " Buffer Navigation
 	noremap <A-j> :bn<cr>
@@ -237,9 +239,6 @@ augroup END
 " Files on ctrl+p
     let g:Lf_ShortcutF = '<c-p>'
 
-" Neoterm
-    nnoremap <leader>ot :Ttoggle<cr>
-
 " Quickrun
     nnoremap <leader>lr :QuickRun<cr>
 
@@ -248,5 +247,7 @@ augroup END
 
 " Languages Settings
     let g:rustfmt_autosave = 1
-    noremap <leader>mbr :RustRun<cr>
-    noremap <leader>mbt :RustTest<cr>
+
+    noremap <leader>mbr :Crun<cr>
+    noremap <leader>mbt :Ctest<cr>
+    noremap <leader>mbf :Cargo fmt<cr>
