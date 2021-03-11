@@ -83,6 +83,10 @@ You can see all of 17 patches I have applied in `./patches` dir.
 
     automatically switch to urgent window
 
+-   dwm-hide_vacant_tags-6.2.diff
+
+    hide vacant tags
+
 -   dwm-pertag-perseltag-6.2.diff
 
     maintain layout for pertag

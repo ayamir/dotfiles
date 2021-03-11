@@ -82,24 +82,23 @@ static const Rule rules[] = {
 	{ "jetbrains-*",                    "sun-awt-X11-XFramePeer",   NULL,               1 << 1,       0,           -1 },
 	{ "jetbrains-*",                    "jetbrains-*",              "win0",             1 << 1,       1,           -1 },
 	{ "jetbrains-*",                    NULL,                       "Welcome to*",      1 << 1,       1,           -1 },
-    { NULL,                             NULL,                       "Android Emulator - Pixel_3a_API_30_x86:5554",      1 << 1,       1,           -1 },
 
     { "Google-chrome",                 "google-chrome",             NULL,               1 << 2,       0,           -1 },
-	{ "Vivaldi-stable",                 "vivaldi-stable",           NULL,               1 << 2,       0,           -1 },
-	{ "FirefoxNightly",                 NULL,                       NULL,               1 << 2,       0,           -1 },
-	{ "Nightly",                        NULL,                       NULL,               1 << 2,       0,           -1 },
-	{ "Navigator",                      "Nightly",                  NULL,               1 << 2,       0,           -1 },
+	{ "Firefox",                 		NULL,                       NULL,               1 << 2,       0,           -1 },
+	{ "Microsoft-edge-dev",          	NULL,                       NULL,               1 << 2,       0,           -1 },
+	{ "Firefox",                 		"Toolkit",                  NULL,               1 << 2,       1,           -1 },
 
 	{ NULL,                             "kitty-music",              NULL,               1 << 3,       0,           -1 },
 	{ NULL,                             "SoundConverter",           NULL,               1 << 3,       0,           -1 },
 	{ "qqmusic",                        NULL,                       NULL,               1 << 3,       0,           -1 },
 	{ "Spotify",                        "spotify",                  NULL,               1 << 3,       0,           -1 },
 	{ "YesPlayMusic",                   NULL,                       NULL,               1 << 3,       0,           -1 },
-	{ "netease-cloud-music",            NULL,                       NULL,               1 << 3,       0,           -1 },
+	{ "Netease-cloud-music-gtk",        NULL,                       NULL,               1 << 3,       0,           -1 },
 
 	{ "Steam",                          NULL,                       NULL,               1 << 4,       0,           -1 },
 
 	{ "VirtualBox Machine",             NULL,                       NULL,               1 << 5,       0,           -1 },
+	{ "VirtualBox Manager",             NULL,                       NULL,               1 << 5,       0,           -1 },
 
 	{ "Qq",                             "qq",                       NULL,               1 << 6,       1,           -1 },
 	{ "Freechat",                       "freechat",                 NULL,               1 << 6,       0,           -1 },
@@ -148,7 +147,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[]  = { "kitty", "--single-instance", NULL };
+static const char *termcmd[]  = { "kitty", "--single-instance", "-e", "fish", NULL };
 
 static const char *rofidruncmd[] = { "rofi", "-show", "drun", NULL };
 static const char *windowswitchcmd[] = { "rofi", "-show", "window", NULL };
@@ -215,15 +214,15 @@ static Key keys[] = {
     { Mod1Mask,                     XK_c,           spawn,          CMD("visual-studio-code") },
     { MODKEY,                       XK_e,           spawn,          CMD("google-chrome-stable") },
     { MODKEY,                       XK_z,           spawn,          CMD("zathura") },
-    { MODKEY,                       XK_v,           spawn,          CMD("kitty -e nvim") },
+    { MODKEY,                       XK_v,           spawn,          CMD("st -e nvim") },
     { MODKEY|ShiftMask,             XK_Return,      spawn,          CMD("alacritty -e zsh") },
     { MODKEY|ShiftMask,             XK_q,           spawn,          CMD("xkill") },
     { MODKEY|ShiftMask,             XK_s,           spawn,          CMD("flameshot gui") },
     { MODKEY|ShiftMask,             XK_n,           spawn,          CMD("thunar") },
     { MODKEY|ShiftMask,             XK_m,           spawn,          CMD("kitty --class kitty-music -e ncmpcpp") },
     { MODKEY|ShiftMask,             XK_h,           spawn,          CMD("alacritty -e htop") },
-    { MODKEY|ShiftMask,             XK_e,           spawn,          CMD("emacs") },
-    { MODKEY|ShiftMask,             XK_v,           spawn,          CMD("VBoxManage startvm 'Windows7' --type gui") },
+    { MODKEY|ShiftMask,             XK_e,           spawn,          CMD("emacsclient -c -a emacs") },
+    { MODKEY|ShiftMask,             XK_v,           spawn,          CMD("VBoxManage startvm 'Windows10' --type gui") },
 
     { Mod1Mask|ControlMask,         XK_Delete,      spawn,          CMD("sh ~/.local/bin/lock") },
     { Mod1Mask|ControlMask,         XK_s,           spawn,          CMD("sh /usr/local/bin/suspend") },
@@ -272,7 +271,7 @@ static Key keys[] = {
 static Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
-	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
+	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[4]} },
 	{ ClkWinTitle,          0,              Button1,        togglewin,      {0} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
