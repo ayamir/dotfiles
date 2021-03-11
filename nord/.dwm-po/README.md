@@ -8,7 +8,7 @@
     4.  [Other](#org1958ae2)
         1.  [Xsessions config](#org1745859)
         2.  [Recompile](#org3f8fde8)
-        3.  [Switch](#switch)
+
 
 
 <a id="org27716e3"></a>
@@ -22,24 +22,16 @@
 
 Nord and Light
 
-![Nord Dark](../Pictures/shot/dark-dwmpo.png)
-
-![Nord Light](../Pictures/shot/light-dwmpo.png)
-
 
 <a id="org2026491"></a>
 
 ## Patches
 
-You can see all of 18 patches I have applied in `./patches` dir.
+You can see all of 15 patches I have applied in `./patches` dir.
 
 -   dwm-00-regex-rules.diff
     
     to enable `config.def.h` 's regex rules
-
--   dwm-anybar-polybar-tray-fix-20200810-bb2e722.diff
-
-    use polybar as default bar
 
 -   dwm-attachasideandbelow-20200702-f04cac6.diff
 
@@ -52,10 +44,6 @@ You can see all of 18 patches I have applied in `./patches` dir.
 -   dwm-gridmode-20170909-ceac8c9.diff
     
     add a grid layout
-
--   dwm-ipc-20201106-f04cac6.diff
-
-    make polybar communicate with dwm
 
 -   dwm-6.2-tab-v2b.diff
     
@@ -93,10 +81,6 @@ You can see all of 18 patches I have applied in `./patches` dir.
 
     status2d work with xrdb
 
--   dwm-steam-6.2.diff
-
-    with steam games' fix
-
 -   dwm-xrdb-6.2.diff
 
     reload dwm color through `~/.Xresources`
@@ -110,6 +94,7 @@ You can see all of 18 patches I have applied in `./patches` dir.
 ## Keybinding
 
 You can see all of keybindings in `./config.def.h` clearly.
+
 
 <a id="org1958ae2"></a>
 
@@ -142,18 +127,3 @@ Type=XSession
 
 The script called `recompile` need your user can execute `sudo` command without password.
 
-<a id="switch"></a>
-
-### Switch
-
-The simple script in `.local/bin/` called `switch-po` can switch `nord-light` and `nord-dark` theme through a shortcut defined in `.dwm/config.def.h`.
-
-All of details about how to switch you can see in it.
-
-### Polybar
-
-The script `../.dwmpobar` is used to start/restart polybar.
-
-You should apply [polybar-dwm-module](https://github.com/mihirlad55/polybar-dwm-module) first to make polybar's dwm module work.
-
-Polybar's config is in `../.config/polybar`. If you want to change config's dir, please change `../dwmpobar` too.
