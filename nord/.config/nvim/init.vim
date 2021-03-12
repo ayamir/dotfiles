@@ -25,11 +25,11 @@ set smartindent
 set cindent
 set cinoptions=g0,:0,N-s,(0
 
-set expandtab
+set noexpandtab
 set foldmethod=indent
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set smarttab
 
 set wrap linebreak nolist
@@ -119,10 +119,15 @@ Plug 'scrooloose/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'mbbill/undotree'
+Plug 'luochen1990/rainbow'
 
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
+Plug 'honza/vim-snippets'
+Plug 'google/vim-maktaba'
+Plug 'google/vim-codefmt'
+Plug 'google/vim-glaive'
 
 Plug 'rbgrouleff/bclose.vim'
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
@@ -136,6 +141,7 @@ Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
 Plug 'sheerun/vim-polyglot'
 
+Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
@@ -151,24 +157,42 @@ call plug#end()
 " Edit Setting
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
 
-augroup RELOAD
-	autocmd!
-	" Close vim when Nerdtree is last window
-	autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    augroup autoformat_settings
+      autocmd FileType bzl AutoFormatBuffer buildifier
+      autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
+      autocmd FileType dart AutoFormatBuffer dartfmt
+      autocmd FileType go AutoFormatBuffer gofmt
+      autocmd FileType gn AutoFormatBuffer gn
+      autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
+      autocmd FileType java AutoFormatBuffer google-java-format
+      autocmd FileType python AutoFormatBuffer yapf
+      " Alternative: autocmd FileType python AutoFormatBuffer autopep8
+      autocmd FileType rust AutoFormatBuffer rustfmt
+      autocmd FileType vue AutoFormatBuffer prettier
+    augroup END
 
-	" Disables automatic commenting on newline:
-	autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+    augroup RELOAD
+        autocmd!
+        " Close vim when Nerdtree is last window
+        autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-	" Automatically deletes all trailing whitespace on save.
-	autocmd BufWritePre * %s/\s\+$//e
-augroup END
+        " Disables automatic commenting on newline:
+        autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
+        " Automatically deletes all trailing whitespace on save.
+        autocmd BufWritePre * %s/\s\+$//e
+    augroup END
 
     " Automatically change work directory
     autocmd BufEnter * silent! lcd %:p:h
 
+    autocmd FileType make setlocal noexpandtab
+    autocmd FileType c,cpp,rust,go setlocal tabstop=2
+
 " Init.vim Setting
     nnoremap <leader><leader>v :tabe $MYVIMRC<cr>
 	nnoremap <leader><leader>s :source $MYVIMRC<cr>
+    nnoremap <F3> :set hls!<cr>
 
 " Plug Setting
 	nnoremap <leader><leader>i :PlugInstall<cr>
@@ -246,8 +270,9 @@ augroup END
     cnoremap w!! execute 'silent! write !doas tee % >/dev/null' <bar> edit!
 
 " Languages Settings
-    let g:rustfmt_autosave = 1
+    let g:rainbow_active = 1
 
+    noremap <leader>rr :RustRun<cr>
     noremap <leader>mbr :Crun<cr>
     noremap <leader>mbt :Ctest<cr>
     noremap <leader>mbf :Cargo fmt<cr>
