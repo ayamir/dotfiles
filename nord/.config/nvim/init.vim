@@ -271,8 +271,3 @@ call plug#end()
 
 " Languages Settings
     let g:rainbow_active = 1
-
-    noremap <leader>rr :RustRun<cr>
-    noremap <leader>mbr :Crun<cr>
-    noremap <leader>mbt :Ctest<cr>
-    noremap <leader>mbf :Cargo fmt<cr>
