@@ -75,9 +75,9 @@ You can see all of 17 patches I have applied in `./patches` dir.
 
     let you can focus master window through a shortcut
 
--   dwm-fullgaps-toggle-20200830.diff
+-   dwm-functionalgaps-pertagfunctionality-6.2.diff
 
-    adds gaps between client windows in tile mode
+    merge full gaps with pertag
 
 -   dwm-focusonnetactive-6.2.diff
 
