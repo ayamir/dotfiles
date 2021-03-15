@@ -8,23 +8,27 @@
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
+;; General
+
 ;; Theme
 (package! rainbow-mode)
-(package! nyan-mode)
 ;; Cn fonts
 (package! cnfonts)
-;; Dap-mode
+;; Code
+(package! quickrun)
 (package! dap-mode)
+(package! company-tabnine)
+(package! git-gutter)
 ;; Haskell
 (package! haskell-mode)
 ;; Org
 (package! org-download)
 (package! org-bullets)
-(package! company-box)
 ;(package! org2ctex)
-;; Code
 ;; Input
 (package! rime)
+
+(package! wakatime-mode)
 
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:

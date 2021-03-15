@@ -26,7 +26,7 @@
   ;; english font
   (if (display-graphic-p)
       (progn
-        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "Liga SFMono Nerd Font" 18)) ;; 11 13 17 19 23
+        (set-face-attribute 'default nil :font (format "%s:pixelsize=%d" "JetBrainsMono Nerd Font" 18)) ;; 11 13 17 19 23
         ;; chinese font
         (dolist (charset '(kana han symbol cjk-misc bopomofo))
           (set-fontset-font (frame-parameter nil 'font)
@@ -51,7 +51,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-nord-light)
+(setq doom-theme 'doom-nord)
 ;(load-theme 'nord-light t)
 
 ;; If you use `org' and don't want your org files in the default location below,
@@ -81,7 +81,7 @@
 ;; they are implemented.
 
 ;; Project Path
-
+(setq projectile-project-search-path '("~/go/src/learn/"))
 
 
 ;; Org Mode Config
@@ -98,6 +98,10 @@
 (map! :leader
       :desc "treemacs"
       "C-d" #'treemacs)
+
+(map! :leader
+      :desc "quickrun"
+      "C-r" #'quickrun)
 
 (require 'rainbow-mode)
 (dolist (hook '(css-mode-hook
@@ -129,15 +133,6 @@
 ;; Doom Modeline
 (setq doom-modeline-height 20)
 (setq doom-modeline-bar-width 3)
-(setq doom-modeline-icon (display-graphic-p))
-(setq doom-modeline-major-mode-icon t)
-(setq doom-modeline-major-mode-color-icon t)
-
-;; Nyan Mode
-(nyan-mode t)
-(setq mode-line-format
-      (list
-       '(:eval (list (nyan-create)))))
 
 ;; org-downoad
 (use-package org-download
@@ -148,10 +143,6 @@
 	  ;; Drag and drop to Dired
 	  (add-hook 'dired-mode-hook 'org-download-enable)
 	  )
-
-;; Company-box
-(use-package company-box
-  :hook (company-mode . company-box-mode))
 
 ;； Org2tex
 ;(require 'org2ctex)
@@ -198,3 +189,31 @@
 (setq mode-line-mule-info '((:eval (rime-lighter))))
 (setq rime-inline-ascii-trigger 'shift-l)
 (setq rime-inline-ascii-holder ?x)
+
+;; Company
+;(setq +lsp-company-backends '(company-tabnine :with company-capf :separate))
+(setq +lsp-company-backends '(company-tabnine))
+(setq company-idle-delay 0)
+(setq company-show-numbers t)
+
+;; Git
+(require 'git-gutter)
+(global-git-gutter-mode t)
+(git-gutter:linum-setup)
+(add-hook 'ruby-mode-hook 'git-gutter-mode)
+
+(global-set-key (kbd "C-x C-g") 'git-gutter)
+(global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
+(global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
+(global-set-key (kbd "C-x v s") 'git-gutter:stage-hunk)
+(global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
+(global-set-key (kbd "C-x v SPC") #'git-gutter:mark-hunk)
+(custom-set-variables
+ '(git-gutter:separator-sign "|"))
+(set-face-foreground 'git-gutter:separator "yellow")
+(custom-set-variables
+ '(git-gutter:hide-gutter t))
+
+;; Wakatime
+(global-wakatime-mode t)
