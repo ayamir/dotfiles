@@ -152,47 +152,49 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'easymotion/vim-easymotion'
 Plug 'rhysd/accelerated-jk'
 
+Plug 'wakatime/vim-wakatime'
+
 call plug#end()
 
 " Edit Setting
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
 
-    augroup autoformat_settings
-      autocmd FileType bzl AutoFormatBuffer buildifier
-      autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
-      autocmd FileType dart AutoFormatBuffer dartfmt
-      autocmd FileType go AutoFormatBuffer gofmt
-      autocmd FileType gn AutoFormatBuffer gn
-      autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
-      autocmd FileType java AutoFormatBuffer google-java-format
-      autocmd FileType python AutoFormatBuffer yapf
-      " Alternative: autocmd FileType python AutoFormatBuffer autopep8
-      autocmd FileType rust AutoFormatBuffer rustfmt
-      autocmd FileType vue AutoFormatBuffer prettier
-    augroup END
+  augroup autoformat_settings
+    autocmd FileType bzl AutoFormatBuffer buildifier
+    autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
+    autocmd FileType dart AutoFormatBuffer dartfmt
+    autocmd FileType go AutoFormatBuffer gofmt
+    autocmd FileType gn AutoFormatBuffer gn
+    autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
+    autocmd FileType java AutoFormatBuffer google-java-format
+    autocmd FileType python AutoFormatBuffer yapf
+    " Alternative: autocmd FileType python AutoFormatBuffer autopep8
+    autocmd FileType rust AutoFormatBuffer rustfmt
+    autocmd FileType vue AutoFormatBuffer prettier
+  augroup END
 
-    augroup RELOAD
-        autocmd!
-        " Close vim when Nerdtree is last window
-        autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  augroup RELOAD
+      autocmd!
+      " Close vim when Nerdtree is last window
+      autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-        " Disables automatic commenting on newline:
-        autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+      " Disables automatic commenting on newline:
+      autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
-        " Automatically deletes all trailing whitespace on save.
-        autocmd BufWritePre * %s/\s\+$//e
-    augroup END
+      " Automatically deletes all trailing whitespace on save.
+      autocmd BufWritePre * %s/\s\+$//e
+  augroup END
 
-    " Automatically change work directory
-    autocmd BufEnter * silent! lcd %:p:h
+  " Automatically change work directory
+  autocmd BufEnter * silent! lcd %:p:h
 
-    autocmd FileType make setlocal noexpandtab
-    autocmd FileType c,cpp,rust,go setlocal tabstop=2
+  autocmd FileType make setlocal noexpandtab
+  autocmd FileType c,cpp,rust,go setlocal tabstop=2
 
 " Init.vim Setting
-    nnoremap <leader><leader>v :tabe $MYVIMRC<cr>
+  nnoremap <leader><leader>v :tabe $MYVIMRC<cr>
 	nnoremap <leader><leader>s :source $MYVIMRC<cr>
-    nnoremap <F3> :set hls!<cr>
+  nnoremap <F3> :set hls!<cr>
 
 " Plug Setting
 	nnoremap <leader><leader>i :PlugInstall<cr>
@@ -225,6 +227,7 @@ call plug#end()
 " Split Navigation shortcuts
 	noremap <leader>wv :vsplit<cr>
 	noremap <leader>ws :split<cr>
+  noremap <leader>wd :q<cr>
 	noremap <leader>wh <C-w>h
 	noremap <leader>wj <C-w>j
 	noremap <leader>wk <C-w>k
@@ -233,23 +236,23 @@ call plug#end()
 " Buffer Navigation
 	noremap <A-j> :bn<cr>
 	noremap <A-k> :bp<cr>
-    noremap <A-q> :bw<cr>
-    noremap <A-S-q> :bw!<cr>
+  noremap <A-q> :bw<cr>
+  noremap <A-S-q> :bw!<cr>
 
 " Curor Navigation
-    map <leader><leader>w <Plug>(easymotion-w)
-    map <leader>f <Plug>(easymotion-bd-f)
-    nmap <leader>f <Plug>(easymotion-overwin-f)
+  map <leader><leader>w <Plug>(easymotion-w)
+  map <leader>f <Plug>(easymotion-bd-f)
+  nmap <leader>f <Plug>(easymotion-overwin-f)
 " Keep selection after shift
-    vnoremap < <gv
-    vnoremap > >gv
+  vnoremap < <gv
+  vnoremap > >gv
 
 " Replace all is aliased to S.
 	nnoremap S :%s//g<Left><Left>
 
 " Accelerated J/K
-    nmap j <Plug>(accelerated_jk_gj)
-    nmap k <Plug>(accelerated_jk_gk)
+  nmap j <Plug>(accelerated_jk_gj)
+  nmap k <Plug>(accelerated_jk_gk)
 
 " Goyo
 	noremap <leader>g :Goyo<cr>
@@ -261,10 +264,20 @@ call plug#end()
 	nnoremap <leader>u :UndotreeToggle<cr>
 
 " Files on ctrl+p
-    let g:Lf_ShortcutF = '<c-p>'
+  let g:Lf_ShortcutF = '<c-p>'
 
 " Quickrun
-    nnoremap <leader>lr :QuickRun<cr>
+  nnoremap <leader>lr :QuickRun<cr>
+
+" AnyJump
+  " Normal mode: Jump to definition under cursore
+  nnoremap <leader>jj :AnyJump<CR>
+  " Visual mode: jump to selected text in visual mode
+  xnoremap <leader>jv :AnyJumpVisual<CR>
+  " Normal mode: open previous opened file (after jump)
+  nnoremap <leader>ab :AnyJumpBack<CR>
+  " Normal mode: open last closed search window again
+  nnoremap <leader>al :AnyJumpLastResults<CR>
 
 " Sudo on files that require root permission
     cnoremap w!! execute 'silent! write !doas tee % >/dev/null' <bar> edit!
