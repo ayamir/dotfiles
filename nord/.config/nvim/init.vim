@@ -73,7 +73,6 @@ set ruler
 set cursorline
 set cursorcolumn
 set number relativenumber
-set conceallevel=2
 set cmdheight=2
 set laststatus=2
 set showtabline=2
