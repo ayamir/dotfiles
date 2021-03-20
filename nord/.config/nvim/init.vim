@@ -18,7 +18,7 @@ filetype indent on
 set ttimeoutlen=0
 set updatetime=300
 set splitbelow splitright
-set conceallevel=2
+set conceallevel=0
 
 set autoindent
 set smartindent
@@ -73,6 +73,7 @@ set ruler
 set cursorline
 set cursorcolumn
 set number relativenumber
+set conceallevel=2
 set cmdheight=2
 set laststatus=2
 set showtabline=2
@@ -146,6 +147,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
 
 Plug 'ap/vim-css-color'
+Plug 'plasticboy/vim-markdown'
 Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'jiangmiao/auto-pairs'
 Plug 'easymotion/vim-easymotion'
