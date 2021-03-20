@@ -1,7 +1,4 @@
-" Markdown
-	let system = system('uname -s')
-	let g:mkdp_path_to_chrome = '/usr/bin/google-chrome-stable %U'
-	nmap <silent> <F7> <Plug>MarkdownPreview
-	imap <silent> <F7> <Plug>MarkdownPreview
-	nmap <silent> <F8> <Plug>StopMarkdownPreview
-	imap <silent> <F8> <Plug>StopMarkdownPreview
+let vim_markdown_preview_hotkey='<F6>'
+let vim_markdown_preview_toggle=2
+let vim_markdown_preview_github=1
+let vim_markdown_preview_use_xdg_open=1

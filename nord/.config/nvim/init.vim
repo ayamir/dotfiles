@@ -146,7 +146,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
 
 Plug 'ap/vim-css-color'
-Plug 'iamcco/markdown-preview.vim'
+Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'jiangmiao/auto-pairs'
 Plug 'easymotion/vim-easymotion'
 Plug 'rhysd/accelerated-jk'
