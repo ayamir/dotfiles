@@ -12,10 +12,6 @@ setlocal list
 compiler cargo
 noremap <leader>lc <Esc>:Cargo check --all-features<Enter>
 noremap <leader>lt <Esc>:call <SID>rust_execute_test()<Enter>
-noremap <leader>rr :RustRun<cr>
-noremap <leader>mbr :Crun<cr>
-noremap <leader>mbt :Ctest<cr>
-noremap <leader>mbf :Cargo fmt<cr>
 
 let g:syntastic_rust_checkers = []
 let g:autofmt_autosave = 1

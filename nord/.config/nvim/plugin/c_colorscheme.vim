@@ -1,3 +1,3 @@
 set background=light
-colorscheme one
-let g:lightline.colorscheme = 'one'
+colorscheme nord
+let g:lightline.colorscheme = 'nord'

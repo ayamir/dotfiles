@@ -106,7 +106,6 @@ call plug#begin('~/.config/nvim/plugged')
 
 Plug 'rakr/vim-one'
 Plug 'arcticicestudio/nord-vim'
-Plug 'b4skyx/serenade'
 Plug 'ryanoasis/vim-devicons'
 
 Plug 'nikvdp/neomux'
@@ -284,3 +283,15 @@ call plug#end()
 
 " Languages Settings
     let g:rainbow_active = 1
+
+    autocmd FileType go nmap <leader>mbb <Plug>(go-build)
+    autocmd FileType go nmap <leader>mbr <Plug>(go-run)
+    autocmd FileType go nmap <leader>mds :GoDebugStart<cr>
+    autocmd FileType go nmap <leader>mdb :GoDebugBreakpoint<cr>
+    autocmd FileType go nmap <leader>mdc :GoDebugContinue<cr>
+    autocmd FileType go nmap <leader>mdo :GoDebugStepOut<cr>
+    autocmd FileType go nmap <leader>mdt :GoDebugStop<cr>
+
+    autocmd FileType rust nmap <leader>mbb :Cbuild<cr>
+    autocmd FileType rust nmap <leader>mbt :Ctest<cr>
+    autocmd FileType rust nmap <leader>mbr :Crun<cr>
