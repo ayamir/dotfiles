@@ -117,6 +117,11 @@ You can see all of keybindings in `./config.def.h` clearly.
 
 ## Other
 
+<a id="goblocks"></a>
+
+### Status Monitor
+
+[goblocks](https://github.com/ayamir/goblocks)
 
 <a id="org1745859"></a>
 
