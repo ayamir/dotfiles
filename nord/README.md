@@ -23,7 +23,7 @@
 
 This repo collects apps' nord theme and 2 version dwm build.
 
-[One](./.dwm) with original dwm bar, [the other](./.dwm-with-polybar) with polybar(through patches).
+[One](./.dwm-ori) with original dwm bar, [the other](./.dwm-po) with polybar(through patches).
 
 Please use symlink to `~/.dwm`, so you can use [switch-dwm](./.local/bin/switch-dwm) to switch the two versions quickly.
 
@@ -47,7 +47,7 @@ Nord and Light
 
 + Launcher: dmenu&rofi
 + Terminal: alacritty&kitty
-+ Editor: 
++ Editor:
   + vim
   + doom emacs
   + vscode

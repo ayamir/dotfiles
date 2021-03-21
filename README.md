@@ -4,7 +4,7 @@ This repo include 2 color scheme's config, one is [Gruvbox](./gruvbox), the othe
 
 Each of them include global Dark and Light color scheme which can be switch through a simple script.
 
-The Nord version have 2 dwm builds, one is [Original Dwm](./nord/.dwm), the other is [Dwm with polybar](./nord/.dwm-with-polybar)(support switch during runtime).
+The Nord version have 2 dwm builds, one is [Original Dwm](./nord/.dwm-ori), the other is [Dwm with polybar](./nord/.dwm-po)(support switch during runtime).
 
 # Shot
 
