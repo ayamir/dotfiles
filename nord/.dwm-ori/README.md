@@ -33,7 +33,7 @@ Nord and Light
 
 ## Patches
 
-You can see all of 17 patches I have applied in `./patches` dir.
+You can see all of 18 patches I have applied in `./patches` dir.
 
 -   dwm-00-regex-rules.diff
 
