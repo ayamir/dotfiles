@@ -6,26 +6,12 @@ Xft.autohint: false
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
-
-! Dracula Xresources palette
-!*.foreground: #F8F8F2
-!*.background: #282A36
-!*.color0:     #000000
-!*.color8:     #4D4D4D
-!*.color1:     #FF5555
-!*.color9:     #FF6E67
-!*.color2:     #50FA7B
-!*.color10:    #5AF78E
-!*.color3:     #F1FA8C
-!*.color11:    #F4F99D
-!*.color4:     #BD93F9
-!*.color12:    #CAA9FA
-!*.color5:     #FF79C6
-!*.color13:    #FF92D0
-!*.color6:     #8BE9FD
-!*.color14:    #9AEDFE
-!*.color7:     #BFBFBF
-!*.color15:    #E6E6E6
+dwm.normbgcolor: #ECEFF4
+dwm.normbordercolor: #3B4252
+dwm.normfgcolor: #2E3440
+dwm.selfgcolor: #3B4252
+dwm.selbordercolor: #B48EAD
+dwm.selbgcolor: #8FBCBB
 
 #define nord0 #2E3440
 #define nord1 #3B4252
@@ -43,13 +29,6 @@ Xft.lcdfilter: lcddefault
 #define nord13 #EBCB8B
 #define nord14 #A3BE8C
 #define nord15 #B48EAD
-
-dwm.normbgcolor: #2E3440
-dwm.normbordercolor: #3B4252
-dwm.normfgcolor: #ECEFF4
-dwm.selfgcolor: #D8DEE9
-dwm.selbordercolor: #B48EAD
-dwm.selbgcolor: #5E81AC
 
 *.foreground:   nord4
 *.background:   nord0
@@ -73,77 +52,3 @@ dwm.selbgcolor: #5E81AC
 *.color13: nord15
 *.color14: nord7
 *.color15: nord6
-
-XTerm*termName: xterm-256color
-XTerm*renderFont: true
-XTerm*faceName: xft:Droid Sans Mono Nerd Font:size=13
-XTerm*faceSize: 11
-XTerm*utf8: 2
-XTerm*locale: true
-
-XTerm.vt100.translations: #override \n\
-  Ctrl <Key> minus: smaller-vt-font() \n\
-  Ctrl <Key> plus: larger-vt-font() \n\
-  Ctrl Shift <Key>V: insert-selection(CLIPBOARD) \n\
-  Ctrl Shift <Key>C: copy-selection(CLIPBOARD)
-
-
-! Every shell is a login shell by default (for inclusion of all necessary environment variables)
-XTerm*loginshell: true
-
-! I like a LOT of scrollback...
-XTerm*savelines: 16384
-
-! double-click to select whole URLs :D
-XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
-
-! XTerm*scrollBar: true
-! XTerm*rightScrollBar: true
-
-XTerm*highlightSelection: true
-XTerm*trimSelection: true
-
-UXTerm*termName: xterm-256color
-UXTerm*renderFont: true
-UXTerm*faceName: xft:Droid Sans Mono Nerd Font:size=13
-UXTerm*faceSize: 11
-UXTerm*utf8: 2
-UXTerm*locale: true
-
-!! URxvt
-
-URxvt*imLocale: en_US.UTF-8
-URxvt*termName: rxvt-unicode-256color
-URxvt*buffered: false
-URxvt.letterSpace: -1
-URxvt.intensityStyles: false
-URxvt.font: xft:Hack Nerd Font Mono:size=12:minspace=False, \
-            xft:Dejavu Sans:pixelsize=20, \
-            xft:Powerline Fonts:size=12, \
-            xft:Monospace:style=Medium:size=12
-URxvt.saveLines: 2000
-URxvt.scrollBar: false
-URxvt.cursorColor: #88C0D0
-URxvt.cursorBlink: 1
-URxvt.cursorUnderline: 0
-URxvt*skipBuiltinGlyphs: true
-
-!! Extensions
-
-URxvt.perl-ext-common: default,matcher,resize-font,url-select,keyboard-select,clipboard,selection-to-clipboard
-URxvt.colorUL: #4682B4
-!! url-select
-URxvt.url-select.underline: true
-URxvt.url-launcher: /usr/bin/xdg-open
-URxvt.matcher.button: 1
-
-URxvt.keysym.M-u: perl:url-select:select_next
-!! keyboard-select:
-URxvt.keysym.M-Escape: perl:keyboard-select:activate
-!! resize-font
-URxvt.keysym.C-k:   font-size:increase
-URxvt.keysym.C-j:   font-size:decrease
-!!clipboard
-URxvt.clipboard.autocopy: true
-URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard
-URxvt.keysym.Shift-Control-V: eval:paste_clipboard
