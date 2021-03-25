@@ -220,7 +220,7 @@ static Key keys[] = {
 
     /* My Own App Start Ways */
     {Mod1Mask, XK_c, spawn, CMD("visual-studio-code")},
-    {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
+    {MODKEY, XK_e, spawn, CMD("microsoft-edge-dev")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_v, spawn, CMD("st -e nvim")},
     {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty -e zsh")},
