@@ -10,7 +10,9 @@
 
 ![nvim-shot](../../Pictures/shot/nvim-shot.png)
 
-This is my neovim configuration.
+This is my neovim's configuration.
+
+I use [Vim-Plug](https://github.com/junegunn/vim-plug) to manage plugins.
 
 I use [coc.nvim](https://github.com/neoclide/coc.nvim) to realize completion.
 
