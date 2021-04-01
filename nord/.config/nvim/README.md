@@ -8,7 +8,9 @@
 
 # Introduction
 
-![nvim-shot](../../Pictures/shot/nvim-shot.png)
+![nvim-light](../../Pictures/shot/light-nvim.png)
+
+![nvim-nord](../../Pictures/shot/nord-nvim.png)
 
 This is my neovim's configuration.
 

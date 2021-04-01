@@ -6,6 +6,8 @@ Each of them include global Dark and Light color scheme which can be switch thro
 
 The Nord version have 2 dwm builds, one is [Original Dwm](./nord/.dwm-ori), the other is [Dwm with polybar](./nord/.dwm-po)(support switch during runtime).
 
+This is my neovim's [configuration](./nord/.config/nvim)
+
 # Shot
 
 ## Gruvbox
@@ -25,3 +27,9 @@ The Nord version have 2 dwm builds, one is [Original Dwm](./nord/.dwm-ori), the 
     ![Dark](./nord/Pictures/shot/dark-dwmpo.png)
 
     ![Light](./nord/Pictures/shot/light-dwmpo.png)
+
+## Nvim
+
+![nvim-shot-light](./nord/Pictures/shot/light-nvim.png)
+
+![nvim-shot-nord](./nord/Pictures/shot/nord-nvim.png)
