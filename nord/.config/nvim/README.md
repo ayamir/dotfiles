@@ -26,9 +26,9 @@ I use [coc.nvim](https://github.com/neoclide/coc.nvim) to realize completion.
 
 The first part is the common settings of neovim.
 
-The second part is Vim-Plug's settings which consist of all of my plugins.
+The second part is Vim-Plug's settings which consists of all of my plugins.
 
-The third part is common keybindings settings.
+The third part is common keybinding settings.
 
 `plugin` directory includes some plugins' specific settings.
 
