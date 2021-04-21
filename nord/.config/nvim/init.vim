@@ -5,7 +5,7 @@
 " ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║
 " ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝
 
-let mapleader ="\<Space>"
+let mapleader =","
 
 " Behavior
 syntax on
@@ -35,7 +35,7 @@ set smarttab
 set wrap linebreak nolist
 set shortmess+=c
 set whichwrap+=<,>,h,l
-set virtualedit=block,onemore
+"set virtualedit=block,nordmore
 set backspace=2
 set sidescroll=10
 
@@ -111,8 +111,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'nikvdp/neomux'
 Plug 'mhinz/vim-startify'
 Plug 'godlygeek/tabular'
-Plug 'itchyny/lightline.vim'
-Plug 'mengelbrecht/lightline-bufferline'
+Plug 'vim-airline/vim-airline'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -135,6 +134,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'jreybert/vimagit'
 Plug 'airblade/vim-gitgutter'
 
+Plug 'cdelledonne/vim-cmake'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
@@ -144,6 +144,7 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
+Plug 'alvan/vim-closetag'
 
 Plug 'ap/vim-css-color'
 Plug 'plasticboy/vim-markdown'
@@ -155,6 +156,9 @@ Plug 'rhysd/accelerated-jk'
 Plug 'wakatime/vim-wakatime'
 
 call plug#end()
+
+set background=light
+colorscheme one
 
 " Edit Setting
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
@@ -188,7 +192,7 @@ call plug#end()
   " Automatically change work directory
   autocmd BufEnter * silent! lcd %:p:h
 
-  autocmd FileType make setlocal noexpandtab
+  autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
   autocmd FileType c,cpp,rust,go setlocal tabstop=2
 
 " Init.vim Setting
@@ -296,3 +300,46 @@ call plug#end()
     autocmd FileType rust nmap <leader>mbb :Cbuild<cr>
     autocmd FileType rust nmap <leader>mbt :Ctest<cr>
     autocmd FileType rust nmap <leader>mbr :Crun<cr>
+
+" filenames like *.xml, *.html, *.xhtml, ...
+" These are the file extensions where this plugin is enabled.
+"
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
+
+" filenames like *.xml, *.xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
+
+" filetypes like xml, html, xhtml, ...
+" These are the file types where this plugin is enabled.
+"
+let g:closetag_filetypes = 'html,xhtml,phtml'
+
+" filetypes like xml, xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filetypes = 'xhtml,jsx'
+
+" integer value [0|1]
+" This will make the list of non-closing tags case-sensitive (e.g. `<Link>` will be closed while `<link>` won't.)
+"
+let g:closetag_emptyTags_caseSensitive = 1
+
+" dict
+" Disables auto-close if not in a "valid" region (based on filetype)
+"
+let g:closetag_regions = {
+    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+    \ 'javascript.jsx': 'jsxRegion',
+    \ 'typescriptreact': 'jsxRegion,tsxRegion',
+    \ 'javascriptreact': 'jsxRegion',
+    \ }
+
+" Shortcut for closing tags, default is '>'
+"
+let g:closetag_shortcut = '>'
+
+" Add > at current position without closing the current tag, default is ''
+"
+let g:closetag_close_shortcut = '<leader>>'
