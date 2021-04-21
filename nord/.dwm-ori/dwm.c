@@ -319,6 +319,8 @@ static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
+static void viewtoleft(const Arg *arg);
+static void viewtoright(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
 static int xerror(Display *dpy, XErrorEvent *ee);
@@ -328,8 +330,9 @@ static void xrdb(const Arg *arg);
 static void zoom(const Arg *arg);
 static void bstack(Monitor *m);
 static void bstackhoriz(Monitor *m);
-
 static void focusmaster(const Arg *arg);
+static void shiftview(const Arg *arg);
+static void shiftviewclients(const Arg *arg);
 
 /* variables */
 static const char autostartblocksh[] = "autostart_blocking.sh";
@@ -372,6 +375,7 @@ static Window root, wmcheckwin;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
+static unsigned int scratchtag = 1 << LENGTH(tags);
 
 struct Pertag {
   unsigned int curtag, prevtag;          /* current and previous tag */
@@ -3060,4 +3064,40 @@ static void bstackhoriz(Monitor *m) {
         ty += HEIGHT(c);
     }
   }
+}
+
+void shiftview(const Arg *arg) {
+  Arg shifted;
+
+  if (arg->i > 0) // left circular shift
+    shifted.ui = (selmon->tagset[selmon->seltags] << arg->i) |
+                 (selmon->tagset[selmon->seltags] >> (LENGTH(tags) - arg->i));
+
+  else // right circular shift
+    shifted.ui = selmon->tagset[selmon->seltags] >> (-arg->i) |
+                 selmon->tagset[selmon->seltags] << (LENGTH(tags) + arg->i);
+
+  view(&shifted);
+}
+
+void shiftviewclients(const Arg *arg) {
+  Arg shifted;
+  Client *c;
+  unsigned int tagmask = 0;
+  int NUMTAGS = LENGTH(tags);
+
+  for (c = selmon->clients; c; c = c->next)
+    tagmask |= c->tags;
+
+  shifted.ui = selmon->tagset[selmon->seltags] &= ~scratchtag;
+  if (arg->i > 0) // left circular shift
+    do {
+      shifted.ui = (shifted.ui << arg->i) | (shifted.ui >> (NUMTAGS - arg->i));
+    } while (tagmask && !(shifted.ui & tagmask));
+  else // right circular shift
+    do {
+      shifted.ui = (shifted.ui >> -arg->i) | (shifted.ui << (NUMTAGS + arg->i));
+    } while (tagmask && !(shifted.ui & tagmask));
+
+  view(&shifted);
 }
