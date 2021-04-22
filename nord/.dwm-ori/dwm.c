@@ -296,7 +296,6 @@ static void sigchld(int unused);
 static void sighup(int unused);
 static void sigterm(int unused);
 static void spawn(const Arg *arg);
-static void tabmode(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *);
@@ -319,8 +318,6 @@ static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 static void view(const Arg *arg);
-static void viewtoleft(const Arg *arg);
-static void viewtoright(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
 static int xerror(Display *dpy, XErrorEvent *ee);
@@ -1045,8 +1042,6 @@ int drawstatusbar(Monitor *m, int bh, char *stext) {
 
 void drawbar(Monitor *m) {
   int x, w, sw = 0, n = 0, scm;
-  int boxs = drw->fonts->h / 9;
-  int boxw = drw->fonts->h / 6 + 2;
   unsigned int i, occ = 0, urg = 0;
   Client *c;
 
@@ -2471,14 +2466,6 @@ void togglebar(const Arg *arg) {
   updatebarpos(selmon);
   XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww,
                     bh);
-  arrange(selmon);
-}
-
-void tabmode(const Arg *arg) {
-  if (arg && arg->i >= 0)
-    selmon->showtab = arg->ui % showtab_nmodes;
-  else
-    selmon->showtab = (selmon->showtab + 1) % showtab_nmodes;
   arrange(selmon);
 }
 
