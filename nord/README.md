@@ -67,6 +67,10 @@ Nord and Light
 + Qt themes:
   + use `qt5ct` and `qt5-styleplugins` to set qt theme follow gtk2 theme
 + Icon theme: [Papirus](https://www.gnome-look.org/p/1166289/)
++ Touchpad:
+  + libinput
+  + libinput-gestures
+  + xdotool
 
 <a id="usage"></a>
 
@@ -75,6 +79,7 @@ Nord and Light
 2. Install apps metioned in [Dependency](#dependency)
 3. Copy all my config files to corresponding directories follow my repo's structure.
 4. Please apply [polybar-dwm-module](https://github.com/mihirlad55/polybar-dwm-module) if you use the polybar version.
+5. Please check [libinput-gestures](./.config/libinput-gestures.conf) to get corresponding quick gestures.
 
 <a id="org1958ae2"></a>
 
