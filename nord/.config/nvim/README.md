@@ -40,6 +40,12 @@ You need to learn how to use coc.nvim on your own.
 
 # Usage
 
+To make sure Vim-Plug can be downloaded normally, you should add this line to your `/etc/hosts`:
+
+```shell
+151.101.64.133 	raw.githubusercontent.com
+```
+
 The leader key is space.
 
 `<leader><leader>i` to use Vim-Plug install all of plugins.
