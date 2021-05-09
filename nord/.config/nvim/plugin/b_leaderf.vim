@@ -23,7 +23,7 @@ noremap go :<C-U>Leaderf! rg --recall<CR>
 " should use `Leaderf gtags --update` first
 let g:Lf_GtagsAutoGenerate = 1
 let g:Lf_Gtagslabel = 'native-pygments'
-let g:Lf_Gtagsconf = "/etc/gtags.conf"
+let g:Lf_Gtagsconf = "/home/ayamir/.globalrc"
 noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
 noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
 noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
