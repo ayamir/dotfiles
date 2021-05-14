@@ -82,6 +82,10 @@ static const Rule rules[] = {
     {"jetbrains-*", "sun-awt-X11-XFramePeer", NULL, 1 << 1, 0, -1},
     {"jetbrains-*", "jetbrains-*", "win0", 1 << 1, 1, -1},
     {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, -1},
+    {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, -1},
+    {"jetbrains-idea", NULL, NULL, 1 << 1, 0, -1},
+    {"jetbrains-clion", NULL, NULL, 1 << 1, 0, -1},
+    {"Jigsaw", NULL, NULL, 1 << 1, 1, -1},
 
     {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, -1},
     {"Firefox", NULL, NULL, 1 << 2, 0, -1},
@@ -192,8 +196,8 @@ static Key keys[] = {
     {MODKEY, XK_k, focusstackvis, {.i = -1}},
     {MODKEY | ControlMask, XK_j, focusstackhid, {.i = +1}},
     {MODKEY | ControlMask, XK_k, focusstackhid, {.i = -1}},
-    {MODKEY | ShiftMask, XK_j, shiftviewclients, {.i = +1}},
-    {MODKEY | ShiftMask, XK_k, shiftviewclients, {.i = -1}},
+    {MODKEY | ShiftMask, XK_j, shiftviewclients, {.i = -1}},
+    {MODKEY | ShiftMask, XK_k, shiftviewclients, {.i = +1}},
 
     {MODKEY, XK_s, show, {0}},
     {MODKEY, XK_h, hide, {0}},
@@ -239,7 +243,7 @@ static Key keys[] = {
 
     /* My Own App Start Ways */
     {Mod1Mask, XK_c, spawn, CMD("visual-studio-code")},
-    {MODKEY, XK_e, spawn, CMD("microsoft-edge-dev")},
+    {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_v, spawn, CMD("st -e nvim")},
     {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty -e zsh")},
@@ -257,6 +261,7 @@ static Key keys[] = {
      CMD("/usr/bin/betterlockscreen -l")},
 
     /*IDE start*/
+    {Mod1Mask, XK_c, spawn, CMD("code")},
     {Mod1Mask, XK_i, spawn, CMD("idea")},
     {Mod1Mask, XK_l, spawn, CMD("clion")},
     {Mod1Mask, XK_p, spawn, CMD("pycharm")},
