@@ -87,7 +87,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux) sourcecodepro 14
     #   - (Windows) Consolas
-    family: Input Nerd Font
+    family: Liga SFMono Nerd Font
     style: Regular
     # The `style` can be specified to pick a specific face.
     #style: Regular
@@ -98,8 +98,8 @@ font:
     #
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: Input Nerd Font
-    # Input Nerd Font
+    family: Liga SFMono Nerd Font
+    # Rec Mono Linear
     # The `style` can be specified to pick a specific face.
     style: Bold
 
@@ -109,13 +109,13 @@ font:
     #
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: Input Nerd Font
-    # Input Nerd Font
+    family: Liga SFMono Nerd Font
+    # Rec Mono Linear
     # The `style` can be specified to pick a specific face.
     style: Italic
 
   # Point size
-  size: 12.0
+  size: 11.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -128,7 +128,7 @@ font:
   # increasing `y` moves the glyph upwards.
   glyph_offset:
     x: 0
-    y: -2
+    y: 0
 
   # Thin stroke font rendering (macOS only)
   #
@@ -152,12 +152,16 @@ font:
     # Keep the log file after quitting Alacritty.
     persistent_logging: false
 
-# Colors (Nord) 
+# Colors (Nord)
 colors:
   # Default colors
   primary:
-    background: '#2E3440'
-    foreground: '#D8DEE9'
+    background: '#D8DEE9'
+    foreground: '#3B4252'
+
+  cursor:
+    text: '#E3EAF5'
+    cursor: '#899ba6'
 
   # Normal colors
   normal:
@@ -168,18 +172,18 @@ colors:
     blue: '#81A1C1'
     magenta: '#B48EAD'
     cyan: '#88C0D0'
-    white: '#E5E9F0'
+    white: '#ECEFF4'
 
   # Bright colors
   bright:
-    black: '#4C566A'
-    red: '#BF616A'
-    green: '#A3BE8C'
-    yellow: '#EBCB8B'
-    blue: '#81A1C1'
-    magenta: '#B48EAD'
-    cyan: '#8FBCBB'
-    white: '#ECEFF4'
+    black: '#899BA6'
+    red: '#F2C38F'
+    green: '#4F894C'
+    yellow: '#DADA93'
+    blue: '#83AFE5'
+    magenta: '#D18EC2'
+    cyan: '#7FC1CA'
+    white: '#E6EEF3'
 
 bell:
   animation: EaseOutExpo
@@ -189,7 +193,7 @@ bell:
   #
   # Window opacity as a floating point number from `0.0` to `1.0`.
   # The value `0.0` is completely transparent and `1.0` is opaque.
-  background_opacity: 1.0
+background_opacity: 0.8
 
 # Mouse bindings
 #
