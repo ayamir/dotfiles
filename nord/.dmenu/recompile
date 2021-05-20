@@ -1,4 +1,4 @@
 #!/bin/bash
 
 rm -f ./config.h
-doas make clean install
+sudo make clean install

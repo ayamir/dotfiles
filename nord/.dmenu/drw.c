@@ -5,9 +5,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xft/Xft.h>
 
+#include "patches.h"
 #include "drw.h"
 #include "util.h"
 
+#if !PANGO_PATCH
 #define UTF_INVALID 0xFFFD
 #define UTF_SIZ     4
 
@@ -59,9 +61,14 @@ utf8decode(const char *c, long *u, size_t clen)
 
 	return len;
 }
+#endif // PANGO_PATCH
 
 Drw *
+#if ALPHA_PATCH
+drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h, Visual *visual, unsigned int depth, Colormap cmap)
+#else
 drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h)
+#endif // ALPHA_PATCH
 {
 	Drw *drw = ecalloc(1, sizeof(Drw));
 
@@ -70,8 +77,16 @@ drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h
 	drw->root = root;
 	drw->w = w;
 	drw->h = h;
+	#if ALPHA_PATCH
+	drw->visual = visual;
+	drw->depth = depth;
+	drw->cmap = cmap;
+	drw->drawable = XCreatePixmap(dpy, root, w, h, depth);
+	drw->gc = XCreateGC(dpy, drw->drawable, 0, NULL);
+	#else
 	drw->drawable = XCreatePixmap(dpy, root, w, h, DefaultDepth(dpy, screen));
 	drw->gc = XCreateGC(dpy, root, 0, NULL);
+	#endif // ALPHA_PATCH
 	XSetLineAttributes(dpy, drw->gc, 1, LineSolid, CapButt, JoinMiter);
 
 	return drw;
@@ -87,7 +102,11 @@ drw_resize(Drw *drw, unsigned int w, unsigned int h)
 	drw->h = h;
 	if (drw->drawable)
 		XFreePixmap(drw->dpy, drw->drawable);
+	#if ALPHA_PATCH
+	drw->drawable = XCreatePixmap(drw->dpy, drw->root, w, h, drw->depth);
+	#else
 	drw->drawable = XCreatePixmap(drw->dpy, drw->root, w, h, DefaultDepth(drw->dpy, drw->screen));
+	#endif // ALPHA_PATCH
 }
 
 void
@@ -95,10 +114,49 @@ drw_free(Drw *drw)
 {
 	XFreePixmap(drw->dpy, drw->drawable);
 	XFreeGC(drw->dpy, drw->gc);
+	#if PANGO_PATCH
+	drw_font_free(drw->font);
+	#else
 	drw_fontset_free(drw->fonts);
+	#endif // PANGO_PATCH
 	free(drw);
 }
 
+#if PANGO_PATCH
+/* This function is an implementation detail. Library users should use
+ * drw_font_create instead.
+ */
+static Fnt *
+xfont_create(Drw *drw, const char *fontname)
+{
+	Fnt *font;
+	PangoFontMap *fontmap;
+	PangoContext *context;
+	PangoFontDescription *desc;
+	PangoFontMetrics *metrics;
+
+	if (!fontname) {
+		die("no font specified.");
+	}
+
+	font = ecalloc(1, sizeof(Fnt));
+	font->dpy = drw->dpy;
+
+	fontmap = pango_xft_get_font_map(drw->dpy, drw->screen);
+	context = pango_font_map_create_context(fontmap);
+	desc = pango_font_description_from_string(fontname);
+	font->layout = pango_layout_new(context);
+	pango_layout_set_font_description(font->layout, desc);
+
+	metrics = pango_context_get_metrics(context, desc, pango_language_from_string ("en-us"));
+	font->h = pango_font_metrics_get_height(metrics) / PANGO_SCALE;
+
+	pango_font_metrics_unref(metrics);
+	g_object_unref(context);
+
+	return font;
+}
+#else
 /* This function is an implementation detail. Library users should use
  * drw_fontset_create instead.
  */
@@ -133,6 +191,7 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
 		die("no font specified.");
 	}
 
+	#if !COLOR_EMOJI_PATCH
 	/* Do not allow using color fonts. This is a workaround for a BadLength
 	 * error from Xft with color glyphs. Modelled on the Xterm workaround. See
 	 * https://bugzilla.redhat.com/show_bug.cgi?id=1498269
@@ -141,10 +200,11 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
 	 * and lots more all over the internet.
 	 */
 	FcBool iscol;
-	if(FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
+	if (FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
 		XftFontClose(drw->dpy, xfont);
 		return NULL;
 	}
+	#endif // COLOR_EMOJI_PATCH
 
 	font = ecalloc(1, sizeof(Fnt));
 	font->xfont = xfont;
@@ -154,18 +214,38 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
 
 	return font;
 }
+#endif // PANGO_PATCH
 
 static void
 xfont_free(Fnt *font)
 {
 	if (!font)
 		return;
+	#if PANGO_PATCH
+	if (font->layout)
+		g_object_unref(font->layout);
+	#else
 	if (font->pattern)
 		FcPatternDestroy(font->pattern);
 	XftFontClose(font->dpy, font->xfont);
+	#endif // PANGO_PATCH
 	free(font);
 }
 
+#if PANGO_PATCH
+Fnt*
+drw_font_create(Drw* drw, const char font[])
+{
+	Fnt *fnt = NULL;
+
+	if (!drw || !font)
+		return NULL;
+
+	fnt = xfont_create(drw, font);
+
+	return (drw->font = fnt);
+}
+#else
 Fnt*
 drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount)
 {
@@ -183,7 +263,16 @@ drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount)
 	}
 	return (drw->fonts = ret);
 }
+#endif // PANGO_PATCH
 
+#if PANGO_PATCH
+void
+drw_font_free(Fnt *font)
+{
+	if (font)
+		xfont_free(font);
+}
+#else
 void
 drw_fontset_free(Fnt *font)
 {
@@ -192,23 +281,40 @@ drw_fontset_free(Fnt *font)
 		xfont_free(font);
 	}
 }
+#endif // PANGO_PATCH
 
 void
+#if ALPHA_PATCH
+drw_clr_create(Drw *drw, Clr *dest, const char *clrname, unsigned int alpha)
+#else
 drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
+#endif // ALPHA_PATCH
 {
 	if (!drw || !dest || !clrname)
 		return;
 
+	#if ALPHA_PATCH
+	if (!XftColorAllocName(drw->dpy, drw->visual, drw->cmap,
+	                       clrname, dest))
+		die("error, cannot allocate color '%s'", clrname);
+
+	dest->pixel = (dest->pixel & 0x00ffffffU) | (alpha << 24);
+	#else
 	if (!XftColorAllocName(drw->dpy, DefaultVisual(drw->dpy, drw->screen),
 	                       DefaultColormap(drw->dpy, drw->screen),
 	                       clrname, dest))
 		die("error, cannot allocate color '%s'", clrname);
+	#endif // ALPHA_PATCH
 }
 
 /* Wrapper to create color schemes. The caller has to call free(3) on the
  * returned color scheme when done using it. */
 Clr *
+#if ALPHA_PATCH
+drw_scm_create(Drw *drw, const char *clrnames[], const unsigned int alphas[], size_t clrcount)
+#else
 drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
+#endif // ALPHA_PATCH
 {
 	size_t i;
 	Clr *ret;
@@ -218,16 +324,22 @@ drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
 		return NULL;
 
 	for (i = 0; i < clrcount; i++)
+		#if ALPHA_PATCH
+		drw_clr_create(drw, &ret[i], clrnames[i], alphas[i]);
+		#else
 		drw_clr_create(drw, &ret[i], clrnames[i]);
+		#endif // ALPHA_PATCH
 	return ret;
 }
 
+#if !PANGO_PATCH
 void
 drw_setfontset(Drw *drw, Fnt *set)
 {
 	if (drw)
 		drw->fonts = set;
 }
+#endif // PANGO_PATCH
 
 void
 drw_setscheme(Drw *drw, Clr *scm)
@@ -248,6 +360,73 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
 		XDrawRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w - 1, h - 1);
 }
 
+#if PANGO_PATCH
+int
+drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert, Bool markup)
+{
+	char buf[1024];
+	int ty;
+	unsigned int ew;
+	XftDraw *d = NULL;
+	size_t i, len;
+	int render = x || y || w || h;
+
+	if (!drw || (render && !drw->scheme) || !text || !drw->font)
+		return 0;
+
+	if (!render) {
+		w = ~w;
+	} else {
+		XSetForeground(drw->dpy, drw->gc, drw->scheme[invert ? ColFg : ColBg].pixel);
+		XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
+		#if ALPHA_PATCH
+		d = XftDrawCreate(drw->dpy, drw->drawable, drw->visual, drw->cmap);
+		#else
+		d = XftDrawCreate(drw->dpy, drw->drawable,
+		                  DefaultVisual(drw->dpy, drw->screen),
+		                  DefaultColormap(drw->dpy, drw->screen));
+		#endif // ALPHA_PATCH
+		x += lpad;
+		w -= lpad;
+	}
+
+	len = strlen(text);
+
+	if (len) {
+		drw_font_getexts(drw->font, text, len, &ew, NULL, markup);
+		/* shorten text if necessary */
+		for (len = MIN(len, sizeof(buf) - 1); len && ew > w; len--)
+			drw_font_getexts(drw->font, text, len, &ew, NULL, markup);
+
+		if (len) {
+			memcpy(buf, text, len);
+			buf[len] = '\0';
+			if (len < strlen(text))
+				for (i = len; i && i > len - 3; buf[--i] = '.')
+					; /* NOP */
+
+			if (render) {
+				ty = y + (h - drw->font->h) / 2;
+				if (markup)
+					pango_layout_set_markup(drw->font->layout, buf, len);
+				else
+					pango_layout_set_text(drw->font->layout, buf, len);
+				pango_xft_render_layout(d, &drw->scheme[invert ? ColBg : ColFg],
+					drw->font->layout, x * PANGO_SCALE, ty * PANGO_SCALE);
+				if (markup) /* clear markup attributes */
+					pango_layout_set_attributes(drw->font->layout, NULL);
+			}
+			x += ew;
+			w -= ew;
+		}
+	}
+
+	if (d)
+		XftDrawDestroy(d);
+
+	return x + (render ? w : 0);
+}
+#else
 int
 drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert)
 {
@@ -274,9 +453,13 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
 	} else {
 		XSetForeground(drw->dpy, drw->gc, drw->scheme[invert ? ColFg : ColBg].pixel);
 		XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
+		#if ALPHA_PATCH
+		d = XftDrawCreate(drw->dpy, drw->drawable, drw->visual, drw->cmap);
+		#else
 		d = XftDrawCreate(drw->dpy, drw->drawable,
 		                  DefaultVisual(drw->dpy, drw->screen),
 		                  DefaultColormap(drw->dpy, drw->screen));
+		#endif // ALPHA_PATCH
 		x += lpad;
 		w -= lpad;
 	}
@@ -378,6 +561,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
 
 	return x + (render ? w : 0);
 }
+#endif // PANGO_PATCH
 
 void
 drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h)
@@ -389,6 +573,15 @@ drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h)
 	XSync(drw->dpy, False);
 }
 
+#if PANGO_PATCH
+unsigned int
+drw_font_getwidth(Drw *drw, const char *text, Bool markup)
+{
+	if (!drw || !drw->font || !text)
+		return 0;
+	return drw_text(drw, 0, 0, 0, 0, 0, text, 0, markup);
+}
+#else
 unsigned int
 drw_fontset_getwidth(Drw *drw, const char *text)
 {
@@ -396,7 +589,29 @@ drw_fontset_getwidth(Drw *drw, const char *text)
 		return 0;
 	return drw_text(drw, 0, 0, 0, 0, 0, text, 0);
 }
+#endif // PANGO_PATCH
 
+#if PANGO_PATCH
+void
+drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h, Bool markup)
+{
+	if (!font || !text)
+		return;
+
+	PangoRectangle r;
+	if (markup)
+		pango_layout_set_markup(font->layout, text, len);
+	else
+		pango_layout_set_text(font->layout, text, len);
+	pango_layout_get_extents(font->layout, 0, &r);
+	if (markup) /* clear markup attributes */
+		pango_layout_set_attributes(font->layout, NULL);
+	if (w)
+		*w = r.width / PANGO_SCALE;
+	if (h)
+		*h = font->h;
+}
+#else
 void
 drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h)
 {
@@ -411,6 +626,7 @@ drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w,
 	if (h)
 		*h = font->h;
 }
+#endif // PANGO_PATCH
 
 Cur *
 drw_cur_create(Drw *drw, int shape)
@@ -434,3 +650,7 @@ drw_cur_free(Drw *drw, Cur *cursor)
 	XFreeCursor(drw->dpy, cursor->cursor);
 	free(cursor);
 }
+
+#if SCROLL_PATCH
+#include "patch/scroll.c"
+#endif
