@@ -145,6 +145,7 @@ Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
 Plug 'alvan/vim-closetag'
+Plug 'wfxr/minimap.vim'
 
 Plug 'ap/vim-css-color'
 Plug 'plasticboy/vim-markdown'
@@ -284,6 +285,10 @@ colorscheme one
   nnoremap <leader>ab :AnyJumpBack<CR>
   " Normal mode: open last closed search window again
   nnoremap <leader>al :AnyJumpLastResults<CR>
+
+" Minimap
+  nnoremap <leader>mt :MinimapToggle<cr>
+  nnoremap <leader>mr :MinimapRefresh<cr>
 
 " Sudo on files that require root permission
     cnoremap w!! execute 'silent! write !doas tee % >/dev/null' <bar> edit!
