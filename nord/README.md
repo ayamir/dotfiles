@@ -114,3 +114,9 @@ You can use `Midnight Lizard` extension to realize web pages' nord color.
 ![dark](./Pictures/shot/dark-page.png)
 
 ![light](./Pictures/shot/light-page.png)
+
++ [Dmenu](https://github.com/Zaedus/dmenu-arc) as my dmenu's template.
+
+![dark](./Pictures/shot/dark-dmenu.png)
+
+![light](./Pictures/shot/light-dmenu.png)
