@@ -205,8 +205,8 @@ static Key keys[] = {
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
 
     /* My Own App Start Ways */
-    {Mod1Mask, XK_c, spawn, CMD("visual-studio-code")},
-    {MODKEY, XK_e, spawn, CMD("microsoft-edge-dev")},
+    {Mod1Mask, XK_c, spawn, CMD("code")},
+    {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_v, spawn, CMD("kitty -e nvim")},
     {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty -e zsh")},
@@ -220,8 +220,7 @@ static Key keys[] = {
     {MODKEY | ShiftMask, XK_v, spawn,
      CMD("VBoxManage startvm 'Windows10' --type gui")},
 
-    {Mod1Mask | ControlMask, XK_Delete, spawn, CMD("sh ~/.local/bin/lock")},
-    {Mod1Mask | ControlMask, XK_s, spawn, CMD("sh /usr/local/bin/suspend")},
+    {Mod1Mask | ControlMask, XK_Delete, spawn, CMD("betterlockscreen -l")},
 
     {Mod1Mask | ShiftMask, XK_p, spawn, CMD("sh ~/.dwmpobar")},
 
@@ -234,10 +233,8 @@ static Key keys[] = {
     */
 
     /* Switch nord and light */
-    {MODKEY | ControlMask, XK_n, spawn,
-     CMD("sh ~/.local/bin/switch-nord n dwm")},
-    {MODKEY | ControlMask, XK_l, spawn,
-     CMD("sh ~/.local/bin/switch-nord l dwm")},
+    {MODKEY | ControlMask, XK_n, spawn, CMD("sh ~/.local/bin/switch-po n")},
+    {MODKEY | ControlMask, XK_l, spawn, CMD("sh ~/.local/bin/switch-po l")},
     {MODKEY | ControlMask, XK_s, spawn, CMD("sh ~/.local/bin/switch-dwm")},
 
     /* Mpd control */
