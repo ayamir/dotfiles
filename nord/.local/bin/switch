@@ -22,6 +22,8 @@ then
     sed -i "s/dwm.selbgcolor: #5E81AC/dwm.selbgcolor: #88C0D0/g" ~/.Xresources
     xrdb ~/.Xresources
     pkill -1 dwm
+    # Polybar
+    cp ~/.config/polybar/colors-nord-light ~/.config/polybar/colors
     # Dmenu
     sed -i "s/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/g" ~/.dmenu/config.def.h
     sed -i "s/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
@@ -45,7 +47,7 @@ then
     sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
     # Nvim
     sed -i "s/colorscheme nord/colorscheme one/g" ~/.config/nvim/init.vim
-    sed -i "s/guifg\=\#5E81AC guibg\=\#2E3440/guifg\=\#98C379 guibg\=\#FAFAFA/g" ~/.config/nvim/plugin/b_minimap.vim
+    sed -i "s/guifg\=\#BF616A guibg\=\#2E3440/guifg\=\#E06C75 guibg\=\#FAFAFA/g" ~/.config/nvim/plugin/b_minimap.vim
     # Emacs
     sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
     emacsclient -e '(kill-emacs)'
@@ -82,6 +84,8 @@ then
     sed -i "s/dwm.selbgcolor: #88C0D0/dwm.selbgcolor: #5E81AC/g" ~/.Xresources
     xrdb ~/.Xresources
     pkill -1 dwm
+    # Polybar
+    cp ~/.config/polybar/colors-nord-dark ~/.config/polybar/colors
     # Dmenu
     sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
     sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
@@ -94,7 +98,6 @@ then
     cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
     # Kitty
     sed -i "s/light/dark/g" ~/.config/kitty/kitty.conf
-    sed -i "s/light/dark/g" ~/.config/kitty/kitty-w.conf
     # Fish
     fish -c nord-dark
     # Global theme
@@ -106,7 +109,7 @@ then
     sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
     # Nvim
     sed -i "s/colorscheme one/colorscheme nord/g" ~/.config/nvim/init.vim
-    sed -i "s/guifg\=\#98C379 guibg\=\#FAFAFA/guifg\=\#5E81AC guibg\=\#2E3440/g" ~/.config/nvim/plugin/b_minimap.vim
+    sed -i "s/guifg\=\#E06C75 guibg\=\#FAFAFA/guifg\=\#BF616A guibg\=\#2E3440/g" ~/.config/nvim/plugin/b_minimap.vim
     # Emacs
     sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
     emacsclient -e '(kill-emacs)'
