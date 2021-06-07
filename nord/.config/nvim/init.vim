@@ -109,19 +109,19 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'ryanoasis/vim-devicons'
 
 Plug 'nikvdp/neomux'
-Plug 'mhinz/vim-startify'
+Plug 'chxuan/vimplus-startify'
 Plug 'godlygeek/tabular'
 Plug 'vim-airline/vim-airline'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'mbbill/undotree'
 Plug 'luochen1990/rainbow'
 
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
 Plug 'honza/vim-snippets'
 Plug 'google/vim-maktaba'
 Plug 'google/vim-codefmt'
@@ -129,16 +129,18 @@ Plug 'google/vim-glaive'
 
 Plug 'rbgrouleff/bclose.vim'
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
-Plug 'junegunn/goyo.vim'
 
 Plug 'jreybert/vimagit'
 Plug 'airblade/vim-gitgutter'
 
 Plug 'cdelledonne/vim-cmake'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
 Plug 'sheerun/vim-polyglot'
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'Shougo/neocomplete.vim'
+Plug 'SirVer/ultisnips'
 
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
@@ -147,20 +149,22 @@ Plug 'cespare/vim-toml'
 Plug 'alvan/vim-closetag'
 Plug 'wfxr/minimap.vim'
 
+Plug 'junegunn/goyo.vim'
 Plug 'ap/vim-css-color'
 Plug 'plasticboy/vim-markdown'
 Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'jiangmiao/auto-pairs'
-Plug 'easymotion/vim-easymotion'
 Plug 'rhysd/accelerated-jk'
 Plug 'rlue/vim-barbaric'
+Plug 'junegunn/vim-slash'
 
+Plug 'Shougo/echodoc.vim'
 Plug 'wakatime/vim-wakatime'
 
 call plug#end()
 
 set background=light
-colorscheme one
+colorscheme nord
 
 " Edit Setting
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
@@ -234,11 +238,6 @@ colorscheme one
 " Split Navigation shortcuts
 	noremap <leader>wv :vsplit<cr>
 	noremap <leader>ws :split<cr>
-  noremap <leader>wd :q<cr>
-	noremap <leader>wh <C-w>h
-	noremap <leader>wj <C-w>j
-	noremap <leader>wk <C-w>k
-	noremap <leader>wl <C-w>l
 
 " Buffer Navigation
 	noremap <A-j> :bn<cr>
@@ -246,10 +245,6 @@ colorscheme one
   noremap <A-q> :bw<cr>
   noremap <A-S-q> :bw!<cr>
 
-" Curor Navigation
-  map <leader><leader>w <Plug>(easymotion-w)
-  map <leader>f <Plug>(easymotion-bd-f)
-  nmap <leader>f <Plug>(easymotion-overwin-f)
 " Keep selection after shift
   vnoremap < <gv
   vnoremap > >gv
@@ -267,14 +262,11 @@ colorscheme one
 " Tab Ident with |
 	set list lcs=tab:\|\ ""
 
-" UndoTree
-	nnoremap <leader>u :UndotreeToggle<cr>
-
 " Files on ctrl+p
   let g:Lf_ShortcutF = '<c-p>'
 
-" Quickrun
-  nnoremap <leader>lr :QuickRun<cr>
+" vim-slash
+  noremap <plug>(slash-after) zz
 
 " AnyJump
   " Normal mode: Jump to definition under cursore
@@ -291,7 +283,7 @@ colorscheme one
   nnoremap <leader>mr :MinimapRefresh<cr>
 
 " Sudo on files that require root permission
-    cnoremap w!! execute 'silent! write !doas tee % >/dev/null' <bar> edit!
+    cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
 " Languages Settings
     let g:rainbow_active = 1
