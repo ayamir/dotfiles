@@ -108,10 +108,11 @@ Plug 'rakr/vim-one'
 Plug 'arcticicestudio/nord-vim'
 Plug 'ryanoasis/vim-devicons'
 
-Plug 'nikvdp/neomux'
+Plug 'vimlab/split-term.vim'
 Plug 'chxuan/vimplus-startify'
 Plug 'godlygeek/tabular'
-Plug 'vim-airline/vim-airline'
+Plug 'pacha/vem-statusline'
+Plug 'wfxr/minimap.vim'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -119,6 +120,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'luochen1990/rainbow'
 
 Plug 'Yggdroot/indentLine'
+Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -127,44 +129,37 @@ Plug 'google/vim-maktaba'
 Plug 'google/vim-codefmt'
 Plug 'google/vim-glaive'
 
-Plug 'rbgrouleff/bclose.vim'
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 
-Plug 'jreybert/vimagit'
 Plug 'airblade/vim-gitgutter'
 
 Plug 'cdelledonne/vim-cmake'
 Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
-Plug 'sheerun/vim-polyglot'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'Shougo/neocomplete.vim'
-Plug 'SirVer/ultisnips'
+Plug 'metalelf0/supertab'
 
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
 Plug 'alvan/vim-closetag'
-Plug 'wfxr/minimap.vim'
 
 Plug 'junegunn/goyo.vim'
 Plug 'ap/vim-css-color'
 Plug 'plasticboy/vim-markdown'
-Plug 'JamshedVesuna/vim-markdown-preview'
 Plug 'jiangmiao/auto-pairs'
 Plug 'rhysd/accelerated-jk'
-Plug 'rlue/vim-barbaric'
 Plug 'junegunn/vim-slash'
 
 Plug 'Shougo/echodoc.vim'
-Plug 'wakatime/vim-wakatime'
 
 call plug#end()
 
 set background=light
-colorscheme nord
+colorscheme one
 
 " Edit Setting
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
@@ -265,8 +260,15 @@ colorscheme nord
 " Files on ctrl+p
   let g:Lf_ShortcutF = '<c-p>'
 
+" Supertab
+  let g:SuperTabDefaultCompletionType = "<c-n>"
+
 " vim-slash
   noremap <plug>(slash-after) zz
+
+" Split-vim
+  noremap <C-w>t :Term<CR>
+  noremap <C-w>T: VTerm<CR>
 
 " AnyJump
   " Normal mode: Jump to definition under cursore
