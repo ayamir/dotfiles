@@ -46,7 +46,7 @@ then
     # Rofi
     sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
     # Nvim
-    sed -i "s/colorscheme nord/colorscheme one/g" ~/.config/nvim/init.vim
+    sed -i "s/colorscheme nord/colorscheme onehalflight/g" ~/.config/nvim/init.vim
     sed -i "s/guifg\=\#BF616A guibg\=\#2E3440/guifg\=\#E06C75 guibg\=\#FAFAFA/g" ~/.config/nvim/plugin/b_minimap.vim
     # Emacs
     sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
@@ -108,7 +108,7 @@ then
     # Rofi
     sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
     # Nvim
-    sed -i "s/colorscheme one/colorscheme nord/g" ~/.config/nvim/init.vim
+    sed -i "s/colorscheme onehalflight/colorscheme nord/g" ~/.config/nvim/init.vim
     sed -i "s/guifg\=\#E06C75 guibg\=\#FAFAFA/guifg\=\#BF616A guibg\=\#2E3440/g" ~/.config/nvim/plugin/b_minimap.vim
     # Emacs
     sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
