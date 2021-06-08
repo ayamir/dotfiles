@@ -111,7 +111,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'vimlab/split-term.vim'
 Plug 'chxuan/vimplus-startify'
 Plug 'godlygeek/tabular'
-Plug 'pacha/vem-statusline'
+Plug 'bluz71/vim-moonfly-statusline'
 Plug 'wfxr/minimap.vim'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree'
@@ -120,7 +120,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'luochen1990/rainbow'
 
 Plug 'Yggdroot/indentLine'
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -138,7 +138,6 @@ Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'Shougo/neocomplete.vim'
 Plug 'metalelf0/supertab'
 
 Plug 'octol/vim-cpp-enhanced-highlight'
@@ -151,6 +150,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'ap/vim-css-color'
 Plug 'plasticboy/vim-markdown'
 Plug 'jiangmiao/auto-pairs'
+Plug 'easymotion/vim-easymotion'
 Plug 'rhysd/accelerated-jk'
 Plug 'junegunn/vim-slash'
 
@@ -158,11 +158,11 @@ Plug 'Shougo/echodoc.vim'
 
 call plug#end()
 
-set background=light
-colorscheme onehalflight
+colorscheme nord
 
 " Edit Setting
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
+  autocmd! bufwritepost $MYVIMRC source $MYVIMRC
 
   augroup autoformat_settings
     autocmd FileType bzl AutoFormatBuffer buildifier
@@ -199,8 +199,6 @@ colorscheme onehalflight
 " Init.vim Setting
   imap jj <Esc>
   nnoremap <leader><leader>v :tabe $MYVIMRC<cr>
-	nnoremap <leader><leader>s :source $MYVIMRC<cr>
-  nnoremap <F3> :set hls!<cr>
 
 " Plug Setting
 	nnoremap <leader><leader>i :PlugInstall<cr>
@@ -208,7 +206,7 @@ colorscheme onehalflight
 	nnoremap <leader><leader>c :PlugClean<cr>
 
 " Common Settings
-    nnoremap <A-r> :@:<cr>
+  nnoremap <A-r> :@:<cr>
 
 " Clipboard
 	set go=a
@@ -267,6 +265,7 @@ colorscheme onehalflight
   noremap <plug>(slash-after) zz
 
 " Split-vim
+  noremap <F3> :set hls!<cr>
   noremap <F5> :Term<CR>
   noremap <C-w>t :Term<CR>
   noremap <C-w>T: VTerm<CR>
@@ -285,8 +284,27 @@ colorscheme onehalflight
   nnoremap <leader>mt :MinimapToggle<cr>
   nnoremap <leader>mr :MinimapRefresh<cr>
 
+" Easymotion
+	nmap <Leader>s <Plug>(easymotion-overwin-f)
+	nmap <leader><leader>s <Plug>(easymotion-overwin-f2)
+
+	" Move to line
+	map <Leader>L <Plug>(easymotion-bd-jk)
+	nmap <Leader>L <Plug>(easymotion-overwin-line)
+
+	" Move to word
+	map  <Leader>w <Plug>(easymotion-bd-w)
+	nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+" moonfly-line
+  let g:moonflyWithGitBranchCharacter = 1
+	let g:moonflyWithNerdIcon = 1
+	let g:moonflyLinterIndicator = "✖"
+	let g:moonflyDiagnosticsIndicator = "✖"
+	let g:moonflyWithCocIndicator = 1
+
 " Sudo on files that require root permission
-    cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+	cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
 " Languages Settings
     let g:rainbow_active = 1
