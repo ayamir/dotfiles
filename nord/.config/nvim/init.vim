@@ -104,7 +104,7 @@ endif
 
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'rakr/vim-one'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'arcticicestudio/nord-vim'
 Plug 'ryanoasis/vim-devicons'
 
@@ -159,7 +159,7 @@ Plug 'Shougo/echodoc.vim'
 call plug#end()
 
 set background=light
-colorscheme one
+colorscheme onehalflight
 
 " Edit Setting
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
