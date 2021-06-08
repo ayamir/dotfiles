@@ -267,6 +267,7 @@ colorscheme onehalflight
   noremap <plug>(slash-after) zz
 
 " Split-vim
+  noremap <F5> :Term<CR>
   noremap <C-w>t :Term<CR>
   noremap <C-w>T: VTerm<CR>
 
