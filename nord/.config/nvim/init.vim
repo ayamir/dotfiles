@@ -112,7 +112,6 @@ Plug 'vimlab/split-term.vim'
 Plug 'chxuan/vimplus-startify'
 Plug 'godlygeek/tabular'
 Plug 'bluz71/vim-moonfly-statusline'
-Plug 'wfxr/minimap.vim'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -158,7 +157,7 @@ Plug 'Shougo/echodoc.vim'
 
 call plug#end()
 
-colorscheme nord
+colorscheme onehalflight
 
 " Edit Setting
 	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
@@ -229,6 +228,10 @@ colorscheme nord
 	nmap <leader>o :setlocal spell! spelllang=en_us<cr>
 
 " Split Navigation shortcuts
+	noremap <C-h> <C-w>h
+	noremap <C-l> <C-w>l
+	noremap <C-j> <C-w>j
+	noremap <C-k> <C-w>k
 	noremap <leader>wv :vsplit<cr>
 	noremap <leader>ws :split<cr>
 
@@ -279,10 +282,6 @@ colorscheme nord
   nnoremap <leader>ab :AnyJumpBack<CR>
   " Normal mode: open last closed search window again
   nnoremap <leader>al :AnyJumpLastResults<CR>
-
-" Minimap
-  nnoremap <leader>mt :MinimapToggle<cr>
-  nnoremap <leader>mr :MinimapRefresh<cr>
 
 " Easymotion
 	nmap <Leader>s <Plug>(easymotion-overwin-f)
