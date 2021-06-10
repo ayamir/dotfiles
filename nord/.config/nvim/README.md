@@ -28,7 +28,7 @@ The first part is the common settings of neovim.
 
 The second part is Vim-Plug's settings which consists of all of my plugins.
 
-The third part is common keybinding settings.
+The third part is common simple keybinding settings about some plugins.
 
 `plugin` directory includes some plugins' specific settings.
 
