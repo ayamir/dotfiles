@@ -306,6 +306,16 @@ colorscheme onehalflight
 " Sudo on files that require root permission
 	cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
+" coc extensions
+	let g:coc_global_extensions = [
+      \'coc-tabnine',
+      \'coc-snippets',
+      \'coc-pyright',
+      \'coc-json',
+	  \'coc-rust-analyzer',
+	  \'coc-clangd'
+      \]
+
 " Languages Settings
 	let g:rainbow_active = 1
 
