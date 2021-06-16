@@ -309,6 +309,8 @@ colorscheme onehalflight
 " Languages Settings
 	let g:rainbow_active = 1
 
+	autocmd BufWritePre *.go :GoImports
+	autocmd FileType go nnoremap <buffer> <slient> <C-o> :GoDefPop<cr>
 	autocmd FileType go nmap <leader>mbb <Plug>(go-build)
 	autocmd FileType go nmap <leader>mbr <Plug>(go-run)
 	autocmd FileType go nmap <leader>mds :GoDebugStart<cr>
