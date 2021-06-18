@@ -10,13 +10,17 @@
 
 ![nvim-light](../../Pictures/shot/light-nvim.png)
 
+![nvim-light-coding](../../Pictures/shot/light-nvim-coding.png)
+
 ![nvim-nord](../../Pictures/shot/nord-nvim.png)
+
+![nvim-nord-coding](../../Pictures/shot/nord-nvim-coding.png)
 
 This is my neovim's configuration.
 
 I use [Vim-Plug](https://github.com/junegunn/vim-plug) to manage plugins.
 
-I use [coc.nvim](https://github.com/neoclide/coc.nvim) to realize completion.
+I use [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) to realize code complete.
 
 <a id="structure"></a>
 
@@ -31,10 +35,6 @@ The second part is Vim-Plug's settings which consists of all of my plugins.
 The third part is common simple keybinding settings about some plugins.
 
 `plugin` directory includes some plugins' specific settings.
-
-`coc-settings.json` is my `coc.nvim`'s settings.(golang, cpp, rust and [tabnine](https://github.com/codota/tabnine-vim) are configured.)
-
-You need to learn how to use coc.nvim on your own.
 
 <a id="usage"></a>
 
