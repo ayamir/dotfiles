@@ -91,7 +91,8 @@ endif
 " Command Completion
 set wildmenu
 set wildmode=longest:full,full
-set completeopt-=preview
+set completeopt=menuone,noselect
+
 
 " Vim-Plug init
 if ! filereadable(expand('~/.config/nvim/autoload/plug.vim'))
@@ -106,38 +107,38 @@ call plug#begin('~/.config/nvim/plugged')
 
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'arcticicestudio/nord-vim'
-Plug 'ryanoasis/vim-devicons'
 
 Plug 'vimlab/split-term.vim'
-Plug 'chxuan/vimplus-startify'
-Plug 'godlygeek/tabular'
-Plug 'bluz71/vim-moonfly-statusline'
+Plug 'glepnir/dashboard-nvim'
+Plug 'glepnir/galaxyline.nvim'
+
 Plug 'majutsushi/tagbar'
-Plug 'scrooloose/nerdtree'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'kyazdani42/nvim-web-devicons' " for file icons
+Plug 'kyazdani42/nvim-tree.lua'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-
+Plug 'godlygeek/tabular'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-commentary'
 Plug 'honza/vim-snippets'
 Plug 'sbdchd/neoformat'
 
-Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 
 Plug 'airblade/vim-gitgutter'
 
 Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'metalelf0/supertab'
+Plug 'neovim/nvim-lspconfig'
+Plug 'kabouzeid/nvim-lspinstall'
+Plug 'hrsh7th/nvim-compe'
+Plug 'onsails/lspkind-nvim'
 
-Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'rust-lang/rust.vim'
-Plug 'cespare/vim-toml'
 Plug 'alvan/vim-closetag'
 
 Plug 'ap/vim-css-color'
@@ -145,8 +146,6 @@ Plug 'oknozor/illumination', { 'dir': '~/.illumination', 'do': '.install.sh' }
 Plug 'jiangmiao/auto-pairs'
 Plug 'rhysd/accelerated-jk'
 Plug 'junegunn/vim-slash'
-
-" Plug 'wakatime/vim-wakatime'
 
 call plug#end()
 
@@ -158,7 +157,7 @@ autocmd! bufwritepost $MYVIMRC source $MYVIMRC
 
 augroup fmt
 	autocmd!
-	autocmd BufWritePre * undojoin | Neoformat
+	autocmd BufWritePre * Neoformat
 augroup END
 
 augroup RELOAD
@@ -237,8 +236,11 @@ nmap k <Plug>(accelerated_jk_gk)
 " Tab Ident with |
 set list lcs=tab:\|\ ""
 
-" Files on ctrl+p
-let g:Lf_ShortcutF = '<c-p>'
+" Telescope
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 " closetag
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.xml'
@@ -255,15 +257,10 @@ let g:closetag_regions = {
 let g:closetag_shortcut = '>'
 let g:closetag_close_shortcut = '<leader>>'
 
-
-" Supertab
-let g:SuperTabDefaultCompletionType = "<c-n>"
-
 " vim-slash
 noremap <plug>(slash-after) zz
 
 " Split-vim
-noremap <F3> :set hls!<cr>
 noremap <F5> :Term<CR>
 noremap <C-w>t :Term<CR>
 noremap <C-w>T: VTerm<CR>
@@ -283,20 +280,10 @@ let g:moonflyWithGitBranchCharacter = 1
 let g:moonflyWithNerdIcon = 1
 let g:moonflyLinterIndicator = "✖"
 let g:moonflyDiagnosticsIndicator = "✖"
-let g:moonflyWithCocIndicator = 1
+let g:moonflyWithNvimLspIndicator = 1
 
 " Sudo on files that require root permission
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
-
-" coc extensions
-let g:coc_global_extensions = [
-			\'coc-tabnine',
-			\'coc-snippets',
-			\'coc-pyright',
-			\'coc-json',
-			\'coc-rust-analyzer',
-			\'coc-clangd'
-			\]
 
 " Languages Settings
 autocmd FileType go nnoremap <buffer> <slient> <C-o> :GoDefPop<cr>
@@ -311,3 +298,4 @@ autocmd FileType go nmap <leader>mdt :GoDebugStop<cr>
 autocmd FileType rust nmap <leader>mbb :Cbuild<cr>
 autocmd FileType rust nmap <leader>mbt :Ctest<cr>
 autocmd FileType rust nmap <leader>mbr :Crun<cr>
+
