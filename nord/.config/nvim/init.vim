@@ -145,6 +145,7 @@ Plug 'ap/vim-css-color'
 Plug 'oknozor/illumination', { 'dir': '~/.illumination', 'do': '.install.sh' }
 Plug 'jiangmiao/auto-pairs'
 Plug 'rhysd/accelerated-jk'
+Plug 'justinmk/vim-sneak'
 Plug 'junegunn/vim-slash'
 
 call plug#end()
@@ -260,6 +261,13 @@ let g:closetag_close_shortcut = '<leader>>'
 " vim-slash
 noremap <plug>(slash-after) zz
 
+" vim-sneak
+let g:sneak#label = 1
+map f <Plug>Sneak_s
+map F <Plug>Sneak_S
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
+
 " Split-vim
 noremap <F5> :Term<CR>
 noremap <C-w>t :Term<CR>
@@ -274,13 +282,6 @@ xnoremap <leader>jv :AnyJumpVisual<CR>
 nnoremap <leader>ab :AnyJumpBack<CR>
 " Normal mode: open last closed search window again
 nnoremap <leader>al :AnyJumpLastResults<CR>
-
-" moonfly-line
-let g:moonflyWithGitBranchCharacter = 1
-let g:moonflyWithNerdIcon = 1
-let g:moonflyLinterIndicator = "✖"
-let g:moonflyDiagnosticsIndicator = "✖"
-let g:moonflyWithNvimLspIndicator = 1
 
 " Sudo on files that require root permission
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
