@@ -63,7 +63,7 @@ set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030
 " vim-interface
 set t_Co=256
 if has('termguicolors')
-    set termguicolors
+	set termguicolors
 endif
 set noeb
 set mouse=a
@@ -83,9 +83,9 @@ let g:webdevicons_enable_startify = 1
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 if has("patch-8.1.1564")
-  set signcolumn=number
+	set signcolumn=number
 else
-  set signcolumn=yes
+	set signcolumn=yes
 endif
 
 " Command Completion
@@ -116,23 +116,18 @@ Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'luochen1990/rainbow'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
 
 Plug 'Yggdroot/indentLine'
-" Plug 'sheerun/vim-polyglot'
-" Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
-" Plug 'tpope/vim-fugitive'
 Plug 'honza/vim-snippets'
-Plug 'google/vim-maktaba'
-Plug 'google/vim-codefmt'
-Plug 'google/vim-glaive'
+Plug 'sbdchd/neoformat'
 
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 
 Plug 'airblade/vim-gitgutter'
 
-Plug 'cdelledonne/vim-cmake'
 Plug 'thinca/vim-quickrun'
 Plug 'pechorin/any-jump.vim'
 
@@ -145,7 +140,6 @@ Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
 Plug 'alvan/vim-closetag'
 
-Plug 'junegunn/goyo.vim'
 Plug 'ap/vim-css-color'
 Plug 'oknozor/illumination', { 'dir': '~/.illumination', 'do': '.install.sh' }
 Plug 'jiangmiao/auto-pairs'
@@ -159,176 +153,161 @@ call plug#end()
 colorscheme onehalflight
 
 " Edit Setting
-	autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
-	autocmd! bufwritepost $MYVIMRC source $MYVIMRC
+autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
+autocmd! bufwritepost $MYVIMRC source $MYVIMRC
 
-	augroup autoformat_settings
-	autocmd FileType bzl AutoFormatBuffer buildifier
-	autocmd FileType c,cpp,proto,javascript,arduino AutoFormatBuffer clang-format
-	autocmd FileType dart AutoFormatBuffer dartfmt
-	autocmd FileType go AutoFormatBuffer gofmt
-	autocmd FileType gn AutoFormatBuffer gn
-	autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
-	autocmd FileType java AutoFormatBuffer google-java-format
-	autocmd FileType python AutoFormatBuffer yapf
-	" Alternative: autocmd FileType python AutoFormatBuffer autopep8
-	autocmd FileType rust AutoFormatBuffer rustfmt
-	autocmd FileType vue AutoFormatBuffer prettier
-	augroup END
+augroup fmt
+	autocmd!
+	autocmd BufWritePre * undojoin | Neoformat
+augroup END
 
-	augroup RELOAD
-	  autocmd!
-	  " Close vim when Nerdtree is last window
-	  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+augroup RELOAD
+	autocmd!
+	" Close vim when Nerdtree is last window
+	autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-	  " Disables automatic commenting on newline:
-	  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+	" Disables automatic commenting on newline:
+	autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
-	  " Automatically deletes all trailing whitespace on save.
-	  autocmd BufWritePre * %s/\s\+$//e
-	augroup END
+	" Automatically deletes all trailing whitespace on save.
+	autocmd BufWritePre * %s/\s\+$//e
+augroup END
 
-	" Automatically change work directory
-	autocmd BufEnter * silent! lcd %:p:h
+" Automatically change work directory
+autocmd BufEnter * silent! lcd %:p:h
 
-	autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
-	autocmd FileType c,cpp,rust,go setlocal tabstop=4
+autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
+autocmd FileType c,cpp,rust,go setlocal tabstop=4
 
 " Init.vim Setting
-	imap jj <Esc>
-	nnoremap <leader><leader>v :tabe $MYVIMRC<cr>
+imap jj <Esc>
+nnoremap <leader><leader>v :tabe $MYVIMRC<cr>
 
 " Plug Setting
-	nnoremap <leader><leader>i :PlugInstall<cr>
-	nnoremap <leader><leader>u :PlugUpdate<cr>
-	nnoremap <leader><leader>c :PlugClean<cr>
+nnoremap <leader><leader>i :PlugInstall<cr>
+nnoremap <leader><leader>u :PlugUpdate<cr>
+nnoremap <leader><leader>c :PlugClean<cr>
 
 " Common Settings
-	nnoremap <A-r> :@:<cr>
+nnoremap <A-r> :@:<cr>
 
 " Clipboard
-	set go=a
-	set clipboard+=unnamedplus
+set go=a
+set clipboard+=unnamedplus
 
 " Clipboard Remap
-	vnoremap <leader>y  "+y
-	nnoremap <leader>Y  "+yg_
-	nnoremap <leader>y  "+y
-	nnoremap <leader>yy  "+yy
-	nnoremap <leader>p "+p
-	nnoremap <leader>P "+P
-	vnoremap <leader>p "+p
-	vnoremap <leader>P "+P
+vnoremap <leader>y  "+y
+nnoremap <leader>Y  "+yg_
+nnoremap <leader>y  "+y
+nnoremap <leader>yy  "+yy
+nnoremap <leader>p "+p
+nnoremap <leader>P "+P
+vnoremap <leader>p "+p
+vnoremap <leader>P "+P
 
 " TagBar
-	nmap <leader>t :TagbarToggle<cr>
+nmap <leader>t :TagbarToggle<cr>
 
 " Spell-check set to <leader>o, 'o' for 'orthography':
-	nmap <leader>o :setlocal spell! spelllang=en_us<cr>
+nmap <leader>o :setlocal spell! spelllang=en_us<cr>
 
 " Split Navigation shortcuts
-	noremap <C-h> <C-w>h
-	noremap <C-l> <C-w>l
-	noremap <C-j> <C-w>j
-	noremap <C-k> <C-w>k
+noremap <C-h> <C-w>h
+noremap <C-l> <C-w>l
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
 
 " Buffer Navigation
-	noremap <A-j> :bn<cr>
-	noremap <A-k> :bp<cr>
-	noremap <A-q> :bw<cr>
-	noremap <A-S-q> :bw!<cr>
+noremap <A-j> :bn<cr>
+noremap <A-k> :bp<cr>
+noremap <A-q> :bw<cr>
+noremap <A-S-q> :bw!<cr>
 
 " Keep selection after shift
-	vnoremap < <gv
-	vnoremap > >gv
+vnoremap < <gv
+vnoremap > >gv
 
 " Replace all is aliased to S.
-	nnoremap S :%s//g<Left><Left>
+nnoremap S :%s//g<Left><Left>
 
 " Accelerated J/K
-	nmap j <Plug>(accelerated_jk_gj)
-	nmap k <Plug>(accelerated_jk_gk)
-
-" Goyo
-	noremap <leader>g :Goyo<cr>
+nmap j <Plug>(accelerated_jk_gj)
+nmap k <Plug>(accelerated_jk_gk)
 
 " Tab Ident with |
-	set list lcs=tab:\|\ ""
+set list lcs=tab:\|\ ""
 
 " Files on ctrl+p
-	let g:Lf_ShortcutF = '<c-p>'
+let g:Lf_ShortcutF = '<c-p>'
 
 " closetag
-	let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.xml'
-	let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
-	let g:closetag_filetypes = 'html,xhtml,phtml'
-	let g:closetag_xhtml_filetypes = 'xhtml,jsx'
-	let g:closetag_emptyTags_caseSensitive = 1
-	let g:closetag_regions = {
-		\ 'typescript.tsx': 'jsxRegion,tsxRegion',
-		\ 'javascript.jsx': 'jsxRegion',
-		\ 'typescriptreact': 'jsxRegion,tsxRegion',
-		\ 'javascriptreact': 'jsxRegion',
-		\ }
-	let g:closetag_shortcut = '>'
-	let g:closetag_close_shortcut = '<leader>>'
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.xml'
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
+let g:closetag_filetypes = 'html,xhtml,phtml'
+let g:closetag_xhtml_filetypes = 'xhtml,jsx'
+let g:closetag_emptyTags_caseSensitive = 1
+let g:closetag_regions = {
+			\ 'typescript.tsx': 'jsxRegion,tsxRegion',
+			\ 'javascript.jsx': 'jsxRegion',
+			\ 'typescriptreact': 'jsxRegion,tsxRegion',
+			\ 'javascriptreact': 'jsxRegion',
+			\ }
+let g:closetag_shortcut = '>'
+let g:closetag_close_shortcut = '<leader>>'
 
 
 " Supertab
-	let g:SuperTabDefaultCompletionType = "<c-n>"
+let g:SuperTabDefaultCompletionType = "<c-n>"
 
 " vim-slash
-	noremap <plug>(slash-after) zz
+noremap <plug>(slash-after) zz
 
 " Split-vim
-	noremap <F3> :set hls!<cr>
-	noremap <F5> :Term<CR>
-	noremap <C-w>t :Term<CR>
-	noremap <C-w>T: VTerm<CR>
+noremap <F3> :set hls!<cr>
+noremap <F5> :Term<CR>
+noremap <C-w>t :Term<CR>
+noremap <C-w>T: VTerm<CR>
 
 " AnyJump
-	" Normal mode: Jump to definition under cursore
-	nnoremap <leader>jj :AnyJump<CR>
-	" Visual mode: jump to selected text in visual mode
-	xnoremap <leader>jv :AnyJumpVisual<CR>
-	" Normal mode: open previous opened file (after jump)
-	nnoremap <leader>ab :AnyJumpBack<CR>
-	" Normal mode: open last closed search window again
-	nnoremap <leader>al :AnyJumpLastResults<CR>
+" Normal mode: Jump to definition under cursore
+nnoremap <leader>jj :AnyJump<CR>
+" Visual mode: jump to selected text in visual mode
+xnoremap <leader>jv :AnyJumpVisual<CR>
+" Normal mode: open previous opened file (after jump)
+nnoremap <leader>ab :AnyJumpBack<CR>
+" Normal mode: open last closed search window again
+nnoremap <leader>al :AnyJumpLastResults<CR>
 
 " moonfly-line
-	let g:moonflyWithGitBranchCharacter = 1
-	let g:moonflyWithNerdIcon = 1
-	let g:moonflyLinterIndicator = "✖"
-	let g:moonflyDiagnosticsIndicator = "✖"
-	let g:moonflyWithCocIndicator = 1
+let g:moonflyWithGitBranchCharacter = 1
+let g:moonflyWithNerdIcon = 1
+let g:moonflyLinterIndicator = "✖"
+let g:moonflyDiagnosticsIndicator = "✖"
+let g:moonflyWithCocIndicator = 1
 
 " Sudo on files that require root permission
-	cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
 " coc extensions
-	let g:coc_global_extensions = [
-      \'coc-tabnine',
-      \'coc-snippets',
-      \'coc-pyright',
-      \'coc-json',
-	  \'coc-rust-analyzer',
-	  \'coc-clangd'
-      \]
+let g:coc_global_extensions = [
+			\'coc-tabnine',
+			\'coc-snippets',
+			\'coc-pyright',
+			\'coc-json',
+			\'coc-rust-analyzer',
+			\'coc-clangd'
+			\]
 
 " Languages Settings
-	let g:rainbow_active = 1
+autocmd FileType go nnoremap <buffer> <slient> <C-o> :GoDefPop<cr>
+autocmd FileType go nmap <leader>mbb <Plug>(go-build)
+autocmd FileType go nmap <leader>mbr <Plug>(go-run)
+autocmd FileType go nmap <leader>mds :GoDebugStart<cr>
+autocmd FileType go nmap <leader>mdb :GoDebugBreakpoint<cr>
+autocmd FileType go nmap <leader>mdc :GoDebugContinue<cr>
+autocmd FileType go nmap <leader>mdo :GoDebugStepOut<cr>
+autocmd FileType go nmap <leader>mdt :GoDebugStop<cr>
 
-	autocmd BufWritePre *.go :GoImports
-	autocmd FileType go nnoremap <buffer> <slient> <C-o> :GoDefPop<cr>
-	autocmd FileType go nmap <leader>mbb <Plug>(go-build)
-	autocmd FileType go nmap <leader>mbr <Plug>(go-run)
-	autocmd FileType go nmap <leader>mds :GoDebugStart<cr>
-	autocmd FileType go nmap <leader>mdb :GoDebugBreakpoint<cr>
-	autocmd FileType go nmap <leader>mdc :GoDebugContinue<cr>
-	autocmd FileType go nmap <leader>mdo :GoDebugStepOut<cr>
-	autocmd FileType go nmap <leader>mdt :GoDebugStop<cr>
-
-	autocmd FileType rust nmap <leader>mbb :Cbuild<cr>
-	autocmd FileType rust nmap <leader>mbt :Ctest<cr>
-	autocmd FileType rust nmap <leader>mbr :Crun<cr>
+autocmd FileType rust nmap <leader>mbb :Cbuild<cr>
+autocmd FileType rust nmap <leader>mbt :Ctest<cr>
+autocmd FileType rust nmap <leader>mbr :Crun<cr>
