@@ -120,7 +120,6 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'godlygeek/tabular'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-commentary'
-Plug 'honza/vim-snippets'
 Plug 'sbdchd/neoformat'
 
 Plug 'nvim-lua/popup.nvim'
@@ -134,8 +133,11 @@ Plug 'pechorin/any-jump.vim'
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'kabouzeid/nvim-lspinstall'
-Plug 'hrsh7th/nvim-compe'
 Plug 'onsails/lspkind-nvim'
+
+Plug 'hrsh7th/nvim-compe'
+Plug 'tzachar/compe-tabnine', { 'do': './install.sh' }
+Plug 'norcalli/snippets.nvim'
 
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'rust-lang/rust.vim'
@@ -150,7 +152,7 @@ Plug 'junegunn/vim-slash'
 
 call plug#end()
 
-colorscheme onehalflight
+colorscheme nord
 
 " Edit Setting
 autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
@@ -163,9 +165,6 @@ augroup END
 
 augroup RELOAD
 	autocmd!
-	" Close vim when Nerdtree is last window
-	autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
 	" Disables automatic commenting on newline:
 	autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
