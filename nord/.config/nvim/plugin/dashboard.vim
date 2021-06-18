@@ -1,5 +1,6 @@
 " Dashboard
 let g:mapleader=","
+let g:dashboard_session_directory = '~/.nvim/session'
 let g:dashboard_default_executive ='telescope'
 let g:indentLine_fileTypeExclude = ['dashboard']
 autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
