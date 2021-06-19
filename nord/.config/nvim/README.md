@@ -97,7 +97,7 @@ The third part is common simple keybinding settings about some plugins.
 | [compe-tabnine](https://github.com/tzachar/compe-tabnine)                | Tabnine port for nvim-compe           |
 | [snippets.nvim](https://github.com/norcalli/snippets.nvim)               | Snippets port for nvim-compe          |
 | [vim-go](https://github.com/fatih/vim-go)                                | Most powerful plugin for go           |
-| [rust.vim](https://github.com/rust-lang/rust.vim)                        | plugin for rust                       |
+| [rust.vim](https://github.com/rust-lang/rust.vim)                        | Plugin for rust                       |
 | [vim-css-color](https://github.com/ap/vim-css-color)                     | Display detected color                |
 | [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim) | Markdown-preview out of box           |
 
