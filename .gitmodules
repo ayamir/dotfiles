@@ -1,0 +1,3 @@
+[submodule "nord/.config/nvim"]
+	path = nord/.config/nvim
+	url = https://github.com/ayamir/nvimdots
