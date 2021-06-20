@@ -1,8 +1,7 @@
 #!/bin/bash
 
 rm ~/.dwm
-if [[ `ps -ef | grep polybar | grep -v grep | wc -l` == 1 ]]
-then
+if [[ $(pgrep polybar | wc -l) == 1 ]]; then
     ln -s ~/.dwm-ori ~/.dwm
     killall polybar
 else
