@@ -43,10 +43,10 @@ if [ $1 == "l" ]; then
     sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
     # Nvim
     sed -i "s/colorscheme nord/colorscheme onehalflight/g" ~/.config/nvim/init.vim
-    sed -i "s/bg       = '#2e3440'/bg       = '#fafafa'/g" ~/.config/nvim/plugin/galaxyline.vim
-    sed -i "s/fg       = '#eceff4'/fg       = '#2e3440'/g" ~/.config/nvim/plugin/galaxyline.vim
-    sed -i "s/line_bg  = '#3b4252'/line_bg  = '#f0f0f0'/g" ~/.config/nvim/plugin/galaxyline.vim
-    sed -i "s/mode_bg  = '#3b4252'/mode_bg  = '#f0f0f0'/g" ~/.config/nvim/plugin/galaxyline.vim
+    sed -i "s/bg       = '#2e3440'/bg       = '#fafafa'/g" ~/.config/nvim/plugin/galaxyline.lua
+    sed -i "s/fg       = '#eceff4'/fg       = '#2e3440'/g" ~/.config/nvim/plugin/galaxyline.lua
+    sed -i "s/line_bg  = '#3b4252'/line_bg  = '#f0f0f0'/g" ~/.config/nvim/plugin/galaxyline.lua
+    sed -i "s/mode_bg  = '#3b4252'/mode_bg  = '#f0f0f0'/g" ~/.config/nvim/plugin/galaxyline.lua
     # Emacs
     sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
     # Code
@@ -103,10 +103,10 @@ elif [ $1 == "n" ]; then
     sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
     # Nvim
     sed -i "s/colorscheme onehalflight/colorscheme nord/g" ~/.config/nvim/init.vim
-    sed -i "s/bg       = '#fafafa'/bg       = '#2e3440'/g" ~/.config/nvim/plugin/galaxyline.vim
-    sed -i "s/fg       = '#2e3440'/fg       = '#eceff4'/g" ~/.config/nvim/plugin/galaxyline.vim
-    sed -i "s/line_bg  = '#f0f0f0'/line_bg  = '#3b4252'/g" ~/.config/nvim/plugin/galaxyline.vim
-    sed -i "s/mode_bg  = '#f0f0f0'/mode_bg  = '#3b4252'/g" ~/.config/nvim/plugin/galaxyline.vim
+    sed -i "s/bg       = '#fafafa'/bg       = '#2e3440'/g" ~/.config/nvim/plugin/galaxyline.lua
+    sed -i "s/fg       = '#2e3440'/fg       = '#eceff4'/g" ~/.config/nvim/plugin/galaxyline.lua
+    sed -i "s/line_bg  = '#f0f0f0'/line_bg  = '#3b4252'/g" ~/.config/nvim/plugin/galaxyline.lua
+    sed -i "s/mode_bg  = '#f0f0f0'/mode_bg  = '#3b4252'/g" ~/.config/nvim/plugin/galaxyline.lua
     # Emacs
     sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
     # Code
