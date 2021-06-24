@@ -75,7 +75,9 @@ You can see all of 18 patches I have applied in `./patches` dir.
 
     let you can focus master window through a shortcut
 
--   dwm-functionalgaps-pertagfunctionality-6.2.diff
+-   dwm-uselessgap-20200719-bb2e722.diff
+
+    gaps appear when window number > 1
 
     merge full gaps with pertag
 

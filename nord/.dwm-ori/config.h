@@ -4,12 +4,7 @@
 
 /* appearance */
 static const unsigned int borderpx = 2; /* border pixel of windows */
-static const int startwithgaps[] = {
-    1}; /* 1 means gaps are used by default, this can be customized for each tag
-         */
-static const unsigned int gappx[] = {
-    10}; /* default gap between windows in pixels, this can be customized for
-            each tag */
+static const unsigned int gappx = 6;
 static const unsigned int snap = 32; /* snap pixel */
 static const int showbar = 1;        /* 0 means no bar */
 static const int topbar = 1;         /* 0 means bottom bar */
@@ -85,7 +80,9 @@ static const Rule rules[] = {
     {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, -1},
     {"jetbrains-idea", NULL, NULL, 1 << 1, 0, -1},
     {"jetbrains-clion", NULL, NULL, 1 << 1, 0, -1},
-    {"Jigsaw", NULL, NULL, 1 << 1, 1, -1},
+    {"jetbrains-goland", NULL, NULL, 1 << 1, 0, -1},
+    {"jetbrains-pycharm", NULL, NULL, 1 << 1, 0, -1},
+    {"jetbrains-studio", NULL, NULL, 1 << 1, 0, -1},
 
     {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, -1},
     {"Firefox", NULL, NULL, 1 << 2, 0, -1},
@@ -107,6 +104,7 @@ static const Rule rules[] = {
 
     {"Qq", "qq", NULL, 1 << 6, 1, -1},
     {"Freechat", "freechat", NULL, 1 << 6, 0, -1},
+    {"electron-qq", "electron-qq", NULL, 1 << 6, 0, -1},
     {"Postman", "postman", NULL, 1 << 6, 0, -1},
 
     {"TelegramDesktop", NULL, NULL, 1 << 7, 0, -1},
@@ -117,6 +115,7 @@ static const Rule rules[] = {
     {"xdman-Main", NULL, NULL, 0, 1, -1},
     {"Nitrogen", NULL, NULL, 0, 1, -1},
     {"lxappearance", NULL, NULL, 0, 1, -1},
+    {"Qalculate-gtk", NULL, NULL, 0, 1, -1},
 };
 
 /* layout(s) */
@@ -219,7 +218,6 @@ static Key keys[] = {
     {MODKEY, XK_i, setlayout, {.v = &layouts[5]}},
     {MODKEY, XK_o, setlayout, {.v = &layouts[6]}},
 
-    {MODKEY, XK_space, setlayout, {0}},
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
 
     {MODKEY, XK_0, view, {.ui = ~0}},
@@ -234,11 +232,6 @@ static Key keys[] = {
     {MODKEY | ShiftMask, XK_comma, shiftview, {.i = -1}},
     {MODKEY | ShiftMask, XK_period, shiftview, {.i = +1}},
 
-    {MODKEY, XK_minus, setgaps, {.i = -5}},
-    {MODKEY, XK_equal, setgaps, {.i = +5}},
-    {MODKEY | ShiftMask, XK_minus, setgaps, {.i = GAP_RESET}},
-    {MODKEY | ShiftMask, XK_equal, setgaps, {.i = GAP_TOGGLE}},
-
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
 
     /* My Own App Start Ways */
@@ -249,7 +242,7 @@ static Key keys[] = {
     {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty -e zsh")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
     {MODKEY | ShiftMask, XK_s, spawn, CMD("flameshot gui")},
-    {MODKEY | ShiftMask, XK_n, spawn, CMD("thunar")},
+    {MODKEY | ShiftMask, XK_n, spawn, CMD("nemo")},
     {MODKEY | ShiftMask, XK_m, spawn,
      CMD("kitty --class kitty-music -e ncmpcpp")},
     {MODKEY | ShiftMask, XK_h, spawn, CMD("alacritty -e htop")},

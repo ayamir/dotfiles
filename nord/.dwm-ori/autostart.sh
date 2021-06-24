@@ -3,7 +3,7 @@
 sh ~/.fehbg
 wmname compiz
 
-arr=("goblocks" "xfce4-power-manager" "copyq" "fcitx5" "dunst" "clipmenud" "mpd" "picom" "qv2ray" "solaar" "qbittorrent")
+arr=("goblocks" "xfce4-power-manager" "copyq" "fcitx5" "dunst" "clipmenud" "mpd" "picom" "qv2ray" "solaar" "qbittorrent" "nutstore")
 
 for value in ${arr[@]}
 do
