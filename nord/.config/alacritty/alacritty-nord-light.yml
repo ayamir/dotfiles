@@ -87,7 +87,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux) sourcecodepro 14
     #   - (Windows) Consolas
-    family: Liga SFMono Nerd Font
+    family: JetBrainsMono Nerd Font
     style: Regular
     # The `style` can be specified to pick a specific face.
     #style: Regular
@@ -98,7 +98,7 @@ font:
     #
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: Liga SFMono Nerd Font
+    family: JetBrainsMono Nerd Font
     # Rec Mono Linear
     # The `style` can be specified to pick a specific face.
     style: Bold
@@ -109,7 +109,7 @@ font:
     #
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: Liga SFMono Nerd Font
+    family: JetBrainsMono Nerd Font
     # Rec Mono Linear
     # The `style` can be specified to pick a specific face.
     style: Italic
@@ -152,38 +152,32 @@ font:
     # Keep the log file after quitting Alacritty.
     persistent_logging: false
 
-# Colors (Nord)
+# Colors (One Half Light)
 colors:
-  # Default colors
   primary:
-    background: '#D8DEE9'
-    foreground: '#3B4252'
+    background: '0xfafafa'
+    foreground: '0x383a42'
 
-  cursor:
-    text: '#E3EAF5'
-    cursor: '#899ba6'
-
-  # Normal colors
   normal:
-    black: '#3B4252'
-    red: '#BF616A'
-    green: '#A3BE8C'
-    yellow: '#EBCB8B'
-    blue: '#81A1C1'
-    magenta: '#B48EAD'
-    cyan: '#88C0D0'
-    white: '#ECEFF4'
+    black: '0x383a42'
+    red: '0xe45649'
+    green: '0x50a14f'
+    yellow: '0xc18401'
+    blue: '0x0184bc'
+    magenta: '0xa626a4'
+    cyan: '0x0997b3'
+    white: '0xfafafa'
 
-  # Bright colors
   bright:
-    black: '#899BA6'
-    red: '#F2C38F'
-    green: '#4F894C'
-    yellow: '#DADA93'
-    blue: '#83AFE5'
-    magenta: '#D18EC2'
-    cyan: '#7FC1CA'
-    white: '#E6EEF3'
+    black: '0x383a42'
+    red: '0xe45649'
+    green: '0x50a14f'
+    yellow: '0xc18401'
+    blue: '0x0184bc'
+    magenta: '0xa626a4'
+    cyan: '0x0997b3'
+    white: '0xfafafa'
+
 
 bell:
   animation: EaseOutExpo
@@ -225,7 +219,7 @@ mouse:
   # If this is `true`, the cursor is temporarily hidden when typing.
   hide_when_typing: false
 
-  url:
+  hints:
     # URL launcher
     #
     # This program is executed when clicking on a text which is recognized as a URL.

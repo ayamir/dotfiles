@@ -1,6 +1,6 @@
 set selection-clipboard clipboard
 
-set font			"JetBrains Mono 10"
+set font			"Roboto Mono 10"
 set default-fg 			"#eceff4"
 set default-bg 			"#2e3440"
 
