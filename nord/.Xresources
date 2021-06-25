@@ -6,12 +6,6 @@ Xft.autohint: false
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
-dwm.normbgcolor: #ECEFF4
-dwm.normbordercolor: #3B4252
-dwm.normfgcolor: #2E3440
-dwm.selfgcolor: #3B4252
-dwm.selbordercolor: #B48EAD
-dwm.selbgcolor: #8FBCBB
 
 #define nord0 #2E3440
 #define nord1 #3B4252
@@ -29,6 +23,14 @@ dwm.selbgcolor: #8FBCBB
 #define nord13 #EBCB8B
 #define nord14 #A3BE8C
 #define nord15 #B48EAD
+
+
+dwm.normbgcolor: #FAFAFA
+dwm.normbordercolor: #FAFAFA
+dwm.normfgcolor: #2E3440
+dwm.selfgcolor: #3B4252
+dwm.selbordercolor: #B48EAD
+dwm.selbgcolor: #8FBCBB
 
 *.foreground:   nord4
 *.background:   nord0

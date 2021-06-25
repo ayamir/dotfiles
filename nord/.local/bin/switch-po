@@ -1,26 +1,21 @@
 #!/usr/bin/env bash
 
-if [ $1 == "l" ]
-then
+if [ $1 == "l" ]; then
     # Fcitx5
     sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
     killall fcitx5
-    # Conky
-    sed -i "s/bottom_right/top_left/g" ~/.config/conky/conky.conf
-    sed -i "s/5E81AC/88C0D0/g" ~/.config/conky/conky.conf
-    sed -i "s/ECEFF4/2E3440/g" ~/.config/conky/conky.conf
     # Wallpaper
     feh --bg-fill ~/Pictures/ayanami/1.png
     # Dunst
     cp ~/.config/dunst/dunstrc-nord-light ~/.config/dunst/dunstrc
     killall dunst
     # Dmenu
-    sed -i "s/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/g" ~/.dmenu/config.def.h
-    sed -i "s/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
     fish -c dmenu_recompile
     # St
-    sed -i "s/\"#2e3440\", \/\* back/\"#d8dee9\", \/\* back/g" ~/.st/config.def.h
-    sed -i "s/\"#d8dee9\", \/\* fore/\"#2e3440\", \/\* fore/g" ~/.st/config.def.h
+    sed -i "s/\"#2e3440\", \/\* back/\"#fafafa\", \/\* back/g" ~/.st/config.def.h
+    sed -i "s/\"#fafafa\", \/\* fore/\"#2e3440\", \/\* fore/g" ~/.st/config.def.h
     fish -c st_recompile
     # Alacritty
     cp ~/.config/alacritty/alacritty-nord-light.yml ~/.config/alacritty/alacritty.yml
@@ -40,41 +35,38 @@ then
     sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
     # Nvim
     sed -i "s/colorscheme nord/colorscheme onehalflight/g" ~/.config/nvim/init.vim
-    sed -i "s/guifg\=\#BF616A guibg\=\#2E3440/guifg\=\#E06C75 guibg\=\#FAFAFA/g" ~/.config/nvim/plugin/b_minimap.vim
+    sed -i "s/bg       = '#2e3440'/bg       = '#fafafa'/g" ~/.config/nvim/plugin/galaxyline.vim
+    sed -i "s/fg       = '#eceff4'/fg       = '#2e3440'/g" ~/.config/nvim/plugin/galaxyline.vim
+    sed -i "s/line_bg  = '#3b4252'/line_bg  = '#f0f0f0'/g" ~/.config/nvim/plugin/galaxyline.vim
+    sed -i "s/mode_bg  = '#3b4252'/mode_bg  = '#f0f0f0'/g" ~/.config/nvim/plugin/galaxyline.vim
     # Emacs
     sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
-    emacsclient -e '(kill-emacs)'
     # Code
     sed -i "s/Nord/Atom One Light/g" ~/.config/Code/User/settings.json
     # Sublime
-    sed -i "s/Nord\/Nord.sublime-color-scheme/One Half Color Schemes\/OneHalfLight.tmTheme/g" ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+    sed -i "s/Nord\/Nord.sublime-color-scheme/One Half Color Schemes\/OneHalfLight.tmTheme/g" ~/.config/sublime-text/Packages/User/Preferences.sublime-settings
     # Zathura
     cp ~/.config/zathura/zathurarc-nord-light ~/.config/zathura/zathurarc
     # Daemons
     sh ~/.local/bin/startdaemon
     # Notify
     notify-send "Switch to Light Now!" -i ~/Pictures/nord.png -t 3000
-elif [ $1 == "n" ]
-then
+elif [ $1 == "n" ]; then
     # Fcitx5
     sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
     killall fcitx5
-    # Conky
-    sed -i "s/top_left/bottom_right/g" ~/.config/conky/conky.conf
-    sed -i "s/88C0D0/5E81AC/g" ~/.config/conky/conky.conf
-    sed -i "s/2E3440/ECEFF4/g" ~/.config/conky/conky.conf
     # Wallpaper
     feh --bg-fill ~/Pictures/nord/ign-0001.png
     # Dunst
     cp ~/.config/dunst/dunstrc-nord-dark ~/.config/dunst/dunstrc
     killall dunst
     # Dmenu
-    sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
-    sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
     fish -c dmenu_recompile
     # St
-    sed -i "s/\"#d8dee9\", \/\* back/\"#2e3440\", \/\* back/g" ~/.st/config.def.h
-    sed -i "s/\"#2e3440\", \/\* fore/\"#d8dee9\", \/\* fore/g" ~/.st/config.def.h
+    sed -i "s/\"#FAFAFA\", \/\* back/\"#2e3440\", \/\* back/g" ~/.st/config.def.h
+    sed -i "s/\"#2e3440\", \/\* fore/\"#FAFAFA\", \/\* fore/g" ~/.st/config.def.h
     fish -c st_recompile
     # Alacritty
     cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
@@ -92,16 +84,20 @@ then
     pkill -1 xsettingsd
     # Rofi
     sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
+    # Vim
+    sed -i 's/colorscheme onehalflight/colorscheme nord/g' ~/.vimrc
     # Nvim
     sed -i "s/colorscheme onehalflight/colorscheme nord/g" ~/.config/nvim/init.vim
-    sed -i "s/guifg\=\#E06C75 guibg\=\#FAFAFA/guifg\=\#BF616A guibg\=\#2E3440/g" ~/.config/nvim/plugin/b_minimap.vim
+    sed -i "s/bg       = '#fafafa'/bg       = '#2e3440'/g" ~/.config/nvim/plugin/galaxyline.vim
+    sed -i "s/fg       = '#2e3440'/fg       = '#eceff4'/g" ~/.config/nvim/plugin/galaxyline.vim
+    sed -i "s/line_bg  = '#f0f0f0'/line_bg  = '#3b4252'/g" ~/.config/nvim/plugin/galaxyline.vim
+    sed -i "s/mode_bg  = '#f0f0f0'/mode_bg  = '#3b4252'/g" ~/.config/nvim/plugin/galaxyline.vim
     # Emacs
     sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
-    emacsclient -e '(kill-emacs)'
     # Code
     sed -i "s/Atom One Light/Nord/g" ~/.config/Code/User/settings.json
     # Sublime
-    sed -i "s/One Half Color Schemes\/OneHalfLight.tmTheme/Nord\/Nord.sublime-color-scheme/g" ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+    sed -i "s/One Half Color Schemes\/OneHalfLight.tmTheme/Nord\/Nord.sublime-color-scheme/g" ~/.config/sublime-text/Packages/User/Preferences.sublime-settings
     # Zathura
     cp ~/.config/zathura/zathurarc-nord-dark ~/.config/zathura/zathurarc
     # Daemons

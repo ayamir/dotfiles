@@ -10,22 +10,22 @@ if [ $1 == "l" ]; then
     cp ~/.config/dunst/dunstrc-nord-light ~/.config/dunst/dunstrc
     killall dunst
     # Dwm
-    sed -i "s/dwm.normbgcolor: #2E3440/dwm.normbgcolor: #ECEFF4/g" ~/.Xresources
-    sed -i "s/dwm.normbordercolor: #3E4252/dwm.normbordercolor: #D8DEE9/g" ~/.Xresources
-    sed -i "s/dwm.normfgcolor: #ECEFF4/dwm.normfgcolor: #2E3440/g" ~/.Xresources
-    sed -i "s/dwm.selfgcolor: #D8DEE9/dwm.selfgcolor: #3B4252/g" ~/.Xresources
+    sed -i "s/dwm.normbgcolor: #2E3440/dwm.normbgcolor: #FAFAFA/g" ~/.Xresources
+    sed -i "s/dwm.normbordercolor: #3B4252/dwm.normbordercolor: #FAFAFA/g" ~/.Xresources
+    sed -i "s/dwm.normfgcolor: #FAFAFA/dwm.normfgcolor: #2E3440/g" ~/.Xresources
+    sed -i "s/dwm.selfgcolor: #FAFAFA/dwm.selfgcolor: #3B4252/g" ~/.Xresources
     sed -i "s/dwm.selbgcolor: #5E81AC/dwm.selbgcolor: #88C0D0/g" ~/.Xresources
     xrdb ~/.Xresources
     pkill -1 dwm
     # Polybar
     cp ~/.config/polybar/colors-nord-light ~/.config/polybar/colors
     # Dmenu
-    sed -i "s/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/g" ~/.dmenu/config.def.h
-    sed -i "s/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
     fish -c dmenu_recompile
     # St
-    sed -i "s/\"#2e3440\", \/\* back/\"#d8dee9\", \/\* back/g" ~/.st/config.def.h
-    sed -i "s/\"#d8dee9\", \/\* fore/\"#2e3440\", \/\* fore/g" ~/.st/config.def.h
+    sed -i "s/\"#2e3440\", \/\* back/\"#fafafa\", \/\* back/g" ~/.st/config.def.h
+    sed -i "s/\"#fafafa\", \/\* fore/\"#2e3440\", \/\* fore/g" ~/.st/config.def.h
     fish -c st_recompile
     # Alacritty
     cp ~/.config/alacritty/alacritty-nord-light.yml ~/.config/alacritty/alacritty.yml
@@ -70,22 +70,22 @@ elif [ $1 == "n" ]; then
     # Mako
     killall dunst
     # Dwm
-    sed -i "s/dwm.normbgcolor: #ECEFF4/dwm.normbgcolor: #2E3440/g" ~/.Xresources
-    sed -i "s/dwm.normbordercolor: #D8DEE9/dwm.normbordercolor: #3B4252/g" ~/.Xresources
-    sed -i "s/dwm.normfgcolor: #2E3440/dwm.normfgcolor: #ECEFF4/g" ~/.Xresources
-    sed -i "s/dwm.selfgcolor: #3B4252/dwm.selfgcolor: #D8DEE9/g" ~/.Xresources
+    sed -i "s/dwm.normbgcolor: #FAFAFA/dwm.normbgcolor: #2E3440/g" ~/.Xresources
+    sed -i "s/dwm.normbordercolor: #FAFAFA/dwm.normbordercolor: #3B4252/g" ~/.Xresources
+    sed -i "s/dwm.normfgcolor: #2E3440/dwm.normfgcolor: #FAFAFA/g" ~/.Xresources
+    sed -i "s/dwm.selfgcolor: #3B4252/dwm.selfgcolor: #FAFAFA/g" ~/.Xresources
     sed -i "s/dwm.selbgcolor: #88C0D0/dwm.selbgcolor: #5E81AC/g" ~/.Xresources
     xrdb ~/.Xresources
     pkill -1 dwm
     # Polybar
     cp ~/.config/polybar/colors-nord-dark ~/.config/polybar/colors
     # Dmenu
-    sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#ECEFF4\"/\[SchemeNorm\] \= {\"\#ECEFF4\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
-    sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#D8DEE9\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
     fish -c dmenu_recompile
     # St
-    sed -i "s/\"#d8dee9\", \/\* back/\"#2e3440\", \/\* back/g" ~/.st/config.def.h
-    sed -i "s/\"#2e3440\", \/\* fore/\"#d8dee9\", \/\* fore/g" ~/.st/config.def.h
+    sed -i "s/\"#fafafa\", \/\* back/\"#2e3440\", \/\* back/g" ~/.st/config.def.h
+    sed -i "s/\"#2e3440\", \/\* fore/\"#fafafa\", \/\* fore/g" ~/.st/config.def.h
     fish -c st_recompile
     # Alacritty
     cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml

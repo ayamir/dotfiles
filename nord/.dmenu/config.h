@@ -66,8 +66,8 @@ static const char *colors[][2] =
 #endif // XRESOURCES_PATCH
     {
         /*               fg         bg       */
-        [SchemeNorm] = {"#ECEFF4", "#2E3440"},
-        [SchemeSel] = {"#D8DEE9", "#5E81AC"},
+        [SchemeNorm] = {"#2E3440", "#FAFAFA"},
+        [SchemeSel] = {"#3B4252", "#88C0D0"},
         [SchemeOut] = {"#000000", "#00ffff"},
 #if MORECOLOR_PATCH
         [SchemeMid] = {"#D3DAE3", "#770000"},
