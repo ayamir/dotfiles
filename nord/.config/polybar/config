@@ -1,12 +1,12 @@
 ; vim:ft=dosini
 ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 ;;
-;;	    ____        __      __              
-;;	   / __ \____  / /_  __/ /_  ____ ______
-;;	  / /_/ / __ \/ / / / / __ \/ __ `/ ___/
-;;	 / ____/ /_/ / / /_/ / /_/ / /_/ / /    
-;;	/_/    \____/_/\__, /_.___/\__,_/_/     
-;;	              /____/                    
+;;    ____        __      __
+;;     / __ \____  / /_  __/ /_  ____ ______
+;;    / /_/ / __ \/ / / / / __ \/ __ `/ ___/
+;;   / ____/ /_/ / / /_/ / /_/ / /_/ / /
+;;  /_/    \____/_/\__, /_.___/\__,_/_/
+;;          /____/
 ;;
 ;; Created By Aditya Shakya @adi1090x
 ;;
@@ -22,7 +22,7 @@ margin-top = 0
 include-file = ~/.config/polybar/colors
 
 [bar/main]
-monitor = 
+monitor =
 monitor-strict = false
 override-redirect = false
 
@@ -59,8 +59,8 @@ font-4 = Sarasa UI SC:size=12;2
 
 
 modules-left = dwm
-modules-center = 
-modules-right = mpd volume backlight battery date  
+modules-center = mpd
+modules-right = network cpu memory volume backlight battery date
 
 separator =
 spacing = 0
@@ -93,11 +93,11 @@ compositing-border = over
 
 ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
 ;;
-;;	    __  ___          __      __         
-;;	   /  |/  /___  ____/ /_  __/ /__  _____
-;;	  / /|_/ / __ \/ __  / / / / / _ \/ ___/
-;;	 / /  / / /_/ / /_/ / /_/ / /  __(__  ) 
-;;	/_/  /_/\____/\__,_/\__,_/_/\___/____/  
+;;    __  ___          __      __
+;;     /  |/  /___  ____/ /_  __/ /__  _____
+;;    / /|_/ / __ \/ __  / / / / / _ \/ ___/
+;;   / /  / / /_/ / /_/ / /_/ / /  __(__  )
+;;  /_/  /_/\____/\__,_/\__,_/_/\___/____/
 ;;
 ;; Created By Aditya Shakya @adi1090x
 ;;
@@ -141,7 +141,7 @@ secondary-layout-symbol = [M]
 label-title = %title%
 label-title-padding = 1
 label-title-foreground = ${color.CYAN}
-label-title-maxlen = 60
+label-title-maxlen = 30
 
 ; Symbol of current layout
 ; Available tokens:
@@ -259,7 +259,7 @@ format-prefix-foreground = ${color.BLUE}
 ;   %gb_swap_free%
 ;   %gb_swap_used%
 
-label = " %mb_used%"
+label = " %percentage_used%%"
 
 ; Only applies if <ramp-used> is used
 ;;ramp-used-0 = 
@@ -284,7 +284,7 @@ format-background = ${color.BACKGROUND}
 format-padding = 2
 
 label-maxlen = 30
-label-empty = 
+label-empty =
 
 [module/volume]
 type = internal/pulseaudio
@@ -368,7 +368,7 @@ poll-interval = 2
 time-format = %H:%M:%S
 
 format-charging = <animation-charging> <label-charging>
-format-charging-prefix = 
+format-charging-prefix =
 
 format-discharging = <ramp-capacity> <label-discharging>
 
@@ -574,7 +574,7 @@ icon-next-foreground = ${color.CYAN}
 
 [module/network]
 type = internal/network
-interface = wlan0
+interface = wlp3s0
 
 interval = 1.0
 
@@ -603,10 +603,10 @@ ramp-signal-font = 2
 ramp-signal-foreground = ${color.CYAN}
 
 ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-;;	    __________  ______
-;;	   / ____/ __ \/ ____/
-;;	  / __/ / / / / /_    
-;;	 / /___/ /_/ / __/    
-;;	/_____/\____/_/       
+;;    __________  ______
+;;     / ____/ __ \/ ____/
+;;    / __/ / / / / /_
+;;   / /___/ /_/ / __/
+;;  /_____/\____/_/
 ;;
 ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
