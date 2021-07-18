@@ -1,8 +1,9 @@
 #!/bin/bash
 
 sh ~/.fehbg
+wmname compiz
 
-arr=("xfce4-power-manager" "copyq" "fcitx5" "dunst" "xdman" "clipmenud" "qv2ray" "redshift-gtk" "mpd" "picom" "qbittorrent")
+arr=("xfce4-power-manager" "copyq" "fcitx5" "dunst" "xdman" "clipmenud" "qv2ray" "redshift-gtk" "mpd" "picom" "qbittorrent" "nutstore")
 
 for value in ${arr[@]}
 do

@@ -206,6 +206,7 @@ static Key keys[] = {
     {MODKEY, XK_u, setlayout, {.v = &layouts[4]}},
     {MODKEY, XK_i, setlayout, {.v = &layouts[5]}},
     {MODKEY, XK_o, setlayout, {.v = &layouts[6]}},
+    {MODKEY | ShiftMask, XK_f, fullscreen, {0}},
     {MODKEY, XK_space, setlayout, {0}},
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
     {MODKEY, XK_0, view, {.ui = ~0}},
@@ -218,13 +219,13 @@ static Key keys[] = {
 
     /* My Own App Start Ways */
     {Mod1Mask, XK_c, spawn, CMD("code")},
-    {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
+    {MODKEY, XK_e, spawn, CMD("microsoft-edge-dev")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_v, spawn, CMD("kitty -e nvim")},
     {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty -e zsh")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
     {MODKEY | ShiftMask, XK_s, spawn, CMD("flameshot gui")},
-    {MODKEY | ShiftMask, XK_n, spawn, CMD("thunar")},
+    {MODKEY | ShiftMask, XK_n, spawn, CMD("nautilus")},
     {MODKEY | ShiftMask, XK_m, spawn,
      CMD("kitty --class kitty-music -e ncmpcpp")},
     {MODKEY | ShiftMask, XK_h, spawn, CMD("alacritty --class htop -e htop")},

@@ -79,11 +79,15 @@ static const Rule rules[] = {
     {"jetbrains-*", "sun-awt-X11-XFramePeer", NULL, 1 << 1, 0, -1},
     {"jetbrains-*", "jetbrains-*", "win0", 1 << 1, 1, -1},
     {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, -1},
-    {NULL, NULL, "Android Emulator - Pixel_3a_API_30_x86:5554", 1 << 1, 1, -1},
+    {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, -1},
+    {"jetbrains-idea", NULL, NULL, 1 << 1, 0, -1},
+    {"jetbrains-clion", NULL, NULL, 1 << 1, 0, -1},
+    {"jetbrains-pycharm", NULL, NULL, 1 << 1, 0, -1},
 
     {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, -1},
     {"Firefox", NULL, NULL, 1 << 2, 0, -1},
     {"Microsoft-edge-dev", NULL, NULL, 1 << 2, 0, -1},
+    {"Firefox", "Toolkit", NULL, 1 << 2, 1, -1},
 
     {NULL, "kitty-music", NULL, 1 << 3, 0, -1},
     {NULL, "SoundConverter", NULL, 1 << 3, 0, -1},
@@ -91,17 +95,22 @@ static const Rule rules[] = {
     {"Spotify", "spotify", NULL, 1 << 3, 0, -1},
     {"YesPlayMusic", NULL, NULL, 1 << 3, 0, -1},
     {"Netease-cloud-music-gtk", NULL, NULL, 1 << 3, 0, -1},
+    {"netease-cloud-music", NULL, NULL, 1 << 3, 0, -1},
 
     {"Steam", NULL, NULL, 1 << 4, 0, -1},
 
     {"VirtualBox Machine", NULL, NULL, 1 << 5, 0, -1},
+    {"VirtualBox Manager", NULL, NULL, 1 << 5, 0, -1},
 
     {"Qq", "qq", NULL, 1 << 6, 1, -1},
     {"Freechat", "freechat", NULL, 1 << 6, 0, -1},
+    {"electron-qq", "electron-qq", NULL, 1 << 6, 0, -1},
+    {"Postman", "postman", NULL, 1 << 6, 0, -1},
 
     {"TelegramDesktop", NULL, NULL, 1 << 7, 0, -1},
 
     {"qv2ray", NULL, NULL, 1 << 8, 0, -1},
+    {"qBittorrent", NULL, NULL, 1 << 8, 0, -1},
 
     {"xdman-Main", NULL, NULL, 0, 1, -1},
     {"Nitrogen", NULL, NULL, 0, 1, -1},
@@ -164,6 +173,9 @@ static const char *downvol[] = {"/usr/bin/pactl", "set-sink-volume", "0", "-3%",
 static const char *mutevol[] = {"/usr/bin/pactl", "set-sink-mute", "0",
                                 "toggle", NULL};
 
+static const char *upbrt[] = {"light", "-A", "5", NULL};
+static const char *downbrt[] = {"light", "-U", "5", NULL};
+
 static Key keys[] = {
     /* modifier                     key             function        argument */
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
@@ -194,6 +206,7 @@ static Key keys[] = {
     {MODKEY, XK_u, setlayout, {.v = &layouts[4]}},
     {MODKEY, XK_i, setlayout, {.v = &layouts[5]}},
     {MODKEY, XK_o, setlayout, {.v = &layouts[6]}},
+    {MODKEY | ShiftMask, XK_f, fullscreen, {0}},
     {MODKEY, XK_space, setlayout, {0}},
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
     {MODKEY, XK_0, view, {.ui = ~0}},
@@ -206,13 +219,13 @@ static Key keys[] = {
 
     /* My Own App Start Ways */
     {Mod1Mask, XK_c, spawn, CMD("code")},
-    {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
+    {MODKEY, XK_e, spawn, CMD("microsoft-edge-dev")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_v, spawn, CMD("kitty -e nvim")},
     {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty -e zsh")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
     {MODKEY | ShiftMask, XK_s, spawn, CMD("flameshot gui")},
-    {MODKEY | ShiftMask, XK_n, spawn, CMD("thunar")},
+    {MODKEY | ShiftMask, XK_n, spawn, CMD("nautilus")},
     {MODKEY | ShiftMask, XK_m, spawn,
      CMD("kitty --class kitty-music -e ncmpcpp")},
     {MODKEY | ShiftMask, XK_h, spawn, CMD("alacritty --class htop -e htop")},
@@ -224,13 +237,11 @@ static Key keys[] = {
 
     {Mod1Mask | ShiftMask, XK_p, spawn, CMD("sh ~/.dwmpobar")},
 
-    /*IDE start
-    { Mod1Mask,                     XK_i,           spawn,          CMD("idea")
-    }, { Mod1Mask,                     XK_l,           spawn, CMD("clion") }, {
-    Mod1Mask,                     XK_p,           spawn,          CMD("pycharm")
-    }, { Mod1Mask,                     XK_a,           spawn, CMD("studio") },
-    { Mod1Mask,                     XK_g,           spawn, CMD("goland") },
-    */
+    {Mod1Mask, XK_i, spawn, CMD("idea")},
+    {Mod1Mask, XK_l, spawn, CMD("clion")},
+    {Mod1Mask, XK_p, spawn, CMD("pycharm")},
+    {Mod1Mask, XK_a, spawn, CMD("studio")},
+    {Mod1Mask, XK_g, spawn, CMD("goland")},
 
     /* Switch nord and light */
     {MODKEY | ControlMask, XK_n, spawn, CMD("sh ~/.local/bin/switch-po n")},
@@ -252,6 +263,8 @@ static Key keys[] = {
     {0, XF86XK_AudioMute, spawn, {.v = mutevol}},
     {0, XF86XK_AudioLowerVolume, spawn, {.v = downvol}},
     {0, XF86XK_AudioRaiseVolume, spawn, {.v = upvol}},
+    {0, XF86XK_MonBrightnessUp, spawn, {.v = upbrt}},
+    {0, XF86XK_MonBrightnessDown, spawn, {.v = downbrt}},
 
     TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3)
         TAGKEYS(XK_5, 4) TAGKEYS(XK_6, 5) TAGKEYS(XK_7, 6) TAGKEYS(XK_8, 7)
