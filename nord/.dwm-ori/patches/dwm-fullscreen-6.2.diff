@@ -1,0 +1,56 @@
+From 54719285bd1a984e2efce6e8a8eab184fec11abf Mon Sep 17 00:00:00 2001
+From: Sermak <sermak@jarvis.com>
+Date: Mon, 8 Jul 2019 01:06:44 +0200
+Subject: [PATCH] Simulate toggleable fullscreen mode
+
+---
+ config.def.h |  1 +
+ dwm.c        | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/config.def.h b/config.def.h
+index 1c0b587..f774cc5 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -76,6 +76,7 @@ static Key keys[] = {
+ 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+ 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+ 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
++	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
+ 	{ MODKEY,                       XK_space,  setlayout,      {0} },
+ 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+ 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+diff --git a/dwm.c b/dwm.c
+index 4465af1..04b1e06 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -199,6 +199,7 @@ static void sendmon(Client *c, Monitor *m);
+ static void setclientstate(Client *c, long state);
+ static void setfocus(Client *c);
+ static void setfullscreen(Client *c, int fullscreen);
++static void fullscreen(const Arg *arg);
+ static void setlayout(const Arg *arg);
+ static void setmfact(const Arg *arg);
+ static void setup(void);
+@@ -1497,6 +1498,19 @@ setfullscreen(Client *c, int fullscreen)
+ 	}
+ }
+ 
++Layout *last_layout;
++void
++fullscreen(const Arg *arg)
++{
++	if (selmon->showbar) {
++		for(last_layout = (Layout *)layouts; last_layout != selmon->lt[selmon->sellt]; last_layout++);
++		setlayout(&((Arg) { .v = &layouts[2] }));
++	} else {
++		setlayout(&((Arg) { .v = last_layout }));
++	}
++	togglebar(arg);
++}
++
+ void
+ setlayout(const Arg *arg)
+ {
+-- 
+2.22.0

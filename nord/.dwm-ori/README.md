@@ -33,7 +33,7 @@ Nord and Light
 
 ## Patches
 
-You can see all of 18 patches I have applied in `./patches` dir.
+You can see all of 19 patches I have applied in `./patches` dir.
 
 -   dwm-00-regex-rules.diff
 
@@ -74,6 +74,10 @@ You can see all of 18 patches I have applied in `./patches` dir.
 -   dwm-focusmaster-20200717-bb2e722.diff
 
     let you can focus master window through a shortcut
+
+-   dwm-fullscreen-6.2.diff
+
+    make window fullscreen
 
 -   dwm-uselessgap-20200719-bb2e722.diff
 
