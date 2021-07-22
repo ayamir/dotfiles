@@ -240,7 +240,7 @@ static Key keys[] = {
     {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_x, spawn, CMD("joplin-desktop")},
-    {MODKEY, XK_v, spawn, CMD("neovide")},
+    {MODKEY, XK_v, spawn, CMD("kitty -e nvim")},
     {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty -e zsh")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
     {MODKEY | ShiftMask, XK_s, spawn, CMD("flameshot gui")},
@@ -252,8 +252,7 @@ static Key keys[] = {
     {MODKEY | ShiftMask, XK_v, spawn,
      CMD("VBoxManage startvm 'Windows10' --type gui")},
 
-    {Mod1Mask | ControlMask, XK_Delete, spawn,
-     CMD("/usr/bin/betterlockscreen -l")},
+    {Mod1Mask | ControlMask, XK_Delete, spawn, CMD("betterlockscreen -l")},
 
     /*IDE start*/
     {Mod1Mask, XK_c, spawn, CMD("code")},
