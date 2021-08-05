@@ -9,4 +9,7 @@ for value in ${arr[@]}; do
   if [[ ! $(pgrep ${value}) ]]; then
     exec "$value" &
   fi
+  if [[ ! $(pgrep xob) ]]; then
+    exec "sxob"
+  fi
 done
