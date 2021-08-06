@@ -3,37 +3,32 @@
 if [ $1 == "l" ]; then
   # Fcitx5
   sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
-  killall fcitx5
+  pkill fcitx5
   # Wallpaper
   nohup betterlockscreen -u ~/Pictures/ayanami/poster.png >/dev/null 2>&1 &
   feh --bg-fill ~/Pictures/ayanami/poster.png
   cp ~/Pictures/ayanami/poster.png ~/.config/leftwm/themes/current/background.jpg
   # Dunst
   cp ~/.config/dunst/dunstrc-nord-light ~/.config/dunst/dunstrc
-  killall dunst
+  pkill dunst
   # Dwm
-  sed -i "s/dwm.normbgcolor: #2E3440/dwm.normbgcolor: #FAFAFA/g" ~/.Xresources
-  sed -i "s/dwm.normbordercolor: #3B4252/dwm.normbordercolor: #FAFAFA/g" ~/.Xresources
-  sed -i "s/dwm.normfgcolor: #FAFAFA/dwm.normfgcolor: #2E3440/g" ~/.Xresources
-  sed -i "s/dwm.selbgcolor: #2E3440/dwm.selbgcolor: #FAFAFA/g" ~/.Xresources
-  xrdb ~/.Xresources
+  cp ~/.onehalflight ~/.Xresources
+  xrdb merge ~/.Xresources && kill -USR1 $(pidof st)
   pkill -1 dwm
   # Polybar
   cp ~/.config/polybar/colors-nord-light ~/.config/polybar/colors
   cp ~/.config/leftwm/themes/current/configs/colors-nord-light ~/.config/leftwm/themes/current/configs/colors
-  killall polybar
+  pkill polybar
   # Dmenu
   sed -i "s/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/g" ~/.dmenu/config.def.h
   sed -i "s/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
   fish -c dmenu_recompile
-  # St
-  sed -i "s/\"#2e3440\", \/\* back/\"#fafafa\", \/\* back/g" ~/.st/config.def.h
-  sed -i "s/\"#fafafa\", \/\* fore/\"#2e3440\", \/\* fore/g" ~/.st/config.def.h
-  fish -c st_recompile
   # Alacritty
   cp ~/.config/alacritty/alacritty-nord-light.yml ~/.config/alacritty/alacritty.yml
   # Kitty
   sed -i "s/dark/light/g" ~/.config/kitty/kitty.conf
+  # Wezterm
+  sed -i "s/nord/OneHalfLight/g" ~/.config/wezterm/wezterm.lua
   # Fish
   fish -c nord-light
   # Global theme
@@ -44,28 +39,29 @@ if [ $1 == "l" ]; then
   # Rofi
   sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
   # Nvim
-  sed -i "s/colorscheme nord/colorscheme onehalflight/g" ~/.config/nvim/lua/core/init.lua
-  sed -i "s/bg = '#2e3440'/bg = '#fafafa'/g" ~/.config/nvim/lua/modules/ui/nerdline.lua
-  sed -i "s/fg = '#eceff4'/fg = '#2e3440'/g" ~/.config/nvim/lua/modules/ui/nerdline.lua
-  sed -i "s/line_bg = '#3b4252'/line_bg = '#f0f0f0'/g" ~/.config/nvim/lua/modules/ui/nerdline.lua
-  sed -i "s/mode_bg = '#3b4252'/mode_bg = '#f0f0f0'/g" ~/.config/nvim/lua/modules/ui/nerdline.lua
+  sed -i "s/dark/light/g" ~/.config/nvim/lua/modules/ui/config.lua
+  sed -i "s/onedark/onelight/g" ~/.config/nvim/lua/modules/ui/config.lua
   # Emacs
   sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
   # Code
   sed -i "s/Nord/Atom One Light/g" ~/.config/Code/User/settings.json
   # Sublime
   sed -i "s/Nord\/Nord.sublime-color-scheme/One Half Color Schemes\/OneHalfLight.tmTheme/g" ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+  # Xob
+  sed -i "s/5e81ac/88c0d0/g" ~/.config/xob/styles.cfg
+  sed -i "s/2e3440/fafafa/g" ~/.config/xob/styles.cfg
+  sed -i "s/d8dee9/3b4252/g" ~/.config/xob/styles.cfg
+  pkill xob
   # Zathura
   cp ~/.config/zathura/zathurarc-nord-light ~/.config/zathura/zathurarc
   # Daemons
   sh ~/.local/bin/startdaemon
-  kitty --single-instance -e ~/.local/bin/kitty_reload_x
   # Notify
   notify-send "Switch to Light Now!" -i ~/Pictures/nord.png -t 3000
 elif [ $1 == "n" ]; then
   # Fcitx5
   sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
-  killall fcitx5
+  pkill fcitx5
   # Wallpaper
   nohup betterlockscreen -u ~/Pictures/ayanami/outline-nord.png >/dev/null 2>&1 &
   feh --bg-fill ~/Pictures/ayanami/outline-nord.png
@@ -73,30 +69,27 @@ elif [ $1 == "n" ]; then
   # Dunst
   cp ~/.config/dunst/dunstrc-nord-dark ~/.config/dunst/dunstrc
   # Mako
-  killall dunst
+  pkill dunst
   # Dwm
-  sed -i "s/dwm.normbgcolor: #FAFAFA/dwm.normbgcolor: #2E3440/g" ~/.Xresources
-  sed -i "s/dwm.normbordercolor: #FAFAFA/dwm.normbordercolor: #3B4252/g" ~/.Xresources
-  sed -i "s/dwm.normfgcolor: #2E3440/dwm.normfgcolor: #FAFAFA/g" ~/.Xresources
-  sed -i "s/dwm.selbgcolor: #FAFAFA/dwm.selbgcolor: #2E3440/g" ~/.Xresources
-  xrdb ~/.Xresources
+  cp ~/.nord ~/.Xresources
+  xrdb merge ~/.Xresources && kill -USR1 $(pidof st)
   pkill -1 dwm
   # Polybar
   cp ~/.config/polybar/colors-nord-dark ~/.config/polybar/colors
   cp ~/.config/leftwm/themes/current/configs/colors-nord-dark ~/.config/leftwm/themes/current/configs/colors
-  killall polybar
+  pkill polybar
   # Dmenu
   sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
   sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
   fish -c dmenu_recompile
   # St
-  sed -i "s/\"#fafafa\", \/\* back/\"#2e3440\", \/\* back/g" ~/.st/config.def.h
-  sed -i "s/\"#2e3440\", \/\* fore/\"#fafafa\", \/\* fore/g" ~/.st/config.def.h
-  fish -c st_recompile
+  xrdb merge ~/.nord && kill -USR1 $(pidof st)
   # Alacritty
   cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
   # Kitty
   sed -i "s/light/dark/g" ~/.config/kitty/kitty.conf
+  # Wezterm
+  sed -i "s/OneHalfLight/nord/g" ~/.config/wezterm/wezterm.lua
   # Fish
   fish -c nord-dark
   # Global theme
@@ -107,11 +100,8 @@ elif [ $1 == "n" ]; then
   # Rofi
   sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
   # Nvim
-  sed -i "s/colorscheme onehalflight/colorscheme nord/g" ~/.config/nvim/lua/core/init.lua
-  sed -i "s/bg = '#fafafa'/bg = '#2e3440'/g" ~/.config/nvim/lua/modules/ui/nerdline.lua
-  sed -i "s/fg = '#2e3440'/fg = '#eceff4'/g" ~/.config/nvim/lua/modules/ui/nerdline.lua
-  sed -i "s/line_bg = '#f0f0f0'/line_bg = '#3b4252'/g" ~/.config/nvim/lua/modules/ui/nerdline.lua
-  sed -i "s/mode_bg = '#f0f0f0'/mode_bg = '#3b4252'/g" ~/.config/nvim/lua/modules/ui/nerdline.lua
+  sed -i "s/light/dark/g" ~/.config/nvim/lua/modules/ui/config.lua
+  sed -i "s/onelight/onedark/g" ~/.config/nvim/lua/modules/ui/config.lua
   # Emacs
   sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
   # Code
@@ -120,9 +110,13 @@ elif [ $1 == "n" ]; then
   sed -i "s/One Half Color Schemes\/OneHalfLight.tmTheme/Nord\/Nord.sublime-color-scheme/g" ~/.config/sublime-text/Packages/User/Preferences.sublime-settings
   # Zathura
   cp ~/.config/zathura/zathurarc-nord-dark ~/.config/zathura/zathurarc
+  # Xob
+  sed -i "s/88c0d0/5e81ac/g" ~/.config/xob/styles.cfg
+  sed -i "s/fafafa/2e3440/g" ~/.config/xob/styles.cfg
+  sed -i "s/3b4252/d8dee9/g" ~/.config/xob/styles.cfg
+  pkill xob
   # Daemons
   sh ~/.local/bin/startdaemon
-  kitty --single-instance -e ~/.local/bin/kitty_reload_x
   # Notify
   notify-send "Switch to Nord Now!" -i ~/Pictures/nord.png -t 3000
 fi
