@@ -93,7 +93,7 @@ static const Rule rules[] = {
     {NULL, "SoundConverter", NULL, 1 << 3, 0, -1},
     {"qqmusic", NULL, NULL, 1 << 3, 0, -1},
     {"Spotify", "spotify", NULL, 1 << 3, 0, -1},
-    {"YesPlayMusic", NULL, NULL, 1 << 3, 0, -1},
+    {"yesplaymusic", NULL, NULL, 1 << 3, 0, -1},
     {"Netease-cloud-music-gtk", NULL, NULL, 1 << 3, 0, -1},
     {"netease-cloud-music", NULL, NULL, 1 << 3, 0, -1},
 
@@ -155,8 +155,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[] = {"kitty", "--single-instance", "-e", "fish",
-                                NULL};
+static const char *termcmd[] = {"st", NULL};
 
 static const char *rofidruncmd[] = {"rofi", "-show", "drun", NULL};
 static const char *windowswitchcmd[] = {"rofi", "-show", "window", NULL};
@@ -217,10 +216,9 @@ static Key keys[] = {
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
 
     /* My Own App Start Ways */
-    {Mod1Mask, XK_c, spawn, CMD("code")},
     {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
-    {MODKEY, XK_v, spawn, CMD("kitty -e nvim")},
+    {MODKEY, XK_v, spawn, CMD("glrnvim")},
     {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty -e zsh")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
     {MODKEY | ShiftMask, XK_s, spawn, CMD("flameshot gui")},
@@ -238,14 +236,13 @@ static Key keys[] = {
 
     {Mod1Mask, XK_v, spawn, CMD("neovide")},
     {Mod1Mask, XK_i, spawn, CMD("idea")},
-    {Mod1Mask, XK_l, spawn, CMD("clion")},
+    {Mod1Mask, XK_c, spawn, CMD("clion")},
     {Mod1Mask, XK_p, spawn, CMD("pycharm")},
-    {Mod1Mask, XK_a, spawn, CMD("studio")},
     {Mod1Mask, XK_g, spawn, CMD("goland")},
 
     /* Switch nord and light */
-    {MODKEY | ControlMask, XK_n, spawn, CMD("sh ~/.local/bin/switch-po n")},
-    {MODKEY | ControlMask, XK_l, spawn, CMD("sh ~/.local/bin/switch-po l")},
+    {MODKEY | ControlMask, XK_n, spawn, CMD("sh ~/.local/bin/switch n")},
+    {MODKEY | ControlMask, XK_l, spawn, CMD("sh ~/.local/bin/switch l")},
     {MODKEY | ControlMask, XK_s, spawn, CMD("sh ~/.local/bin/switch-dwm")},
 
     /* Mpd control */
