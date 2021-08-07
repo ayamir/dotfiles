@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 if [ $1 == "l" ]; then
+  # Bat
+  sed -i "s/Nord/OneHalfLight/g" ~/.config/bat/config
   # Fcitx5
   sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
   pkill fcitx5
@@ -39,7 +41,7 @@ if [ $1 == "l" ]; then
   # Rofi
   sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
   # Nvim
-  sed -i "s/dark/light/g" ~/.config/nvim/lua/modules/ui/config.lua
+  sed -i "s/\=dark/\=light/g" ~/.config/nvim/lua/modules/ui/config.lua
   sed -i "s/onedark/onelight/g" ~/.config/nvim/lua/modules/ui/config.lua
   # Emacs
   sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
@@ -59,6 +61,8 @@ if [ $1 == "l" ]; then
   # Notify
   notify-send "Switch to Light Now!" -i ~/Pictures/nord.png -t 3000
 elif [ $1 == "n" ]; then
+  # Bat
+  sed -i "s/OneHalfLight/Nord/g" ~/.config/bat/config
   # Fcitx5
   sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
   pkill fcitx5
@@ -82,8 +86,6 @@ elif [ $1 == "n" ]; then
   sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
   sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
   fish -c dmenu_recompile
-  # St
-  xrdb merge ~/.nord && kill -USR1 $(pidof st)
   # Alacritty
   cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
   # Kitty
@@ -100,7 +102,7 @@ elif [ $1 == "n" ]; then
   # Rofi
   sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
   # Nvim
-  sed -i "s/light/dark/g" ~/.config/nvim/lua/modules/ui/config.lua
+  sed -i "s/\=light/\=dark/g" ~/.config/nvim/lua/modules/ui/config.lua
   sed -i "s/onelight/onedark/g" ~/.config/nvim/lua/modules/ui/config.lua
   # Emacs
   sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
