@@ -30,7 +30,7 @@
 #window {
     background-color: @background;
     border: 0;
-    border-radius: 4px;
+    border-radius: 0px;
     padding: 2.5ch;
 }
 

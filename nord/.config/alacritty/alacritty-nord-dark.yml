@@ -87,8 +87,8 @@ font:
     #   - (macOS) Menlo
     #   - (Linux) sourcecodepro 14
     #   - (Windows) Consolas
-    family: JetBrainsMono Nerd Font
-    style: Regular
+    family: FiraCode Nerd Font
+    style: Retina
     # The `style` can be specified to pick a specific face.
     #style: Regular
 
@@ -98,7 +98,7 @@ font:
     #
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: JetBrainsMono Nerd Font
+    family: FiraCode Nerd Font
     # RobotoMono
     # The `style` can be specified to pick a specific face.
     style: Bold
@@ -109,13 +109,13 @@ font:
     #
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: JetBrainsMono Nerd Font
+    family: FiraCode Nerd Font
     # RobotoMono
     # The `style` can be specified to pick a specific face.
     style: Italic
 
   # Point size
-  size: 11.0
+  size: 12.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -156,30 +156,30 @@ font:
 colors:
   # Default colors
   primary:
-    background: '#2E3440'
-    foreground: '#D8DEE9'
+    background: "#2E3440"
+    foreground: "#D8DEE9"
 
   # Normal colors
   normal:
-    black: '#3B4252'
-    red: '#BF616A'
-    green: '#A3BE8C'
-    yellow: '#EBCB8B'
-    blue: '#81A1C1'
-    magenta: '#B48EAD'
-    cyan: '#88C0D0'
-    white: '#E5E9F0'
+    black: "#3B4252"
+    red: "#BF616A"
+    green: "#A3BE8C"
+    yellow: "#EBCB8B"
+    blue: "#81A1C1"
+    magenta: "#B48EAD"
+    cyan: "#88C0D0"
+    white: "#E5E9F0"
 
   # Bright colors
   bright:
-    black: '#4C566A'
-    red: '#BF616A'
-    green: '#A3BE8C'
-    yellow: '#EBCB8B'
-    blue: '#81A1C1'
-    magenta: '#B48EAD'
-    cyan: '#8FBCBB'
-    white: '#ECEFF4'
+    black: "#4C566A"
+    red: "#BF616A"
+    green: "#A3BE8C"
+    yellow: "#EBCB8B"
+    blue: "#81A1C1"
+    magenta: "#B48EAD"
+    cyan: "#8FBCBB"
+    white: "#ECEFF4"
 
 bell:
   animation: EaseOutExpo
@@ -189,7 +189,7 @@ bell:
   #
   # Window opacity as a floating point number from `0.0` to `1.0`.
   # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.8
+background_opacity: 0.85
 
 # Mouse bindings
 #
@@ -243,7 +243,7 @@ mouse:
     modifiers: None
 
 selection:
-  semantic_escape_chars: ",│`|:\"' ()[]{}<>"
+  semantic_escape_chars: ',│`|:"'' ()[]{}<>'
 
   # When set to `true`, selected text will be copied to the primary clipboard.
   save_to_clipboard: true
@@ -414,28 +414,13 @@ key_bindings:
   - { key: End, mods: Alt, chars: "\e[1;3F" }
   - { key: End, chars: "\eOF", mode: AppCursor }
   - { key: End, chars: "\e[F", mode: ~AppCursor }
-  - {
-      key: PageUp,
-      mods: Shift,
-      action: ScrollPageUp,
-      mode: ~Alt
-    }
+  - { key: PageUp, mods: Shift, action: ScrollPageUp, mode: ~Alt }
   - { key: PageUp, mods: Shift, chars: "\e[5;2~", mode: Alt }
   - { key: PageUp, mods: Control, chars: "\e[5;5~" }
   - { key: PageUp, mods: Alt, chars: "\e[5;3~" }
   - { key: PageUp, chars: "\e[5~" }
-  - {
-      key: PageDown,
-      mods: Shift,
-      action: ScrollPageDown,
-      mode: ~Alt
-    }
-  - {
-      key: PageDown,
-      mods: Shift,
-      chars: "\e[6;2~",
-      mode: Alt
-    }
+  - { key: PageDown, mods: Shift, action: ScrollPageDown, mode: ~Alt }
+  - { key: PageDown, mods: Shift, chars: "\e[6;2~", mode: Alt }
   - { key: PageDown, mods: Control, chars: "\e[6;5~" }
   - { key: PageDown, mods: Alt, chars: "\e[6;3~" }
   - { key: PageDown, chars: "\e[6~" }

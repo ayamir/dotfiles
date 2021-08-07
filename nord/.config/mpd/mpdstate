@@ -1,16 +1,81 @@
-sw_volume: 76
+sw_volume: 66
 audio_device_state:1:my_fifo
 audio_device_state:1:My Pulse Output
 state: pause
 current: 0
-time: 67.775000
+time: 31.113000
 random: 1
-repeat: 0
+repeat: 1
 single: 0
 consume: 0
 crossfade: 0
 mixrampdb: 0.000000
 mixrampdelay: -1.000000
 playlist_begin
-0:齐秦 - 夜夜夜夜.mp3
+0:nonoc - Believe in you.flac
+1:nonoc - Memento.mp3
+2:nonoc - Relive.mp3
+3:nonoc - White White Snow.mp3
+4:nonoc - 雪の果てに君の名を.mp3
+5:高橋李依 - Stay Alive.flac
+6:高橋李依 - ぼうやの夢よ.flac
+7:鈴木このみ - Realize.mp3
+8:鈴木このみ - Redo.flac
+9:鈴木このみ - メビウス.flac
+10:當山みれい - 願い~あの頃のキミへ~.mp3
+11:浜崎あゆみ - MY ALL.flac
+12:水瀬いのり - Wishing.flac
+13:林原めぐみ - 今日の日はさようなら.flac
+14:宇多田ヒカル - Beautiful World.flac
+15:宇多田ヒカル - 桜流し.mp3
+16:安月名莉子 - Memories.mp3
+17:大橋トリオ - スノーマン.flac
+18:上田麗奈 - リテラチュア.flac
+19:MYTH & ROID - Paradisus-Paradoxum.flac
+20:MYTH & ROID - STRAIGHT BET.flac
+21:MYTH & ROID - STYX HELIX.flac
+22:MYTH & ROID - theater D.flac
+23:Arianne - Komm, süsser Tod ／甘き死よ、来たれ (M-10 Director’s Edit. Version).flac
+24:Alec Benjamin; Alessia Cara - Let Me Down Slowly.mp3
+25:いきものがかり - SAKURA.mp3
+26:前島麻由 - Long shot.mp3
+27:Aimer - Kataomoi-zSOJk7ggJts.flac
+28:宇多田ヒカル - One Last Kiss.flac
+29:宇多田ヒカル - First Love.flac
+30:宇多田ヒカル - 花束を君に.flac
+31:ElectronNCM/大原ゆい子 - オンリー.mp3
+32:ElectronNCM/大原ゆい子 - 目覚めの唄.flac
+33:ElectronNCM/中野家の五つ子 - はつこい.flac
+34:ElectronNCM/水瀬いのり, 徳井青空, 村川梨衣 - ぴょん’ｓぷりんぷるん～Rearrange～.flac
+35:ElectronNCM/wacci - キラメキ.mp3
+36:ElectronNCM/androp - Home.mp3
+37:ElectronNCM/Sekai no Owari - 花鳥風月.mp3
+38:ElectronNCM/花たん - 歌に形はないけれど.flac
+39:ElectronNCM/fripSide - only my railgun.flac
+40:ElectronNCM/Aimer - Ref:rain.mp3
+41:ElectronNCM/TK from 凛として時雨 - unravel (acoustic version).mp3
+42:ElectronNCM/YOASOBI - あの夢をなぞって.flac
+43:ElectronNCM/C&K - サヨナラ.mp3
+44:ElectronNCM/家入レオ - あおぞら.mp3
+45:ElectronNCM/seven oops - オレンジ.flac
+46:ElectronNCM/whiteeeen - キセキ~未来へ~.mp3
+47:ElectronNCM/伊藤サチコ - いつも何度でも.flac
+48:ElectronNCM/家入レオ - ずっと、ふたりで.flac
+49:ElectronNCM/DISH   - 猫.mp3
+50:ElectronNCM/V.A. - ほころび(应届毕业生36人合唱版).mp3
+51:ElectronNCM/水瀬いのり - 蕾姆的告白.mp3
+52:ElectronNCM/ケラケラ - キセキ.mp3
+53:ElectronNCM/やなぎなぎ - 君という神話.flac
+54:ElectronNCM/沢井美空 - なきむし。 Acoustic Ver..mp3
+55:ElectronNCM/微笑子 - 約束.flac
+56:ElectronNCM/宇多田ヒカル - 花束を君に.flac
+57:ElectronNCM/ハンバート ハンバート - 日が落ちるまで.mp3
+58:ElectronNCM/いきものがかり - ハジマリノウタ ～遠い空澄んで～.mp3
+59:宋冬野 莉莉安-Ka4XEvKNrrg.flac
+60:宋冬野 - 安和桥.flac
+61:送你一朵小红花 - 赵英俊.flac
+62:周杰倫  -  晴天【歌詞】-v10bFxUDZsA.flac
+63:李健 - 中学时代.flac
+64:五月天 - 后来的我们.flac
+65:朴树.flac
 playlist_end

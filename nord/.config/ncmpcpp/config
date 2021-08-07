@@ -45,5 +45,5 @@ centered_cursor = "yes"
 enable_window_title = "yes"
 external_editor = "vim"
 
-## you have dunst? 
-#execute_on_song_change = dunst --size 60x60 --silent
+## you have dunst?
+execute_on_song_change = notify-send "Now Playing" "$(mpc --format '%title% - %artist%' current)"

@@ -1,0 +1,45 @@
+set selection-clipboard clipboard
+
+set font      "Roboto Mono 10"
+set default-fg      "#2e3440"
+set default-bg      "#fafafa"
+
+set completion-bg   "#3b4252"
+set completion-fg   "#fafafa"
+set completion-highlight-bg "#4c566a"
+set completion-highlight-fg "#fafafa"
+set completion-group-bg   "#3b4252"
+set completion-group-fg   "#88c0d0"
+
+set statusbar-fg    "#2e3440"
+set statusbar-bg    "#fafafa"
+set statusbar-h-padding   10
+set statusbar-v-padding   10
+
+set notification-bg   "#fafafa"
+set notification-fg   "#2e3440"
+set notification-error-bg "#fafafa"
+set notification-error-fg "#bf616a"
+set notification-warning-bg "#fafafa"
+set notification-warning-fg "#ebcb8b"
+set selection-notification  "true"
+
+set inputbar-fg     "#3b4252"
+set inputbar-bg     "#fafafa"
+
+set recolor     "true"
+set recolor-lightcolor    "#fafafa"
+set recolor-darkcolor   "#2e3440"
+
+set index-fg      "#2e3440"
+set index-bg      "#fafafa"
+set index-active-fg   "#2e3440"
+set index-active-bg   "#e5e9f0"
+
+set render-loading-bg   "#fafafa"
+set render-loading-fg   "#2e3440"
+
+set highlight-color   "#88c0d0"
+set highlight-active-color  "#5e81ac"
+
+set adjust-open     "width"

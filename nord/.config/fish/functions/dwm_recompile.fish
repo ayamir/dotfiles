@@ -1,1 +1,0 @@
-cd ~/.dwm && sh ./recompile

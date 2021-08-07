@@ -1,7 +1,6 @@
 [colors]
-	background = "#2e3440"
-    frame = "#3b4252"
-	#foreground = "#e5e9f0"
+	background = "#eceff4"
+    frame = "#d8dee9"
 
 [global]
     ### Display ###
@@ -11,15 +10,15 @@
 
     #geometry = "262x5-829-46"
     #geometry = "262x3-14+46"
-    geometry = "800x2-14+40"
+    geometry = "300x50-10+50"
     indicate_hidden = yes
-    shrink = true
+    shrink = false
     transparency = 0
     notification_height = 0
     separator_height = 2
-    padding = 44
-    horizontal_padding = 44
-    frame_width = 3
+    padding = 20
+    horizontal_padding = 20
+    frame_width = 0
     corner_radius = 10
 
     #frame_color =
@@ -43,7 +42,7 @@
     #   %n  progress value if set without any extra characters
     #   %%  Literal %
     # Markup is allowed
-    format = "<b>%a</b>\n%s\n%b"
+    format = "<b>%s</b>\n%b"
     alignment = left
     show_age_threshold = 60
     word_wrap = true
@@ -55,7 +54,7 @@
 
     ### Icons ###
     icon_position = left
-    max_icon_size = 128
+    max_icon_size = 64
     icon_path = /usr/share/icons/Nord-Icon/48x48/status/:/usr/share/icons/Nord-Icon/48x48/devices/:/usr/share/icons/Nord-Icon/48x48/apps
 
     ### History ###
@@ -64,33 +63,28 @@
 
     ### Misc/Advanced ###
     dmenu = /usr/bin/kitty -e fzf:
-    always_run_script = false
     title = Dunst
     class = Dunst
-    startup_notification = true
+    startup_notification = false
     force_xinerama = false
 
 [experimental]
     per_monitor_dpi = false
 
-[dunst_icon]
-    appname = dunst
-    new_icon = /usr/share/icons/Nord-Icon/48x48/apps/bell.svg
-
 [shortcuts]
     close = ctrl+space
     close_all = ctrl+shift+space
-    history = ctrl+grave
+    history = ctrl+backspace
 
 [urgency_low]
     background = colors.background
-    foreground = "#81a1c1"
+    foreground = "#5e81ac"
     frame_color = colors.frame
     timeout = 5
 
 [urgency_normal]
     background = colors.background
-    foreground = "#e5e9f0"
+    foreground = "#2e3440"
     frame_color = colors.frame
     timeout = 5
 
