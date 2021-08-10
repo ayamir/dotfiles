@@ -1,124 +1,126 @@
 #!/usr/bin/env bash
 
 if [ $1 == "l" ]; then
-  # Bat
-  sed -i "s/Nord/OneHalfLight/g" ~/.config/bat/config
-  # Fcitx5
-  sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
-  pkill fcitx5
-  # Wallpaper
-  nohup betterlockscreen -u ~/Pictures/ayanami/poster.png >/dev/null 2>&1 &
-  feh --bg-fill ~/Pictures/ayanami/poster.png
-  cp ~/Pictures/ayanami/poster.png ~/.config/leftwm/themes/current/background.jpg
-  # Dunst
-  cp ~/.config/dunst/dunstrc-nord-light ~/.config/dunst/dunstrc
-  pkill dunst
-  # Dwm
-  cp ~/.onehalflight ~/.Xresources
-  xrdb merge ~/.Xresources && kill -USR1 $(pidof st)
-  pkill -1 dwm
-  # Polybar
-  cp ~/.config/polybar/colors-nord-light ~/.config/polybar/colors
-  cp ~/.config/leftwm/themes/current/configs/colors-nord-light ~/.config/leftwm/themes/current/configs/colors
-  pkill polybar
-  # Dmenu
-  sed -i "s/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/g" ~/.dmenu/config.def.h
-  sed -i "s/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
-  fish -c dmenu_recompile
-  # Alacritty
-  cp ~/.config/alacritty/alacritty-nord-light.yml ~/.config/alacritty/alacritty.yml
-  # Kitty
-  sed -i "s/dark/light/g" ~/.config/kitty/kitty.conf
-  # Wezterm
-  sed -i "s/nord/OneHalfLight/g" ~/.config/wezterm/wezterm.lua
-  # Fish
-  fish -c nord-light
-  # Global theme
-  sed -i "s/Nord/Orchis-light/g" ~/.config/xsettingsd/xsettingsd.conf
-  sed -i "s/Nord/Orchis-light/g" ~/.gtkrc-2.0
-  sed -i "s/Nord/Orchis-light/g" ~/.config/gtk-3.0/settings.ini
-  pkill -1 xsettingsd
-  # Rofi
-  sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
-  # Nvim
-  sed -i "s/\=dark/\=light/g" ~/.config/nvim/lua/modules/ui/config.lua
-  sed -i "s/onedark/onelight/g" ~/.config/nvim/lua/modules/ui/config.lua
-  # Emacs
-  sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
-  # Code
-  sed -i "s/Nord/Atom One Light/g" ~/.config/Code/User/settings.json
-  # Sublime
-  sed -i "s/Nord\/Nord.sublime-color-scheme/One Half Color Schemes\/OneHalfLight.tmTheme/g" ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
-  # Xob
-  sed -i "s/5e81ac/88c0d0/g" ~/.config/xob/styles.cfg
-  sed -i "s/2e3440/fafafa/g" ~/.config/xob/styles.cfg
-  sed -i "s/d8dee9/3b4252/g" ~/.config/xob/styles.cfg
-  pkill xob
-  # Zathura
-  cp ~/.config/zathura/zathurarc-nord-light ~/.config/zathura/zathurarc
-  # Daemons
-  sh ~/.local/bin/startdaemon
-  # Notify
-  notify-send "Switch to Light Now!" -i ~/Pictures/nord.png -t 3000
+    # Bat
+    sed -i "s/Nord/OneHalfLight/g" ~/.config/bat/config
+    # Fcitx5
+    sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
+    pkill fcitx5
+    # Wallpaper
+    nohup betterlockscreen -u ~/Pictures/ayanami/poster.png >/dev/null 2>&1 &
+    feh --bg-fill ~/Pictures/ayanami/poster.png
+    cp ~/Pictures/ayanami/poster.png ~/.config/leftwm/themes/current/background.jpg
+    # Dunst
+    cp ~/.config/dunst/dunstrc-nord-light ~/.config/dunst/dunstrc
+    pkill dunst
+    # Dwm
+    cp ~/.onehalflight ~/.Xresources
+    xrdb merge ~/.Xresources && kill -USR1 $(pidof st)
+    pkill -1 dwm
+    # Polybar
+    cp ~/.config/polybar/colors-nord-light ~/.config/polybar/colors
+    cp ~/.config/leftwm/themes/current/configs/colors-nord-light ~/.config/leftwm/themes/current/configs/colors
+    pkill polybar
+    # Dmenu
+    sed -i "s/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/g" ~/.dmenu/config.def.h
+    fish -c dmenu_recompile
+    # Alacritty
+    cp ~/.config/alacritty/alacritty-nord-light.yml ~/.config/alacritty/alacritty.yml
+    # Kitty
+    sed -i "s/dark/light/g" ~/.config/kitty/kitty.conf
+    kitty --single-instance -e kitty_reload_x
+    # Wezterm
+    sed -i "s/nord/OneHalfLight/g" ~/.config/wezterm/wezterm.lua
+    # Fish
+    fish -c nord-light
+    # Global theme
+    sed -i "s/Nord/Orchis-light/g" ~/.config/xsettingsd/xsettingsd.conf
+    sed -i "s/Nord/Orchis-light/g" ~/.gtkrc-2.0
+    sed -i "s/Nord/Orchis-light/g" ~/.config/gtk-3.0/settings.ini
+    pkill -1 xsettingsd
+    # Rofi
+    sed -i "s/dark/light/g" ~/.config/rofi/config.rasi
+    # Nvim
+    sed -i "s/\=dark/\=light/g" ~/.config/nvim/lua/modules/ui/config.lua
+    sed -i "s/onedark/onelight/g" ~/.config/nvim/lua/modules/ui/config.lua
+    # Emacs
+    sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
+    # Code
+    sed -i "s/Nord/Atom One Light/g" ~/.config/Code/User/settings.json
+    # Sublime
+    sed -i "s/Nord\/Nord.sublime-color-scheme/One Half Color Schemes\/OneHalfLight.tmTheme/g" ~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings
+    # Xob
+    sed -i "s/5e81ac/88c0d0/g" ~/.config/xob/styles.cfg
+    sed -i "s/2e3440/fafafa/g" ~/.config/xob/styles.cfg
+    sed -i "s/d8dee9/3b4252/g" ~/.config/xob/styles.cfg
+    pkill xob
+    # Zathura
+    cp ~/.config/zathura/zathurarc-nord-light ~/.config/zathura/zathurarc
+    # Daemons
+    sh ~/.local/bin/startdaemon
+    # Notify
+    notify-send "Switch to Light Now!" -i ~/Pictures/nord.png -t 3000
 elif [ $1 == "n" ]; then
-  # Bat
-  sed -i "s/OneHalfLight/Nord/g" ~/.config/bat/config
-  # Fcitx5
-  sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
-  pkill fcitx5
-  # Wallpaper
-  nohup betterlockscreen -u ~/Pictures/ayanami/outline-nord.png >/dev/null 2>&1 &
-  feh --bg-fill ~/Pictures/ayanami/outline-nord.png
-  cp ~/Pictures/ayanami/outline-nord.png ~/.config/leftwm/themes/current/background.jpg
-  # Dunst
-  cp ~/.config/dunst/dunstrc-nord-dark ~/.config/dunst/dunstrc
-  # Mako
-  pkill dunst
-  # Dwm
-  cp ~/.nord ~/.Xresources
-  xrdb merge ~/.Xresources && kill -USR1 $(pidof st)
-  pkill -1 dwm
-  # Polybar
-  cp ~/.config/polybar/colors-nord-dark ~/.config/polybar/colors
-  cp ~/.config/leftwm/themes/current/configs/colors-nord-dark ~/.config/leftwm/themes/current/configs/colors
-  pkill polybar
-  # Dmenu
-  sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
-  sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
-  fish -c dmenu_recompile
-  # Alacritty
-  cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
-  # Kitty
-  sed -i "s/light/dark/g" ~/.config/kitty/kitty.conf
-  # Wezterm
-  sed -i "s/OneHalfLight/nord/g" ~/.config/wezterm/wezterm.lua
-  # Fish
-  fish -c nord-dark
-  # Global theme
-  sed -i "s/Orchis-light/Nord/g" ~/.config/xsettingsd/xsettingsd.conf
-  sed -i 's/Orchis-light/Nord/g' ~/.gtkrc-2.0
-  sed -i "s/Orchis-light/Nord/g" ~/.config/gtk-3.0/settings.ini
-  pkill -1 xsettingsd
-  # Rofi
-  sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
-  # Nvim
-  sed -i "s/\=light/\=dark/g" ~/.config/nvim/lua/modules/ui/config.lua
-  sed -i "s/onelight/onedark/g" ~/.config/nvim/lua/modules/ui/config.lua
-  # Emacs
-  sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
-  # Code
-  sed -i "s/Atom One Light/Nord/g" ~/.config/Code/User/settings.json
-  # Sublime
-  sed -i "s/One Half Color Schemes\/OneHalfLight.tmTheme/Nord\/Nord.sublime-color-scheme/g" ~/.config/sublime-text/Packages/User/Preferences.sublime-settings
-  # Zathura
-  cp ~/.config/zathura/zathurarc-nord-dark ~/.config/zathura/zathurarc
-  # Xob
-  sed -i "s/88c0d0/5e81ac/g" ~/.config/xob/styles.cfg
-  sed -i "s/fafafa/2e3440/g" ~/.config/xob/styles.cfg
-  sed -i "s/3b4252/d8dee9/g" ~/.config/xob/styles.cfg
-  pkill xob
-  # Daemons
-  sh ~/.local/bin/startdaemon
-  # Notify
-  notify-send "Switch to Nord Now!" -i ~/Pictures/nord.png -t 3000
+    # Bat
+    sed -i "s/OneHalfLight/Nord/g" ~/.config/bat/config
+    # Fcitx5
+    sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
+    pkill fcitx5
+    # Wallpaper
+    nohup betterlockscreen -u ~/Pictures/nord/mars.jpg >/dev/null 2>&1 &
+    feh --bg-fill ~/Pictures/nord/mars.jpg
+    cp ~/Pictures/nord/mars.jpg ~/.config/leftwm/themes/current/background.jpg
+    # Dunst
+    cp ~/.config/dunst/dunstrc-nord-dark ~/.config/dunst/dunstrc
+    # Mako
+    pkill dunst
+    # Dwm
+    cp ~/.nord ~/.Xresources
+    xrdb merge ~/.Xresources && kill -USR1 $(pidof st)
+    pkill -1 dwm
+    # Polybar
+    cp ~/.config/polybar/colors-nord-dark ~/.config/polybar/colors
+    cp ~/.config/leftwm/themes/current/configs/colors-nord-dark ~/.config/leftwm/themes/current/configs/colors
+    pkill polybar
+    # Dmenu
+    sed -i "s/\[SchemeNorm\] \= {\"\#2E3440\"\, \"\#FAFAFA\"/\[SchemeNorm\] \= {\"\#FAFAFA\"\, \"\#2E3440\"/g" ~/.dmenu/config.def.h
+    sed -i "s/\[SchemeSel\] \= {\"\#3B4252\"\, \"\#88C0D0\"/\[SchemeSel\] \= {\"\#FAFAFA\"\, \"\#5E81AC\"/g" ~/.dmenu/config.def.h
+    fish -c dmenu_recompile
+    # Alacritty
+    cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
+    # Kitty
+    sed -i "s/light/dark/g" ~/.config/kitty/kitty.conf
+    kitty --single-instance -e kitty_reload_x
+    # Wezterm
+    sed -i "s/OneHalfLight/nord/g" ~/.config/wezterm/wezterm.lua
+    # Fish
+    fish -c nord-dark
+    # Global theme
+    sed -i "s/Orchis-light/Nord/g" ~/.config/xsettingsd/xsettingsd.conf
+    sed -i 's/Orchis-light/Nord/g' ~/.gtkrc-2.0
+    sed -i "s/Orchis-light/Nord/g" ~/.config/gtk-3.0/settings.ini
+    pkill -1 xsettingsd
+    # Rofi
+    sed -i "s/light/dark/g" ~/.config/rofi/config.rasi
+    # Nvim
+    sed -i "s/\=light/\=dark/g" ~/.config/nvim/lua/modules/ui/config.lua
+    sed -i "s/onelight/onedark/g" ~/.config/nvim/lua/modules/ui/config.lua
+    # Emacs
+    sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
+    # Code
+    sed -i "s/Atom One Light/Nord/g" ~/.config/Code/User/settings.json
+    # Sublime
+    sed -i "s/One Half Color Schemes\/OneHalfLight.tmTheme/Nord\/Nord.sublime-color-scheme/g" ~/.config/sublime-text/Packages/User/Preferences.sublime-settings
+    # Zathura
+    cp ~/.config/zathura/zathurarc-nord-dark ~/.config/zathura/zathurarc
+    # Xob
+    sed -i "s/88c0d0/5e81ac/g" ~/.config/xob/styles.cfg
+    sed -i "s/fafafa/2e3440/g" ~/.config/xob/styles.cfg
+    sed -i "s/3b4252/d8dee9/g" ~/.config/xob/styles.cfg
+    pkill xob
+    # Daemons
+    sh ~/.local/bin/startdaemon
+    # Notify
+    notify-send "Switch to Nord Now!" -i ~/Pictures/nord.png -t 3000
 fi
