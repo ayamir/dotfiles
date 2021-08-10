@@ -18,15 +18,15 @@ This is my neovim's [configuration](https://github.com/ayamir/nvimdots).
 
 1. Original Dwm
 
-    ![Dark](./nord/Pictures/shot/dark-dwm.png)
+   ![Dark](./nord/Pictures/shot/dark-dwm.png)
 
-    ![Light](./nord/Pictures/shot/light-dwm.png)
+   ![Light](./nord/Pictures/shot/light-dwm.png)
 
 2. Dwm with polybar
 
-    ![Dark](./nord/Pictures/shot/dark-dwmpo.png)
+   ![Dark](./nord/Pictures/shot/dark-dwmpo.png)
 
-    ![Light](./nord/Pictures/shot/light-dwmpo.png)
+   ![Light](./nord/Pictures/shot/light-dwmpo.png)
 
 ## Nvim
 

@@ -43,9 +43,10 @@ Nord and Light
 ## Dependency
 
 - Launcher: dmenu&rofi
-- Terminal: alacritty&kitty
+- Terminal: alacritty&kitty&st&wezterm
 - Editor:
-  - vim
+  - neovim
+  - neovide&glrnvim
   - doom emacs
   - vscode
   - sublime-text-nightly
