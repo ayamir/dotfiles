@@ -2,7 +2,10 @@ export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS="@im=fcitx"
 export GLFW_IM_MODULE="ibus"
-export _JAVA_AWT_WM_NONREPARENTING=1
+export QT_QPA_PLATFORMTHEME=qt5ct
 
-xautolock -time 10 -locker '~/.local/bin/lock' -corners ---- -cornersize 30 &
+picom --experimental-backends -b
+sxob
+xset +fp $HOME/.local/share/fonts/
+xset fp rehash
 xsettingsd &
