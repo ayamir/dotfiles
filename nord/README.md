@@ -42,6 +42,11 @@ Nord and Light
 
 ## Dependency
 
+- Font:
+  - nerd-fonts-ibm-plex-mono
+  - nerd-fonts-fira-code
+  - nerd-fonts-jetbrains-code
+  - ttf-sarasa-gothic(chinese only)
 - Launcher: dmenu&rofi
 - Terminal: alacritty&kitty&st&wezterm
 - Editor:

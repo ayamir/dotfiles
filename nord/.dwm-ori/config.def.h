@@ -23,9 +23,9 @@ static const int showtab = showtab_auto; /* Default tab bar show mode */
 static const int toptab = False;         /* False means bottom tab bar */
 
 static const char *fonts[] = {
-    "Liga SFMono Nerd Font:size=12:antialias=true:autohint=true",
+    "BlexMono Nerd Font:size=11:antialias=true:autohint=true",
     "Sarasa UI SC:size=10:antialias=true:autohint=true",
-    "JoyPixels:size=10:antialias=true:autohint=true"};
+};
 static const char dmenufont[] =
     "Sarasa UI SC:size=10:antialias=true:autohint=true";
 static char normbgcolor[] = "#2E3440";
@@ -83,13 +83,14 @@ static const Rule rules[] = {
     {"jetbrains-goland", NULL, NULL, 1 << 1, 0, -1},
     {"jetbrains-pycharm", NULL, NULL, 1 << 1, 0, -1},
     {"jetbrains-studio", NULL, NULL, 1 << 1, 0, -1},
+    {"glrnvim", NULL, NULL, 1 << 1, 0, -1},
 
     {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, -1},
     {"Firefox", NULL, NULL, 1 << 2, 0, -1},
     {"Microsoft-edge-dev", NULL, NULL, 1 << 2, 0, -1},
     {"Firefox", "Toolkit", NULL, 1 << 2, 1, -1},
 
-    {NULL, "kitty-music", NULL, 1 << 3, 0, -1},
+    {NULL, "music", NULL, 1 << 3, 0, -1},
     {NULL, "SoundConverter", NULL, 1 << 3, 0, -1},
     {"qqmusic", NULL, NULL, 1 << 3, 0, -1},
     {"Spotify", "spotify", NULL, 1 << 3, 0, -1},
@@ -156,7 +157,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[] = {"st", NULL};
+static const char *termcmd[] = {"kitty", "--single-instance", NULL};
 
 static const char *rofidruncmd[] = {"rofi", "-show", "drun", NULL};
 static const char *windowswitchcmd[] = {"rofi", "-show", "window", NULL};
@@ -178,8 +179,8 @@ static const char *downbrt[] = {"light", "-U", "5", NULL};
 
 static Key keys[] = {
     /* modifier                     key             function        argument */
-    {MODKEY, XK_Return, spawn, CMD("wezterm")},
-    {MODKEY | ShiftMask, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY | ShiftMask, XK_Return, spawn, CMD("st -e zsh")},
+    {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
     {MODKEY, XK_p, spawn, {.v = rofidruncmd}},
     {MODKEY, XK_c, spawn, {.v = clipmenucmd}},
@@ -239,12 +240,12 @@ static Key keys[] = {
     {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_x, spawn, CMD("joplin-desktop")},
-    {MODKEY, XK_v, spawn, CMD("neovide --multiGrid")},
+    {MODKEY, XK_v, spawn, CMD("glrnvim")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
     {MODKEY | ShiftMask, XK_s, spawn, CMD("flameshot gui")},
     {MODKEY | ShiftMask, XK_n, spawn, CMD("nemo")},
     {MODKEY | ShiftMask, XK_m, spawn,
-     CMD("kitty --class kitty-music -e ncmpcpp")},
+     CMD("alacritty --class music -e ncmpcpp")},
     {MODKEY | ShiftMask, XK_h, spawn, CMD("alacritty -e htop")},
     {MODKEY | ShiftMask, XK_e, spawn, CMD("emacs")},
     {MODKEY | ShiftMask, XK_v, spawn,
@@ -253,7 +254,7 @@ static Key keys[] = {
     {Mod1Mask | ControlMask, XK_Delete, spawn, CMD("betterlockscreen -l")},
 
     /*IDE start*/
-    {Mod1Mask, XK_v, spawn, CMD("glrnvim")},
+    {Mod1Mask, XK_v, spawn, CMD("neovide --multigrid")},
     {Mod1Mask, XK_c, spawn, CMD("clion")},
     {Mod1Mask, XK_i, spawn, CMD("idea")},
     {Mod1Mask, XK_p, spawn, CMD("pycharm")},
