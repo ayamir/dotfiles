@@ -83,7 +83,6 @@ static const Rule rules[] = {
     {"jetbrains-goland", NULL, NULL, 1 << 1, 0, -1},
     {"jetbrains-pycharm", NULL, NULL, 1 << 1, 0, -1},
     {"jetbrains-studio", NULL, NULL, 1 << 1, 0, -1},
-    {"glrnvim", NULL, NULL, 1 << 1, 0, -1},
 
     {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, -1},
     {"Firefox", NULL, NULL, 1 << 2, 0, -1},
@@ -157,7 +156,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[] = {"kitty", "--single-instance", NULL};
+static const char *termcmd[] = {"wezterm", NULL};
 
 static const char *rofidruncmd[] = {"rofi", "-show", "drun", NULL};
 static const char *windowswitchcmd[] = {"rofi", "-show", "window", NULL};
@@ -184,8 +183,7 @@ static Key keys[] = {
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
     {MODKEY, XK_p, spawn, {.v = rofidruncmd}},
     {MODKEY, XK_c, spawn, {.v = clipmenucmd}},
-    //	{ MODKEY,                       XK_s,           spawn,          {.v =
-    // searchmenucmd } },
+    {MODKEY, XK_s, spawn, {.v = searchmenucmd}},
     {MODKEY, XK_r, spawn, {.v = recordmenucmd}},
     {MODKEY, XK_w, spawn, {.v = windowswitchcmd}},
 
@@ -194,13 +192,12 @@ static Key keys[] = {
 
     {MODKEY, XK_j, focusstackvis, {.i = +1}},
     {MODKEY, XK_k, focusstackvis, {.i = -1}},
+    {MODKEY | ControlMask, XK_s, show, {0}},
+    {MODKEY | ControlMask, XK_h, hide, {0}},
     {MODKEY | ControlMask, XK_j, focusstackhid, {.i = +1}},
     {MODKEY | ControlMask, XK_k, focusstackhid, {.i = -1}},
     {MODKEY | ShiftMask, XK_j, shiftviewclients, {.i = -1}},
     {MODKEY | ShiftMask, XK_k, shiftviewclients, {.i = +1}},
-
-    {MODKEY, XK_s, show, {0}},
-    {MODKEY, XK_h, hide, {0}},
 
     //	{ MODKEY,                       XK_i,           incnmaster,     {.i = +1
     //} }, 	{ MODKEY,                       XK_o,           incnmaster, {.i
