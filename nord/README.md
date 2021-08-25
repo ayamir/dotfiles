@@ -45,7 +45,7 @@ Nord and Light
 - Font:
   - nerd-fonts-ibm-plex-mono
   - nerd-fonts-fira-code
-  - nerd-fonts-jetbrains-code
+  - nerd-fonts-jetbrains-mono
   - ttf-sarasa-gothic(chinese only)
 - Launcher: dmenu&rofi
 - Terminal: alacritty&kitty&st&wezterm
