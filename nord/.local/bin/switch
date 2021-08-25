@@ -124,3 +124,5 @@ elif [ $1 == "n" ]; then
     # Notify
     notify-send "Switch to Nord Now!" -i ~/Pictures/nord.png -t 3000
 fi
+
+    wezterm start -- nvim +PackerSync
