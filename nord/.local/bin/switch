@@ -32,6 +32,8 @@ if [ $1 == "l" ]; then
     kitty --single-instance -e kitty_reload_x
     # Wezterm
     sed -i "s/nord/OneHalfLight/g" ~/.config/wezterm/wezterm.lua
+    # Dir color
+    ln -sf ~/.one_dir ~/.dir_colors
     # Fish
     fish -c nord-light
     # Global theme
@@ -94,6 +96,8 @@ elif [ $1 == "n" ]; then
     kitty --single-instance -e kitty_reload_x
     # Wezterm
     sed -i "s/OneHalfLight/nord/g" ~/.config/wezterm/wezterm.lua
+    # Dir color
+    ln -sf ~/.nord_dir ~/.dir_colors
     # Fish
     fish -c nord-dark
     # Global theme
