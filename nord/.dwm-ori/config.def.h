@@ -104,6 +104,7 @@ static const Rule rules[] = {
 
     {"Qq", "qq", NULL, 1 << 6, 1, -1},
     {"Freechat", "freechat", NULL, 1 << 6, 0, -1},
+    {"icalingua", NULL, NULL, 1 << 6, 0, -1},
     {"electron-qq", "electron-qq", NULL, 1 << 6, 0, -1},
     {"Postman", "postman", NULL, 1 << 6, 0, -1},
 
@@ -156,7 +157,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[] = {"wezterm", NULL};
+static const char *termcmd[] = {"kitty", "--single-instance", NULL};
 
 static const char *rofidruncmd[] = {"rofi", "-show", "drun", NULL};
 static const char *windowswitchcmd[] = {"rofi", "-show", "window", NULL};
@@ -178,7 +179,7 @@ static const char *downbrt[] = {"light", "-U", "5", NULL};
 
 static Key keys[] = {
     /* modifier                     key             function        argument */
-    {MODKEY | ShiftMask, XK_Return, spawn, CMD("st -e zsh")},
+    {MODKEY | ShiftMask, XK_Return, spawn, CMD("wezterm")},
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
     {MODKEY, XK_p, spawn, {.v = rofidruncmd}},
@@ -190,12 +191,10 @@ static Key keys[] = {
     {MODKEY, XK_b, togglebar, {0}},
     {MODKEY | ControlMask, XK_m, focusmaster, {0}},
 
-    {MODKEY, XK_j, focusstackvis, {.i = +1}},
-    {MODKEY, XK_k, focusstackvis, {.i = -1}},
-    {MODKEY | ControlMask, XK_s, show, {0}},
-    {MODKEY | ControlMask, XK_h, hide, {0}},
-    {MODKEY | ControlMask, XK_j, focusstackhid, {.i = +1}},
-    {MODKEY | ControlMask, XK_k, focusstackhid, {.i = -1}},
+    {MODKEY | Mod1Mask, XK_s, show, {0}},
+    {MODKEY | Mod1Mask, XK_h, hide, {0}},
+    {MODKEY, XK_j, focusstackhid, {.i = +1}},
+    {MODKEY, XK_k, focusstackhid, {.i = -1}},
     {MODKEY | ShiftMask, XK_j, shiftviewclients, {.i = -1}},
     {MODKEY | ShiftMask, XK_k, shiftviewclients, {.i = +1}},
 
@@ -251,7 +250,7 @@ static Key keys[] = {
     {Mod1Mask | ControlMask, XK_Delete, spawn, CMD("betterlockscreen -l")},
 
     /*IDE start*/
-    {Mod1Mask, XK_v, spawn, CMD("neovide --multigrid")},
+    {Mod1Mask, XK_v, spawn, CMD("neovide")},
     {Mod1Mask, XK_c, spawn, CMD("clion")},
     {Mod1Mask, XK_i, spawn, CMD("idea")},
     {Mod1Mask, XK_p, spawn, CMD("pycharm")},
