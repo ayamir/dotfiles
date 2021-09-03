@@ -7,8 +7,8 @@ if [ $1 == "l" ]; then
     sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
     pkill fcitx5
     # Wallpaper
-    nohup betterlockscreen -u ~/Pictures/ayanami/poster.png >/dev/null 2>&1 &
-    feh --bg-fill ~/Pictures/ayanami/poster.png
+    nohup betterlockscreen -u ~/Pictures/nord/linux-9009-cherry-keycaps-1920×1080.jpg >/dev/null 2>&1 &
+    feh --bg-fill ~/Pictures/nord/linux-9009-cherry-keycaps-1920×1080.jpg
     cp ~/Pictures/ayanami/poster.png ~/.config/leftwm/themes/current/background.jpg
     # Dunst
     cp ~/.config/dunst/dunstrc-nord-light ~/.config/dunst/dunstrc
@@ -46,6 +46,7 @@ if [ $1 == "l" ]; then
     # Nvim
     sed -i "s/\=dark/\=light/g" ~/.config/nvim/lua/modules/ui/config.lua
     sed -i "s/onedark/onelight/g" ~/.config/nvim/lua/modules/ui/config.lua
+    glrnvim +PackerSync
     # Emacs
     sed -i "s/doom-nord)/doom-nord-light)/g" ~/.doom.d/config.el
     # Code
@@ -70,9 +71,9 @@ elif [ $1 == "n" ]; then
     sed -i "s/nord-light/nord-dark/g" ~/.config/fcitx5/conf/classicui.conf
     pkill fcitx5
     # Wallpaper
-    nohup betterlockscreen -u ~/Pictures/nord/mars.jpg >/dev/null 2>&1 &
-    feh --bg-fill ~/Pictures/nord/mars.jpg
-    cp ~/Pictures/nord/mars.jpg ~/.config/leftwm/themes/current/background.jpg
+    nohup betterlockscreen -u ~/Pictures/nord/arctic-landscape.png >/dev/null 2>&1 &
+    feh --bg-fill ~/Pictures/nord/arctic-landscape.png
+    cp ~/Pictures/nord/mars.jpg ~/.config/leftwm/themes/current/background.png
     # Dunst
     cp ~/.config/dunst/dunstrc-nord-dark ~/.config/dunst/dunstrc
     # Mako
@@ -110,6 +111,7 @@ elif [ $1 == "n" ]; then
     # Nvim
     sed -i "s/\=light/\=dark/g" ~/.config/nvim/lua/modules/ui/config.lua
     sed -i "s/onelight/onedark/g" ~/.config/nvim/lua/modules/ui/config.lua
+    glrnvim +PackerSync
     # Emacs
     sed -i 's/doom-nord-light)/doom-nord)/g' ~/.doom.d/config.el
     # Code
@@ -128,5 +130,3 @@ elif [ $1 == "n" ]; then
     # Notify
     notify-send "Switch to Nord Now!" -i ~/Pictures/nord.png -t 3000
 fi
-
-    wezterm start -- nvim +PackerSync
