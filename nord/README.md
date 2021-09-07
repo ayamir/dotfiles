@@ -55,7 +55,7 @@ Nord and Light
   - doom emacs
   - vscode
   - sublime-text-nightly
-- Compositor: picom-jonaburg-git
+- Compositor: picom-ibhagwan-git
 - Shell: fish
 - PDF reader: zathura
 - Player: mpd&ncmpcpp
