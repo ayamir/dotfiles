@@ -1,56 +1,51 @@
-Xft.dpi: 120
-Xft.antialias: true
-Xft.hinting: true
-Xft.rgba: rgb
-Xft.autohint: false
-Xft.hintstyle: hintslight
-Xft.lcdfilter: lcddefault
+!-- Xft settings -- !
+Xft.antialias:	1
+Xft.hinting:	1
+Xft.autohint:	0
+Xft.hintstyle:	hintslight
+Xft.rgba:	rgb
+Xft.lcdfilter:	lcddefault
 
+!-- remove this if your DPI is ok -- !
+Xft.dpi:   130  
 
-#define nord0 #2E3440
-#define nord1 #3B4252
-#define nord2 #434C5E
-#define nord3 #4C566A
-#define nord4 #D8DEE9
-#define nord5 #E5E9F0
-#define nord6 #ECEFF4
-#define nord7 #8FBCBB
-#define nord8 #88C0D0
-#define nord9 #81A1C1
-#define nord10 #5E81AC
-#define nord11 #BF616A
-#define nord12 #D08770
-#define nord13 #EBCB8B
-#define nord14 #A3BE8C
-#define nord15 #B48EAD
+st.font:         Blex Mono Nerd Font Mono:style:Regular:pixelsize=20
 
+!-- use values like 0.60 to get proper transparency -- !
+st.alpha: 0.80
+
+! window border inner
+st.borderpx: 10
+
+*foreground:   #383a42
+#ifdef background_opacity
+*background:   [background_opacity]#fafafa
+#else
+*background:   #fafafa
+#endif
+*cursorColor:  #bfceff
+
+*color0:       #383a42
+*color1:       #e45649
+*color2:       #40a14f
+*color3:       #c18401
+*color4:       #0184bc
+*color5:       #a626a4
+*color6:       #0997b3
+*color7:       #fafafa
+
+*color8:       #383a42 
+*color9:       #e45649 
+*color10:      #40a14f 
+*color11:      #c18401 
+*color12:      #0184bc 
+*color13:      #a626a4 
+*color14:      #0997b3 
+*color15:      #fafafa 
 
 dwm.normbgcolor: #FAFAFA
 dwm.normbordercolor: #FAFAFA
 dwm.normfgcolor: #2E3440
-dwm.selfgcolor: #3B4252
+dwm.selfgcolor: #FAFAFA
 dwm.selbordercolor: #B48EAD
-dwm.selbgcolor: #8FBCBB
-
-*.foreground:   nord4
-*.background:   nord0
-*.cursorColor:  nord4
-*fading: 35
-*fadeColor: nord3
-
-*.color0: nord1
-*.color1: nord11
-*.color2: nord14
-*.color3: nord13
-*.color4: nord9
-*.color5: nord15
-*.color6: nord8
-*.color7: nord5
-*.color8: nord3
-*.color9: nord11
-*.color10: nord14
-*.color11: nord13
-*.color12: nord9
-*.color13: nord15
-*.color14: nord7
-*.color15: nord6
+dwm.selbgcolor: #81A1C1

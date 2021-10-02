@@ -7,7 +7,7 @@ Xft.rgba:	rgb
 Xft.lcdfilter:	lcddefault
 
 !-- remove this if your DPI is ok -- !
-Xft.dpi:   120  
+Xft.dpi:   130  
 
 st.font:         BlexMono Nerd Font Mono:style:Regular:pixelsize=20
 
