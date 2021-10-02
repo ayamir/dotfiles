@@ -10,3 +10,7 @@ for value in ${arr[@]}; do
         exec "$value" &
     fi
 done
+
+if [[ ! $(pgrep xob) ]]; then
+    exec "sxob"
+fi
