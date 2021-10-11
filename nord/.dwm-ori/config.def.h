@@ -154,8 +154,11 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[] = {"alacritty", NULL};
+static const char *termcmd[] = {"alacritty", "-e", "zsh", NULL};
 static const char *subtermcmd[] = {"wezterm", NULL};
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = {"st", "-t",     scratchpadname,
+                                      "-g", "45x12", "-e", "cava", NULL};
 
 static const char *rofidruncmd[] = {"rofi", "-show", "drun", NULL};
 static const char *windowswitchcmd[] = {"rofi", "-show", "window", NULL};
@@ -177,6 +180,7 @@ static Key keys[] = {
     /* modifier                     key             function        argument */
     {MODKEY, XK_Return, spawn, {.v = subtermcmd}},
     {MODKEY | ShiftMask, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY, XK_grave, togglescratch, {.v = scratchpadcmd}},
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
     {MODKEY, XK_p, spawn, {.v = rofidruncmd}},
     {MODKEY, XK_r, spawn, {.v = recordmenucmd}},

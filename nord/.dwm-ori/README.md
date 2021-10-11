@@ -105,6 +105,10 @@ You can see all of 19 patches I have applied in `./patches` dir.
 
     status2d work with xrdb
 
+-   dwm-scratchpad-6.2.diff
+
+    start a scratchpad
+
 -   dwm-xrdb-6.2.diff
 
     reload dwm color through `~/.Xresources`
