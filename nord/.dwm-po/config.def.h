@@ -26,7 +26,7 @@ static const int showtab = showtab_auto; /* Default tab bar show mode */
 static const int toptab = False;         /* False means bottom tab bar */
 
 static const char *fonts[] = {
-    "Liga SFMono Nerd Font:size=9:antialias=true:autohint=true",
+    "BlexMono Nerd Font:size=9:antialias=true:autohint=true",
     "Sarasa UI SC:size=8:antialias=true:autohint=true",
     "JoyPixels:size=10:antialias=true:autohint=true"};
 static const char dmenufont[] =
@@ -83,12 +83,14 @@ static const Rule rules[] = {
     {"jetbrains-idea", NULL, NULL, 1 << 1, 0, -1},
     {"jetbrains-clion", NULL, NULL, 1 << 1, 0, -1},
     {"jetbrains-pycharm", NULL, NULL, 1 << 1, 0, -1},
-    {"glrnvim", NULL, NULL, 1 << 1, 0, -1},
 
     {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, -1},
     {"Firefox", NULL, NULL, 1 << 2, 0, -1},
-    {"Microsoft-edge-dev", NULL, NULL, 1 << 2, 0, -1},
+    {"Typora", NULL, NULL, 1 << 2, 0, -1},
     {"Firefox", "Toolkit", NULL, 1 << 2, 1, -1},
+    {"Microsoft-edge-dev", NULL, NULL, 1 << 2, 0, -1},
+    {"Microsoft-edge-beta", NULL, NULL, 1 << 2, 0, -1},
+    {"crx__ikhdkkncnoglghljlkmcimlnlhkeamad", NULL, NULL, 1 << 2, 1, -1},
 
     {NULL, "music", NULL, 1 << 3, 0, -1},
     {NULL, "SoundConverter", NULL, 1 << 3, 0, -1},
@@ -105,6 +107,7 @@ static const Rule rules[] = {
 
     {"Qq", "qq", NULL, 1 << 6, 1, -1},
     {"Freechat", "freechat", NULL, 1 << 6, 0, -1},
+    {"icalingua", "icalingua", NULL, 1 << 6, 0, -1},
     {"electron-qq", "electron-qq", NULL, 1 << 6, 0, -1},
     {"Postman", "postman", NULL, 1 << 6, 0, -1},
 
@@ -112,6 +115,8 @@ static const Rule rules[] = {
 
     {"qv2ray", NULL, NULL, 1 << 8, 0, -1},
     {"qBittorrent", NULL, NULL, 1 << 8, 0, -1},
+    {"glrnvim", NULL, NULL, 1 << 8, 0, -1},
+
 
     {"xdman-Main", NULL, NULL, 0, 1, -1},
     {"Nitrogen", NULL, NULL, 0, 1, -1},
@@ -156,7 +161,10 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[] = {"kitty", "--single-instance", NULL};
+static const char *termcmd[] = {"kitty", "-e", "--single-instance", NULL};
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = {"st", "-t",     scratchpadname,
+                                      "-g", "48x12", "-e", "cava", NULL};
 
 static const char *rofidruncmd[] = {"rofi", "-show", "drun", NULL};
 static const char *windowswitchcmd[] = {"rofi", "-show", "window", NULL};
@@ -178,8 +186,9 @@ static const char *downbrt[] = {"light", "-U", "5", NULL};
 
 static Key keys[] = {
     /* modifier                     key             function        argument */
-    {MODKEY | ShiftMask, XK_Return, spawn, CMD("st -e zsh")},
+    {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty")},
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY, XK_grave, togglescratch, {.v = scratchpadcmd}},
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
     {MODKEY, XK_p, spawn, {.v = rofidruncmd}},
     {MODKEY, XK_c, spawn, {.v = clipmenucmd}},

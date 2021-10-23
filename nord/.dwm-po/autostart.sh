@@ -3,7 +3,7 @@
 sh ~/.fehbg
 wmname compiz
 
-arr=("xfce4-power-man" "copyq" "fcitx5" "dunst" "clipmenud" "qv2ray" "mpd" "picom" "qbittorrent" "nutstore" "solaar")
+arr=("xfce4-power-man" "copyq" "fcitx5" "dunst" "clipmenud" "qv2ray" "mpd" "picom" "nutstore" "solaar")
 
 for value in ${arr[@]}; do
     if [[ ! $(pgrep ${value}) ]]; then

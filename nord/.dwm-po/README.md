@@ -77,6 +77,10 @@ You can see all of 16 patches I have applied in `./patches` dir.
 
     maintain layout for pertag
 
+-   dwm-scratchpad-6.2.diff
+
+    enable scratchpad for dwm
+
 -   dwm-status2d-6.2.diff
 
     allow color on dwm status
