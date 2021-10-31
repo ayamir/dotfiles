@@ -6,7 +6,7 @@ Each of them include global Dark and Light color scheme which can be switch thro
 
 The Nord version have 2 dwm builds, one is [Original Dwm](./nord/.dwm-ori), the other is [Dwm with polybar](./nord/.dwm-po)(support switch during runtime). 
 
-Besides, there is a [qtile config](./nord/config/qtile) using nord theme, which share the light-dark switch script with dwm.
+Besides, there is a [qtile config](./nord/.config/qtile) using nord theme, which share the light-dark switch script with dwm.
 
 This is my neovim's [configuration](https://github.com/ayamir/nvimdots).
 
