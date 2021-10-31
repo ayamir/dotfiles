@@ -7,16 +7,18 @@ if [ $1 == "l" ]; then
     sed -i "s/nord-dark/nord-light/g" ~/.config/fcitx5/conf/classicui.conf
     pkill fcitx5
     # Wallpaper
-    nohup betterlockscreen -u ~/Pictures/nord/linux-9009-cherry-keycaps-1920×1080.jpg >/dev/null 2>&1 &
-    feh --bg-fill ~/Pictures/nord/linux-9009-cherry-keycaps-1920×1080.jpg
+    nohup betterlockscreen -u ~/Pictures/ayanami/poster.png >/dev/null 2>&1 &
+    feh --bg-fill ~/Pictures/ayanami/poster.png
     cp ~/Pictures/ayanami/poster.png ~/.config/leftwm/themes/current/background.jpg
-    # Dunst
-    cp ~/.config/dunst/dunstrc-nord-light ~/.config/dunst/dunstrc
-    pkill dunst
+    cp ~/Pictures/qtile/light.png ~/Pictures/qtile/wallpaper.png
     # Dwm
     cp ~/.onehalflight ~/.Xresources
     xrdb merge ~/.Xresources && kill -USR1 $(pidof st)
     pkill -1 dwm
+    # Qtile
+    sed -i "s/3b4252/fafafa/g" ~/.config/qtile/config.py
+    cp ~/.config/qtile/colors-light.py ~/.config/qtile/colors.py
+    qtile cmd-obj -o cmd -f restart
     # Polybar
     cp ~/.config/polybar/colors-nord-light ~/.config/polybar/colors
     cp ~/.config/leftwm/themes/current/configs/colors-nord-light ~/.config/leftwm/themes/current/configs/colors
@@ -27,11 +29,11 @@ if [ $1 == "l" ]; then
     fish -c dmenu_recompile
     # Alacritty
     cp ~/.config/alacritty/alacritty-nord-light.yml ~/.config/alacritty/alacritty.yml
-    # Kitty
-    sed -i "s/dark/light/g" ~/.config/kitty/kitty.conf
-    kitty --single-instance -e kitty_reload_x
     # Wezterm
     sed -i "s/nord/OneHalfLight/g" ~/.config/wezterm/wezterm.lua
+    # Kitty
+    sed -i "s/dark/light/g" ~/.config/kitty/kitty.conf
+    kitty --single-instance -e ~/.local/bin/kitty_reload_x
     # Dir color
     ln -sf ~/.one_dir ~/.dir_colors
     # Fish
@@ -74,14 +76,15 @@ elif [ $1 == "n" ]; then
     nohup betterlockscreen -u ~/Pictures/nord/arctic-landscape.png >/dev/null 2>&1 &
     feh --bg-fill ~/Pictures/nord/arctic-landscape.png
     cp ~/Pictures/nord/mars.jpg ~/.config/leftwm/themes/current/background.png
-    # Dunst
-    cp ~/.config/dunst/dunstrc-nord-dark ~/.config/dunst/dunstrc
-    # Mako
-    pkill dunst
+    cp ~/Pictures/qtile/nord.png ~/Pictures/qtile/wallpaper.png
     # Dwm
     cp ~/.nord ~/.Xresources
     xrdb merge ~/.Xresources && kill -USR1 $(pidof st)
     pkill -1 dwm
+    # Qtile
+    sed -i "s/fafafa/3b4252/g" ~/.config/qtile/config.py
+    cp ~/.config/qtile/colors-dark.py ~/.config/qtile/colors.py
+    qtile cmd-obj -o cmd -f restart
     # Polybar
     cp ~/.config/polybar/colors-nord-dark ~/.config/polybar/colors
     cp ~/.config/leftwm/themes/current/configs/colors-nord-dark ~/.config/leftwm/themes/current/configs/colors
@@ -92,11 +95,11 @@ elif [ $1 == "n" ]; then
     fish -c dmenu_recompile
     # Alacritty
     cp ~/.config/alacritty/alacritty-nord-dark.yml ~/.config/alacritty/alacritty.yml
-    # Kitty
-    sed -i "s/light/dark/g" ~/.config/kitty/kitty.conf
-    kitty --single-instance -e kitty_reload_x
     # Wezterm
     sed -i "s/OneHalfLight/nord/g" ~/.config/wezterm/wezterm.lua
+    # Kitty
+    sed -i "s/light/dark/g" ~/.config/kitty/kitty.conf
+    kitty --single-instance -e ~/.local/bin/kitty_reload_x
     # Dir color
     ln -sf ~/.nord_dir ~/.dir_colors
     # Fish
