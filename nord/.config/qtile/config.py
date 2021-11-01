@@ -30,6 +30,7 @@ from custom.zoomy import Zoomy as CustomZoomy
 # from custom.windowname import WindowName as CustomWindowName
 
 mod = "mod4"
+mod1 = "mod1"
 terminal = "kitty"
 
 
@@ -177,8 +178,8 @@ keys = [
     Key(
         [mod],
         "e",
-        lazy.spawn("google-chrome-stable"),
-        desc="Launches Chrome",
+        lazy.spawn("microsoft-edge-stable"),
+        desc="Launches edge",
     ),
     Key(
         [mod, "shift"],
@@ -242,15 +243,39 @@ keys = [
     ),
     Key(
         [mod],
-        "f",
-        lazy.spawn("freetube"),
-        desc="Launches freetube",
-    ),
-    Key(
-        [mod],
         "z",
         lazy.spawn("zathura"),
         desc="Launches zathura",
+    ),
+    Key(
+        [mod1],
+        "v",
+        lazy.spawn("neovide"),
+        desc="Launches neovide",
+    ),
+    Key(
+        [mod1],
+        "c",
+        lazy.spawn("clion"),
+        desc="Launches clion",
+    ),
+    Key(
+        [mod1],
+        "i",
+        lazy.spawn("idea"),
+        desc="Launches idea",
+    ),
+    Key(
+        [mod1],
+        "p",
+        lazy.spawn("pycharm"),
+        desc="Launches pycharm",
+    ),
+    Key(
+        [mod1],
+        "g",
+        lazy.spawn("goland"),
+        desc="Launches goland",
     ),
 
     ### Window controls
@@ -309,25 +334,25 @@ keys = [
         desc="Move windows right in the current stack",
     ),
     Key(
-        [mod, "mod1"],
+        [mod, mod1],
         "j",
         lazy.layout.flip_down(),
         desc="Flip layout down",
     ),
     Key(
-        [mod, "mod1"],
+        [mod, mod1],
         "k",
         lazy.layout.flip_up(),
         desc="Flip layout up",
     ),
     Key(
-        [mod, "mod1"],
+        [mod, mod1],
         "h",
         lazy.layout.flip_left(),
         desc="Flip layout left",
     ),
     Key(
-        [mod, "mod1"],
+        [mod, mod1],
         "l",
         lazy.layout.flip_right(),
         desc="Flip layout right",
@@ -386,7 +411,7 @@ keys = [
     ),
     Key(
         [mod],
-        "t",
+        "f",
         lazy.window.toggle_floating(),
         desc="Toggle floating on focused window",
     ),
@@ -450,15 +475,19 @@ workspaces = [
         "label": "",
         "layout": "bsp",
         "matches": [
-            Match(wm_class=""),
+            Match(wm_class="solaar"),
         ],
-        "spawn": [],
+        "spawn": ["solaar"],
     },
     {
-        "name": "2",
-        "key": "2",
-        "label": "",
-        "layout": "bsp",
+        "name":
+        "2",
+        "key":
+        "2",
+        "label":
+        "",
+        "layout":
+        "bsp",
         "matches": [
             Match(wm_class="jetbrains-idea"),
             Match(wm_class="jetbrains-pycharm"),
@@ -473,16 +502,21 @@ workspaces = [
         "label": "",
         "layout": "bsp",
         "matches": [
+            Match(wm_class="microsoft-edge"),
             Match(wm_class="google-chrome"),
             Match(wm_class="firefox"),
         ],
-        "spawn": ["google-chrome-stable"],
+        "spawn": ["microsoft-edge-stable"],
     },
     {
-        "name": "4",
-        "key": "4",
-        "label": "",
-        "layout": "max",
+        "name":
+        "4",
+        "key":
+        "4",
+        "label":
+        "",
+        "layout":
+        "max",
         "matches": [
             Match(wm_class="spotify"),
             Match(wm_class="ncmpcpp"),
@@ -547,7 +581,7 @@ workspaces = [
             Match(wm_class="qbittorrent"),
             Match(wm_class="postman"),
         ],
-        "spawn": [],
+        "spawn": ["qbittorrent"],
     },
 ]
 
