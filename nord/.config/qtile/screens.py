@@ -106,14 +106,14 @@ screens = [
                     foreground=colors[3],
                     text="",
                     font="Font Awesome 5 Free Solid",
-                    padding=20,
+                    padding=15,
                 ),
                 CustomWindowName(
                     background=colors[1],
                     foreground=colors[0],
                     width=bar.CALCULATED,
                     empty_group_string="Desktop",
-                    max_chars=35,
+                    max_chars=30,
                 ),
                 # widget.CheckUpdates(
                 #     foreground=colors[3],
