@@ -13,8 +13,8 @@ from libqtile.config import (
     Group,
     Drag,
     Click,
-    # ScratchPad,
-    # DropDown,
+    ScratchPad,
+    DropDown,
     Match,
 )
 
@@ -465,6 +465,10 @@ keys = [
         lazy.spawn("pactl set-sink-volume @DEFAULT_SINK@ -1%"),
         desc="Lower volume",
     ),
+    Key([mod],
+        "grave",
+        lazy.group['scratchpad'].dropdown_toggle("term"),
+        desc="Toggle scratchpad")
 ]
 
 # Command to find out wm_class of window: xprop | grep WM_CLASS
@@ -497,10 +501,14 @@ workspaces = [
         "spawn": [],
     },
     {
-        "name": "3",
-        "key": "3",
-        "label": "",
-        "layout": "bsp",
+        "name":
+        "3",
+        "key":
+        "3",
+        "label":
+        "",
+        "layout":
+        "bsp",
         "matches": [
             Match(wm_class="microsoft-edge"),
             Match(wm_class="google-chrome"),
@@ -610,6 +618,10 @@ for workspace in workspaces:
             lazy.window.togroup(workspace["name"]),
             desc="Move focused window to another workspace",
         ))
+
+groups.append(ScratchPad("scratchpad", [
+    DropDown("term", "st", opacity=0.8),
+]))
 
 layout_theme = {
     "border_width": 3,
