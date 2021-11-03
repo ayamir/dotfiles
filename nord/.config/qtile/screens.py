@@ -241,7 +241,7 @@ screens = [
                 widget.Clock(
                     background=colors[1],
                     foreground=colors[0],
-                    format="%D %H:%M:%S",
+                    format="%m/%d %A %H:%M:%S",
                     fontsize=text_size,
                 ),
                 widget.Sep(
