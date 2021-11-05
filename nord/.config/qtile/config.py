@@ -213,6 +213,12 @@ keys = [
     ),
     Key(
         [mod, "control"],
+        "t",
+        lazy.spawn("toggle_wall"),
+        desc="Toggle paperview and picom",
+    ),
+    Key(
+        [mod, "control"],
         "p",
         lazy.spawn("mpc toggle"),
         desc="Play mpd music",
@@ -250,7 +256,7 @@ keys = [
     Key(
         [mod1],
         "v",
-        lazy.spawn("neovide"),
+        lazy.spawn("neovide --multigrid"),
         desc="Launches neovide",
     ),
     Key(
@@ -551,11 +557,12 @@ workspaces = [
         "label":
         "",
         "layout":
-        "bsp",
+        "max",
         "matches": [
             Match(wm_class="VirtualBox Manager"),
             Match(wm_class="VirtualBox Machine"),
             Match(wm_class="Vmware"),
+            Match(wm_class="freechat"),
         ],
         "spawn": [],
     },
@@ -565,7 +572,6 @@ workspaces = [
         "label": "",
         "layout": "max",
         "matches": [
-            Match(wm_class="freechat"),
             Match(wm_class="icalingua"),
         ],
         "spawn": ["icalingua"],
@@ -574,7 +580,7 @@ workspaces = [
         "name": "8",
         "key": "8",
         "label": "",
-        "layout": "bsp",
+        "layout": "max",
         "matches": [
             Match(wm_class="TelegramDesktop"),
         ],
@@ -619,9 +625,16 @@ for workspace in workspaces:
             desc="Move focused window to another workspace",
         ))
 
-groups.append(ScratchPad("scratchpad", [
-    DropDown("term", "st", opacity=0.8),
-]))
+groups.append(
+    ScratchPad("scratchpad", [
+        DropDown("term",
+                 "wezterm",
+                 x=0.7,
+                 y=0.01,
+                 width=0.3,
+                 height=0.3,
+                 on_focus_lost_hide=False),
+    ]))
 
 layout_theme = {
     "border_width": 3,

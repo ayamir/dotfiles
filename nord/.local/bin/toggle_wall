@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [[ $(pgrep picom) ]]; then
+    killall picom
+    paperview /home/ayamir/Pictures/sakura 5 &
+else
+    killall paperview
+    picom -b
+fi
