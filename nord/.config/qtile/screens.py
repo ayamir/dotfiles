@@ -12,7 +12,7 @@ from libqtile.config import (
     # DropDown,
     # Match,
 )
-# from libqtile.command import lazy
+from libqtile.command import lazy
 from libqtile import bar, widget  # , hook, layout
 # from libqtile.lazy import lazy
 from libqtile import qtile
@@ -58,20 +58,22 @@ screens = [
         wallpaper_mode="fill",
         top=bar.Bar(
             [
-                # widget.TextBox(
-                #     text="",
-                #     foreground=colors[1],
-                #     fontsize=20,
-                #     padding=20,
-                # ),
                 widget.Sep(
                     linewidth=0,
                     background=colors[1],
-                    padding=20,
+                    padding=30,
                     size_percent=40,
                 ),
+                widget.TextBox(background=colors[1],
+                               foreground=colors[0],
+                               fontsize=20,
+                               font="JetBrainsMono Nerd Font",
+                               text="望",
+                               mouse_callbacks={
+                                   'Button1':
+                                   lambda: qtile.cmd_spawn("toggle_all"),
+                               }),
                 widget.GroupBox(
-                    font="Liga SFMono Nerd Font",
                     **group_box_settings,
                     fontsize=12,
                 ),
@@ -115,19 +117,7 @@ screens = [
                     empty_group_string="Desktop",
                     max_chars=30,
                 ),
-                # widget.CheckUpdates(
-                #     foreground=colors[3],
-                #     colour_have_updates=colors[3],
-                #     distro="Arch",
-                #     display_format=" {updates}",
-                #     padding=20,
-                #     update_interval=300,
-                #     mouse_callbacks={
-                #         'Button1':
-                #         lambda: qtile.cmd_spawn(terminal + ' -e yay -Syu')
-                #     },
-                # ),
-                widget.Spacer(background=colors[1], ),
+                widget.Spacer(background=colors[1]),
                 widget.Sep(
                     linewidth=0,
                     padding=10,
@@ -141,11 +131,9 @@ screens = [
                     font="Font Awesome 5 Free Solid",
                     fontsize=icon_size,
                 ),
-                widget.Net(
-                    background=colors[1],
-                    foreground=colors[0],
-                    format = "{down}"
-                ),
+                widget.Net(background=colors[1],
+                           foreground=colors[0],
+                           format="{down}"),
                 widget.Sep(
                     linewidth=0,
                     padding=10,
