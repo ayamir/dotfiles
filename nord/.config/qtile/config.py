@@ -48,7 +48,7 @@ def autostart():
     subprocess.call([home])
 
 
-## Resize functions for bsp layout
+# Resize functions for bsp layout
 def resize(qtile, direction):
     layout = qtile.current_layout
     child = layout.current
@@ -118,13 +118,19 @@ keys = [
     Key(
         [mod],
         "Return",
-        lazy.spawn(terminal + " -e --single-instance"),
+        lazy.spawn(terminal + " --single-instance -e fish"),
         desc="Launch terminal",
     ),
     Key(
         [mod, "shift"],
         "Return",
-        lazy.spawn("alacritty -e zsh"),
+        lazy.spawn("alacritty"),
+        desc="Launch terminal",
+    ),
+    Key(
+        [mod, mod1],
+        "Return",
+        lazy.spawn("wezterm"),
         desc="Launch terminal",
     ),
     Key(
@@ -178,8 +184,8 @@ keys = [
     Key(
         [mod],
         "e",
-        lazy.spawn("microsoft-edge-stable"),
-        desc="Launches edge",
+        lazy.spawn("google-chrome-stable"),
+        desc="Launches chrome",
     ),
     Key(
         [mod, "shift"],
@@ -192,12 +198,6 @@ keys = [
         "m",
         lazy.spawn("alacritty --class ncmpcpp -e ncmpcpp"),
         desc="Launches Ncmpcpp",
-    ),
-    Key(
-        [mod, "shift"],
-        "s",
-        lazy.spawn("flameshot gui"),
-        desc="Launches flameshot",
     ),
     Key(
         [mod, "control"],
@@ -256,7 +256,7 @@ keys = [
     Key(
         [mod1],
         "v",
-        lazy.spawn("neovide --multigrid"),
+        lazy.spawn("neovide"),
         desc="Launches neovide",
     ),
     Key(
@@ -284,7 +284,7 @@ keys = [
         desc="Launches goland",
     ),
 
-    ### Window controls
+    # Window controls
     Key(
         [mod],
         "j",
@@ -422,7 +422,7 @@ keys = [
         desc="Toggle floating on focused window",
     ),
 
-    ### Stack controls
+    # Stack controls
     # Key(
     #     [mod],
     #     "f",
@@ -436,6 +436,26 @@ keys = [
     #     lazy.layout.toggle_split(),
     #     desc="Toggle between split and unsplit sides of stack",
     # ),
+
+    # Shot Screen
+    Key(
+        [mod, "shift"],
+        "s",
+        lazy.spawn("flameshot gui"),
+        desc="Launches flameshot",
+    ),
+    Key(
+        [],
+        "Print",
+        lazy.spawn("flameshot screen -n 0 -c"),
+        desc="Shot display 0",
+    ),
+    Key(
+        [mod],
+        "Print",
+        lazy.spawn("flameshot screen -n 1 -c"),
+        desc="Shot display 1",
+    ),
     # Audio bindings specifically for Logitech G915 media buttons
     Key(
         [],
@@ -520,7 +540,7 @@ workspaces = [
             Match(wm_class="google-chrome"),
             Match(wm_class="firefox"),
         ],
-        "spawn": ["microsoft-edge-stable"],
+        "spawn": ["google-chrome-stable"],
     },
     {
         "name":
@@ -545,7 +565,7 @@ workspaces = [
         "label": "",
         "layout": "bsp",
         "matches": [
-            Match(wm_class="steam"),
+            Match(wm_class="Steam"),
         ],
         "spawn": [],
     },
@@ -590,10 +610,11 @@ workspaces = [
         "name": "9",
         "key": "9",
         "label": "",
-        "layout": "max",
+        "layout": "floating",
         "matches": [
             Match(wm_class="qbittorrent"),
             Match(wm_class="postman"),
+            Match(wm_class="xdman-Main"),
         ],
         "spawn": ["qbittorrent"],
     },
@@ -684,6 +705,26 @@ layouts = [
     ),
     layout.MonadTall(**layout_theme),
     layout.MonadWide(**layout_theme),
+    layout.Floating(float_rules=[
+        Match(wm_type='utility'),
+        Match(wm_type='notification'),
+        Match(wm_type='toolbar'),
+        Match(wm_type='splash'),
+        Match(wm_type='dialog'),
+        Match(wm_class='file_progress'),
+        Match(wm_class='confirm'),
+        Match(wm_class='dialog'),
+        Match(wm_class='download'),
+        Match(wm_class='error'),
+        Match(wm_class='notification'),
+        Match(wm_class='splash'),
+        Match(wm_class='toolbar'),
+        Match(func=lambda c: c.has_fixed_size()),
+        Match(func=lambda c: c.has_fixed_ratio()),
+        Match(wm_class="xdman-Main"),
+        Match(wm_class="nitrogen"),
+        Match(wm_class="lxappearance"),
+    ], **layout_theme),
     # layout.Columns(
     #    **layout_theme,
     #    border_on_single=True,
@@ -697,8 +738,7 @@ layouts = [
     # layout.Matrix(**layout_theme, columns=3),
     # layout.Slice(**layout_theme),
     # layout.Tile(shift_windows=True, **layout_theme),
-    #layout.Floating(**layout_theme),
-    #CustomBspMargins(**layout_theme_margins),
+    # CustomBspMargins(**layout_theme_margins),
 ]
 
 # Setup bar
