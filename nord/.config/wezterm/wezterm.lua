@@ -2,18 +2,26 @@ local wezterm = require "wezterm"
 local mykeys = {
     {
         key = "t",
-        mods = "CTRL|SHIFT",
+        mods = "SHIFT|ALT",
         action = wezterm.action {SpawnTab = "CurrentPaneDomain"}
     }, {
         key = "w",
-        mods = "CTRL|SHIFT",
-        action = wezterm.action {CloseCurrentTab = {confirm = false}}
+        mods = "SHIFT|ALT",
+        action = wezterm.action {CloseCurrentTab = {confirm = true}}
     }, {key = "=", mods = "CTRL", action = "IncreaseFontSize"},
     {key = "-", mods = "CTRL", action = "DecreaseFontSize"},
     {key = "0", mods = "CTRL", action = "ResetFontSize"},
     {key = "C", mods = "CTRL|SHIFT", action = "Copy"},
     {key = "V", mods = "CTRL|SHIFT", action = "Paste"},
-    {key = "Z", mods = "CTRL", action = "TogglePaneZoomState"}
+    {key = "Z", mods = "CTRL", action = "TogglePaneZoomState"}, {
+        key = "J",
+        mods = "SHIFT|ALT",
+        action = wezterm.action {ActivateTabRelative = -1}
+    }, {
+        key = "K",
+        mods = "SHIFT|ALT",
+        action = wezterm.action {ActivateTabRelative = 1}
+    }
 }
 for i = 1, 8 do
     table.insert(mykeys, {
