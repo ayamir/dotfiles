@@ -34,7 +34,7 @@ end
 
 return {
     use_ime = true,
-    default_prog = {"/usr/bin/fish", "-l"},
+    default_prog = {"/usr/bin/zsh", "-l"},
     font = wezterm.font_with_fallback({
         "JetBrainsMono Nerd Font", "Sarasa Mono SC Nerd", "FiraCode Nerd Font",
         "BlexMono Nerd Font"
