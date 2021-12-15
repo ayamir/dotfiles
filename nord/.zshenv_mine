@@ -1,111 +1,45 @@
-# Start configuration added by Zim install {{{
+# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
 #
-# User configuration sourced by all invocations of the shell
-#
+# Do not modify this file unless you know exactly what you are doing.
+# It is strongly recommended to keep all shell customization and configuration
+# (including exported environment variables such as PATH) in ~/.zshrc or in
+# files sourced from ~/.zshrc. If you are certain that you must export some
+# environment variables in ~/.zshenv, do it where indicated by comments below.
 
-# Define Zim location
-: ${ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim}
-# }}} End configuration added by Zim install
+if [ -n "${ZSH_VERSION-}" ]; then
+  # If you are certain that you must export some environment variables
+  # in ~/.zshenv (see comments at the top!), do it here:
+  #
+  #   export GOPATH=$HOME/go
+  #
+  # Do not change anything else in this file.
 
-export SYS_LOCAL_BIN="/usr/local/bin"
-export LOCAL_BIN="$HOME/.local/bin"
+  : ${ZDOTDIR:=~}
+  setopt no_global_rcs
+  [[ -o no_interactive && -z "${Z4H_BOOTSTRAPPING-}" ]] && return
+  setopt no_rcs
+  unset Z4H_BOOTSTRAPPING
+fi
 
-export GOROOT="/usr/lib/go"
-export GOPATH="$HOME/go"
-export GOBIN="$HOME/go/bin"
+Z4H_URL="https://raw.githubusercontent.com/romkatv/zsh4humans/v5"
+: "${Z4H:=${XDG_CACHE_HOME:-$HOME/.cache}/zsh4humans/v5}"
 
-export HS_BIN="$HOME/.cabal/bin"
+umask o-w
 
-export NPM_BIN="$HOME/.npm-global/bin"
+if [ ! -e "$Z4H"/z4h.zsh ]; then
+  mkdir -p -- "$Z4H" || return
+  >&2 printf '\033[33mz4h\033[0m: fetching \033[4mz4h.zsh\033[0m\n'
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL -- "$Z4H_URL"/z4h.zsh >"$Z4H"/z4h.zsh.$$ || return
+  elif command -v wget >/dev/null 2>&1; then
+    wget -O-   -- "$Z4H_URL"/z4h.zsh >"$Z4H"/z4h.zsh.$$ || return
+  else
+    >&2 printf '\033[33mz4h\033[0m: please install \033[32mcurl\033[0m or \033[32mwget\033[0m\n'
+    return 1
+  fi
+  mv -- "$Z4H"/z4h.zsh.$$ "$Z4H"/z4h.zsh || return
+fi
 
-export KT_BIN="$HOME/.kotlin/bin"
+. "$Z4H"/z4h.zsh || return
 
-export RS_BIN="$HOME/.cargo/bin"
-
-export JAVA_HOME="/usr/lib/jvm/default"
-
-export PATH=$SYS_LOCAL_BIN:$LOCAL_BIN:$GOBIN:$HS_BIN:$NPM_BIN:$RS_BIN:$JAVA_HOME:$PATH
-
-export EDITOR="nvim"
-
-export HTTP_PROXY="http://127.0.0.1:8889"
-
-export MCFLY_LIGHT=true
-export MCFLY_KEY_SCHEME=vim
-export MCFLY_FUZZY=true
-export MCFLY_RESULTS=50
-export MCFLY_INTERFACE_VIEW=BOTTOM
-export MCFLY_RESULTS_SORT=LAST_RUN
-
-export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
-
-alias :q="exit"
-alias v="nvim"
-alias vi="nvim"
-alias nv="nvim"
-alias vim="nvim"
-alias ne="neofetch"
-
-alias vz="nvim ~/.zshenv"
-alias sz="source ~/.zshenv"
-
-alias ls="logo-ls"
-alias la="exa -a"
-alias l="exa -alh"
-alias l.="exa -d .* --color=auto"
-alias ll="exa -l --color=auto"
-
-alias jd="cd ~/Downloads"
-alias jdc="cd ~/Downloads/Compressed"
-alias jcl="cd ~/clone"
-
-alias vp="nvim ~/.config/picom/picom.conf"
-alias vc="cd ~/.dwm/; nvim ~/.dwm/config.def.h"
-alias va="nvim ~/.dwm/autostart.sh"
-alias vv="nvim ~/.config/nvim/init.vim"
-
-alias py="python3"
-alias pyins="pip3 install --user"
-alias pyuins="pip3 uninstall"
-
-alias ins="paru -S"
-alias uins="yay -R"
-alias up="paru"
-alias c="paru -c"
-
-alias stlsa="sudo systemctl start"
-alias stlst="sudo systemctl stop"
-alias stlsu="sudo systemctl status"
-alias stlen="sudo systemctl enable"
-alias stldis="sudo systemctl disable"
-alias stlre="sudo systemctl restart"
-
-alias og="git-open"
-alias gc="git clone"
-alias ga="git add"
-alias gm="git commit -m"
-alias gps="git push"
-
-
-alias dc="docker-compose"
-alias dps="docker ps"
-alias dst="docker stop"
-alias dru="docker run"
-alias drm="docker rm"
-alias dls="docker images ls"
-
-alias x="extract"
-alias ne="neofetch"
-alias uzw="unzip -O cp936"
-alias ra="ranger"
-alias d2u="find . -type f -exec dos2unix {} +"
-alias del="sh ~/.rm.sh"
-alias tra="cd ~/.local/share/Trash/files && ls -a"
-alias cl="rm -rf ~/.local/share/Trash/files/*"
-alias po="sudo poweroff"
-alias reb="sudo reboot"
-alias ssm="devour wezterm-gui ssh lgt@10.112.33.61:233"
-
-alias sc="source ~/anaconda3/bin/activate"
-alias cda="conda activate"
-alias cdd="conda deactivate"
+setopt rcs

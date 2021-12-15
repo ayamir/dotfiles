@@ -1,134 +1,206 @@
-# Start configuration added by Zim install {{{
+# Personal Zsh configuration file. It is strongly recommended to keep all
+# shell customization and configuration (including exported environment
+# variables such as PATH) in this file or in files source by it.
 #
-# User configuration sourced by interactive shells
+# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
+
+# Periodic auto-update on Zsh startup: 'ask' or 'no'.
+# You can manually run `z4h update` to update everything.
+zstyle ':z4h:' auto-update      'no'
+# Ask whether to auto-update this often; has no effect if auto-update is 'no'.
+zstyle ':z4h:' auto-update-days '28'
+
+# Start tmux if not already in tmux.
+# zstyle ':z4h:' start-tmux       command tmux -u new -A -D -t z4h
+
+# Move prompt to the bottom when zsh starts and on Ctrl+L.
+zstyle ':z4h:' prompt-at-bottom 'no'
+
+# Keyboard type: 'mac' or 'pc'.
+zstyle ':z4h:bindkey' keyboard  'pc'
+
+# Right-arrow key accepts one character ('partial-accept') from
+# command autosuggestions or the whole thing ('accept')?
+zstyle ':z4h:autosuggestions' forward-char 'accept'
+
+# Recursively traverse directories when TAB-completing files.
+zstyle ':z4h:fzf-complete' recurse-dirs 'no'
+
+# Enable direnv to automatically source .envrc files.
+zstyle ':z4h:direnv'         enable 'yes'
+# Show "loading" and "unloading" notifications from direnv.
+zstyle ':z4h:direnv:success' notify 'yes'
+
+# Enable ('yes') or disable ('no') automatic teleportation of z4h over
+# SSH when connecting to these hosts.
+zstyle ':z4h:ssh:example-hostname1'   enable 'yes'
+zstyle ':z4h:ssh:*.example-hostname2' enable 'no'
+# The default value if none of the overrides above match the hostname.
+zstyle ':z4h:ssh:*'                   enable 'no'
+
+# Send these files over to the remote host when connecting over SSH to the
+# enabled hosts.
+zstyle ':z4h:ssh:*' send-extra-files '~/.nanorc' '~/.env.zsh'
+
+# Clone additional Git repositories from GitHub.
 #
+# This doesn't do anything apart from cloning the repository and keeping it
+# up-to-date. Cloned files can be used after `z4h init`. This is just an
+# example. If you don't plan to use Oh My Zsh, delete this line.
+z4h install ohmyzsh/ohmyzsh || return
 
-# -----------------
-# Zsh configuration
-# -----------------
+# Install or update core components (fzf, zsh-autosuggestions, etc.) and
+# initialize Zsh. After this point console I/O is unavailable until Zsh
+# is fully initialized. Everything that requires user interaction or can
+# perform network I/O must be done above. Everything else is best done below.
+z4h init || return
 
+# Extend PATH.
+path=(~/bin $path)
+
+# Export environment variables.
+export GPG_TTY=$TTY
+
+export SYS_LOCAL_BIN="/usr/local/bin"
+export LOCAL_BIN="$HOME/.local/bin"
+
+export GOROOT="/usr/lib/go"
+export GOPATH="$HOME/go"
+export GOBIN="$HOME/go/bin"
+
+export HS_BIN="$HOME/.cabal/bin"
+
+export NPM_BIN="$HOME/.npm-global/bin"
+
+export KT_BIN="$HOME/.kotlin/bin"
+
+export RS_BIN="$HOME/.cargo/bin"
+
+export JAVA_HOME="/usr/lib/jvm/default"
+
+export PATH=$SYS_LOCAL_BIN:$LOCAL_BIN:$GOBIN:$HS_BIN:$NPM_BIN:$RS_BIN:$JAVA_HOME:$PATH
+
+export EDITOR="nvim"
+
+export HTTP_PROXY="http://127.0.0.1:8889"
+export HTTPS_PROXY="http://127.0.0.1:8889"
+export ALL_PROXY="http://127.0.0.1:8889"
+
+export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
+
+# Source additional local files if they exist.
+z4h source ~/.env.zsh
+
+# Use additional Git repositories pulled in with `z4h install`.
 #
-# History
-#
+# This is just an example that you should delete. It does nothing useful.
+z4h load   ohmyzsh/ohmyzsh/plugins/extract  # load a plugin
+z4h load   ohmyzsh/ohmyzsh/plugins/sudo  # load a plugin
 
-# Remove older command from the history if a duplicate is to be added.
-setopt HIST_IGNORE_ALL_DUPS
+# Define key bindings.
+z4h bindkey z4h-backward-kill-word  Ctrl+Backspace     Ctrl+H
+z4h bindkey z4h-backward-kill-zword Ctrl+Alt+Backspace
 
-#
-# Input/output
-#
+z4h bindkey undo Ctrl+/ Shift+Tab # undo the last command line change
+z4h bindkey redo Alt+/            # redo the last undone command line change
 
-# Set editor default keymap to emacs (`-e`) or vi (`-v`)
-bindkey -e
+z4h bindkey z4h-cd-back    Alt+Left   # cd into the previous directory
+z4h bindkey z4h-cd-forward Alt+Right  # cd into the next directory
+z4h bindkey z4h-cd-up      Alt+Up     # cd into the parent directory
+z4h bindkey z4h-cd-down    Alt+Down   # cd into a child directory
 
-# Prompt for spelling correction of commands.
-#setopt CORRECT
+# Autoload functions.
+autoload -Uz zmv
 
-# Customize spelling correction prompt.
-#SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+# Define functions and completions.
+# function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
+# compdef _directories md
 
-# Remove path separator from WORDCHARS.
-WORDCHARS=${WORDCHARS//[\/]}
+# Define named directories: ~w <=> Windows home directory on WSL.
+[[ -z $z4h_win_home ]] || hash -d w=$z4h_win_home
 
-# -----------------
-# Zim configuration
-# -----------------
+# Define aliases.
+alias tree='tree -a -I .git'
 
-# Use degit instead of git as the default tool to install and update modules.
-#zstyle ':zim:zmodule' use 'degit'
+alias vi="vim"
+alias nv="nvim"
+alias ne="neofetch"
 
-# --------------------
-# Module configuration
-# --------------------
+alias vz="nvim ~/.zshrc"
+alias sz="source ~/.zshrc"
 
-#
-# completion
-#
+alias ls="exa"
+alias l.="exa -d .* --color=auto"
+alias ll="exa -l --color=auto"
+alias la="exa -a --color=auto"
 
-# Set a custom path for the completion dump file.
-# If none is provided, the default ${ZDOTDIR:-${HOME}}/.zcompdump is used.
-#zstyle ':zim:completion' dumpfile "${ZDOTDIR:-${HOME}}/.zcompdump-${ZSH_VERSION}"
+alias jd="cd ~/Downloads"
+alias jdc="cd ~/Downloads/Compressed"
+alias jcl="cd ~/clone"
 
-#
-# git
-#
+alias py="python3"
+alias pyins="pip3 install --user"
+alias pyuins="pip3 uninstall"
 
-# Set a custom prefix for the generated aliases. The default prefix is 'G'.
-#zstyle ':zim:git' aliases-prefix 'g'
+alias ins="paru -S"
+alias uins="paru -R"
+alias up="paru"
+alias c="paru -c"
 
-#
-# input
-#
+alias stlsa="sudo systemctl start"
+alias stlst="sudo systemctl stop"
+alias stlsu="sudo systemctl status"
+alias stlen="sudo systemctl enable"
+alias stldis="sudo systemctl disable"
+alias stlre="sudo systemctl restart"
 
-# Append `../` to your input for each `.` you type after an initial `..`
-#zstyle ':zim:input' double-dot-expand yes
+alias og="git-open"
+alias gc="git clone"
+alias ga="git add"
+alias gm="git commit -m"
+alias gps="git push"
 
-#
-# termtitle
-#
 
-# Set a custom terminal title format using prompt expansion escape sequences.
-# See http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Simple-Prompt-Escapes
-# If none is provided, the default '%n@%m: %~' is used.
-#zstyle ':zim:termtitle' format '%1~'
+alias dc="docker-compose"
+alias dps="docker ps"
+alias dst="docker stop"
+alias dru="docker run"
+alias drm="docker rm"
+alias dls="docker images ls"
 
-#
-# zsh-autosuggestions
-#
+alias x="extract"
+alias ne="neofetch"
+alias uzw="unzip -O cp936"
+alias ra="ranger"
+alias d2u="find . -type f -exec dos2unix {} +"
+alias del="sh ~/.rm.sh"
+alias tra="cd ~/.local/share/Trash/files && ls -a"
+alias cl="rm -rf ~/.local/share/Trash/files/*"
+alias po="sudo poweroff"
+alias reb="sudo reboot"
+alias ssm="devour wezterm-gui ssh lgt@10.112.33.61:233"
 
-# Customize the style that the suggestions are shown with.
-# See https://github.com/zsh-users/zsh-autosuggestions/blob/master/README.md#suggestion-highlight-style
-#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=242'
+alias sc="source ~/anaconda3/bin/activate"
+alias cda="conda activate"
+alias cdd="conda deactivate"
 
-#
-# zsh-syntax-highlighting
-#
+alias npmi="npm i"
+alias npmig="npm i -g"
+alias npmu="npm uninstall"
+alias npmug="npm uninstall -g"
+alias npmls="npm list"
+alias npmaf="npm audit fix"
+alias npmaff="npm audit fix --force"
+alias npmrb="npm run build"
+alias npmrt="npm run test"
 
-# Set what highlighters will be used.
-# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters.md
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+alias md="devour typora"
 
-# Customize the main highlighter styles.
-# See https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/docs/highlighters/main.md#how-to-tweak-it
-#typeset -A ZSH_HIGHLIGHT_STYLES
-#ZSH_HIGHLIGHT_STYLES[comment]='fg=242'
+# Add flags to existing aliases.
+# alias ls="${aliases[ls]:-ls} -A"
 
-# ------------------
-# Initialize modules
-# ------------------
+# Set shell options: http://zsh.sourceforge.net/Doc/Release/Options.html.
+setopt glob_dots     # no special treatment for file names with a leading dot
+setopt no_auto_menu  # require an extra TAB press to open the completion menu
 
-if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
-  # Update static initialization script if it does not exist or it's outdated, before sourcing it
-  source ${ZIM_HOME}/zimfw.zsh init -q
-fi
-source ${ZIM_HOME}/init.zsh
-
-# ------------------------------
-# Post-init module configuration
-# ------------------------------
-
-#
-# zsh-history-substring-search
-#
-
-# Bind ^[[A/^[[B manually so up/down works both before and after zle-line-init
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-
-# Bind up and down keys
-zmodload -F zsh/terminfo +p:terminfo
-if [[ -n ${terminfo[kcuu1]} && -n ${terminfo[kcud1]} ]]; then
-  bindkey ${terminfo[kcuu1]} history-substring-search-up
-  bindkey ${terminfo[kcud1]} history-substring-search-down
-fi
-
-bindkey '^P' history-substring-search-up
-bindkey '^N' history-substring-search-down
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
-# }}} End configuration added by Zim install
-
-source ~/.zshenv
-eval "$(mcfly init zsh)"
 eval "$(zoxide init zsh)"
-test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
