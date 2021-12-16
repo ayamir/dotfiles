@@ -7,8 +7,4 @@ export GLFW_IM_MODULE="ibus"
 export QT_QPA_PLATFORMTHEME=qt5ct
 
 picom --experimental-backends -b
-xset +fp /home/ayamir/.local/share/fonts/
-xset fp rehash
 xsettingsd &
-
-[[ -f ~/.zshenv ]] && source ~/.zshenv
