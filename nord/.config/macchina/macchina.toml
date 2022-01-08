@@ -46,4 +46,4 @@ theme = "Dconium"
 #   - Memory
 #   - Battery
 # Example:
-show = ["Host", "Processor", "Distribution", "Battery", "DesktopEnvironment", "WindowManager", "Terminal", "Shell", "Uptime", "Resolution", "Battery", "Memory", "ProcessorLoad", "Backlight"]
+show = ["Host", "Processor", "Kernel", "Distribution", "Battery", "DesktopEnvironment", "WindowManager", "Terminal", "Shell", "Uptime", "Resolution", "Packages", "Battery", "Memory", "ProcessorLoad", "Backlight"]

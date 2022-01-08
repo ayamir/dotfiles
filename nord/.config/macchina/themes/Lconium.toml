@@ -33,6 +33,7 @@ path = "~/.config/macchina/arch.ascii"
 
 [keys]
 host            = " "
+kernel          = " "
 distro          = " "
 battery         = " "
 cpu             = " "
