@@ -1,11 +1,8 @@
 configuration {
-  modi: "window,combi,ssh,drun,run,windowcd,keys";
-	width: 800;
-	lines: 10;
-	columns: 2;
-	font: "SFNS Display 14";
+    modi: "window,combi,ssh,drun,run,windowcd,keys";
+	font: "Liga SFMono Nerd Font 16";
 	show-icons: true;
 	icon-theme: "Papirus";
-	theme: "~/.config/rofi/nord-light.rasi";
 	display-drun: "App";
 }
+@theme "nord-light"
