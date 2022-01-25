@@ -10,29 +10,29 @@
 
 ## Dependency
 
-+ wm: awesome(with lain)
-+ terminal: kitty(with tmux), wezterm, alacritty
-+ shell: zsh, fish
-+ editor: [neovim](https://github.com/ayamir/nvimdots)
-+ launcher: rofi, dmenu
-+ compositor: picom-ibhagwan-git
-+ player: mpd, ncmpcpp
-+ power manager: xfce4-power-manager
-+ shot tool: flameshot
-+ fetch tool: macchina, rxfetch
-+ system monitor: btop
-+ font: JetBrainsMono Nerd Font, Sarasa Mono Nerd Font, IBM Plex Mono Nerd Font
+- wm: awesome(with lain)
+- terminal: kitty(with tmux), wezterm, alacritty
+- shell: zsh, fish
+- editor: [neovim](https://github.com/ayamir/nvimdots)
+- launcher: rofi, dmenu
+- compositor: picom-ibhagwan-git
+- player: mpd, ncmpcpp
+- power manager: xfce4-power-manager
+- shot tool: flameshot
+- fetch tool: macchina, rxfetch
+- wallpaper tool: nitrogen
+- system monitor: btop
+- font: JetBrainsMono Nerd Font, Sarasa Mono Nerd Font, IBM Plex Mono Nerd Font
 
 ## Acknowledgement
 
-+ [catppuccin](https://github.com/catppuccin)
+- [catppuccin](https://github.com/catppuccin)
 
-+ [di-effe/catppuccin](https://github.com/di-effe/catppuccin)
+- [di-effe/catppuccin](https://github.com/di-effe/catppuccin)
 
-+ [lcpz/lain](https://github.com/lcpz/lain)
+- [lcpz/lain](https://github.com/lcpz/lain)
 
-+ [streetturtle/awesome-wm-widgets](https://github.com/streetturtle/awesome-wm-widgets)
+- [streetturtle/awesome-wm-widgets](https://github.com/streetturtle/awesome-wm-widgets)
 
-+ [manilarome/the-glorious-dotfiles](https://github.com/manilarome/the-glorious-dotfiles)
 
-  
+- [manilarome/the-glorious-dotfiles](https://github.com/manilarome/the-glorious-dotfiles)
