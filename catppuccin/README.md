@@ -13,7 +13,7 @@
 + wm: awesome(with lain)
 + terminal: kitty(with tmux), wezterm, alacritty
 + shell: zsh, fish
-+ editor: neovim
++ editor: [neovim](https://github.com/ayamir/nvimdots)
 + launcher: rofi, dmenu
 + compositor: picom-ibhagwan-git
 + player: mpd, ncmpcpp
