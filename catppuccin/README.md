@@ -8,6 +8,8 @@
 
 ![image-20220125191357382](https://s2.loli.net/2022/01/25/U3vY2XiLhIDMygS.png)
 
+![image-20220125195900188](https://s2.loli.net/2022/01/25/Hx2jVS6TarCN8t3.png)
+
 ## Dependency
 
 - wm: awesome(with lain)
