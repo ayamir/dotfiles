@@ -2,6 +2,8 @@
 
 ![image-20220125190030771](https://s2.loli.net/2022/01/25/8iGt27XJVzxlbP3.png)
 
+![image-20220125192039215](https://s2.loli.net/2022/01/25/nJMoI4kidZAfV3g.png)
+
 ![image-20220125184348716](https://s2.loli.net/2022/01/25/nfg3QIeYL2DBFW1.png)
 
 ![image-20220125191357382](https://s2.loli.net/2022/01/25/U3vY2XiLhIDMygS.png)
@@ -17,6 +19,7 @@
 + player: mpd, ncmpcpp
 + power manager: xfce4-power-manager
 + shot tool: flameshot
++ fetch tool: macchina, rxfetch
 + system monitor: btop
 + font: JetBrainsMono Nerd Font, Sarasa Mono Nerd Font, IBM Plex Mono Nerd Font
 
