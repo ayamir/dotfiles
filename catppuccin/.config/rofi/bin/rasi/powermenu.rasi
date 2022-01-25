@@ -1,0 +1,56 @@
+@import "colors.rasi"
+
+configuration {
+	font:							"Feather 30";
+    disable-history:            	false;
+	sidebar-mode: 					false;
+	show-icons:                     false;
+}
+
+
+* {
+	background-color:				@background;
+	text-color:						@foreground;
+}
+
+window {
+    transparency:                   "real";
+    border-radius:                  4px;
+    location:                       center;
+	width:							600px;
+}
+
+listview {
+    columns:						5;
+    lines:							1;
+    spacing:                        12px;
+    cycle:                          true;
+    dynamic:                        true;
+    layout:                         vertical;
+}
+
+mainbox {
+    children:                       [ listview ];
+    spacing:                        20px;
+    margin:                         20px;
+}
+
+element {
+    background-color:               @background-light;
+    border-radius:                  4px;
+}
+
+element-text {
+    background-color: 				inherit;
+    text-color:       				inherit;
+    expand:                         true;
+    horizontal-align:               0.5;
+    vertical-align:                 0.5;
+    margin:                         20px 15px 20px 15px;
+}
+
+element selected {
+	text-color: 					@background;
+	background-color:               @primary;
+	border-radius:                  4px;
+}
