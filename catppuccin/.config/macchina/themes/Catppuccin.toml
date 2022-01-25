@@ -1,0 +1,49 @@
+spacing = 1
+padding = 1
+hide_ascii = true
+prefer_small_ascii = true
+separator = "=>"
+separator_color = "#b3e1a3"
+key_color = "#f0afe1"
+
+[palette]
+glyph = "  "
+type = "Light"
+visible = true
+
+[bar]
+glyph = "●"
+symbol_open = "["
+symbol_close = "]"
+visible = true
+hide_delimiters = false
+
+[box]
+title = " Just Do It "
+border = "double"
+visible = true
+
+[box.inner_margin]
+x = 2
+y = 1
+
+[custom_ascii]
+color = "#c6aae8"
+path = "~/.config/macchina/arch.ascii"
+
+[keys]
+host            = " "
+kernel          = " "
+distro          = " "
+battery         = " "
+cpu             = " "
+memory          = " "
+de              = " "
+wm              = " "
+terminal        = " "
+shell           = " "
+packages        = " "
+uptime          = " "
+backlight       = " "
+resolution      = " "
+cpu_load        = " "
