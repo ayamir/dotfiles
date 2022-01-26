@@ -58,7 +58,7 @@ end
 
 -- This is used later as the default terminal and editor to run.
 local terminal = "kitty --single-instance"
-local editor = os.getenv("EDITOR") or "vim"
+local editor = os.getenv("EDITOR") or "nvim"
 local editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -108,10 +108,74 @@ local myawesomemenu = {
 	},
 }
 
+local editormenu = {
+	{ "neovim", "wezterm start nvim" },
+	{ "helix", "wezterm start helix" },
+	{ "vscode", "code" },
+}
+
+local officemenu = {
+	{ "files", "nemo" },
+	{ "Word", "wps" },
+	{ "Excel", "et" },
+	{ "Power Point", "wpp" },
+}
+
+local networkmenu = {
+	{ "edge", "microsoft-edge-stable" },
+	{ "chrome", "google-chrome-stable" },
+	{ "firefox", "firefox" },
+	{ "nm-editor", "nm-connection-editor" },
+}
+
+local termmenu = {
+	{ "kitty", "kitty" },
+	{ "wezterm", "wezterm" },
+	{ "alacritty", "alacritty" },
+}
+
+local multimediamenu = {
+	{ "netease-cloud-music", "netease-cloud-music" },
+	{ "yesplaymusic", "yesplaymusic" },
+	{ "ncmpcpp", terminal .. " -e ncmpcpp" },
+	{ "vlc", "vlc" },
+	{ "pulseaudio", "pavucontrol" },
+}
+
+local settingsmenu = {
+	{ "lxappearance", "lxappearance" },
+	{ "wallpaper settings", "nitrogen" },
+	{ "qt5 settings", "qt5ct" },
+}
+
+local utilsmenu = {
+	{ "screenshot", "flameshot gui" },
+	{ "screenkey", "screenkey" },
+}
+
+local myexitmenu = {
+	{
+		"logout",
+		function()
+			awesome.quit()
+		end,
+	},
+	{ "reboot", "sudo systemctl reboot" },
+	{ "suspend", "sudo systemctl suspend" },
+	{ "shutdown", "sudo systemctl poweroff" },
+}
+
 local mymainmenu = awful.menu({
 	items = {
-		{ "awesome", myawesomemenu, beautiful.awesome_icon },
-		{ "open terminal", terminal },
+		{ "editors", editormenu },
+		{ "terms", termmenu },
+		{ "network", networkmenu },
+		{ "office", officemenu },
+		{ "multimedia", multimediamenu },
+		{ "settings", settingsmenu },
+		{ "utils", utilsmenu },
+		{ "awesome", myawesomemenu },
+		{ "exit options", myexitmenu },
 	},
 })
 
@@ -216,6 +280,7 @@ vol.widget:buttons(awful.util.table.join(
 	end)
 ))
 
+local mpris = require("themes.default.mpris")
 local mpd = require("themes.default.mpdarc")
 local bat = require("themes.default.batteryarc-widget.batteryarc")
 local spacer = wibox.widget.textbox(" ")
@@ -332,8 +397,10 @@ awful.screen.connect_for_each_screen(function(s)
 		s.mytasklist, -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
-			mpd,
+			mpris(),
 			spacer,
+			-- mpd,
+			-- spacer,
 			cpu,
 			spacer,
 			mem,
@@ -354,9 +421,9 @@ end)
 root.buttons(gears.table.join(
 	awful.button({}, 3, function()
 		mymainmenu:toggle()
-	end),
-	awful.button({}, 4, awful.tag.viewnext),
-	awful.button({}, 5, awful.tag.viewprev)
+	end)
+	-- awful.button({}, 4, awful.tag.viewnext),
+	-- awful.button({}, 5, awful.tag.viewprev)
 ))
 -- }}}
 
@@ -387,19 +454,19 @@ local globalkeys = gears.table.join(
 
 	-- Standard program
 	awful.key({ modkey }, "d", function()
-		awful.util.spawn(dmenu)
+		awful.util.spawn(dmenu, false)
 	end, { description = "run dmenu", group = "launcher" }),
 	awful.key({ modkey }, "c", function()
-		awful.util.spawn(recordmenu)
+		awful.util.spawn(recordmenu, false)
 	end, { description = "run recordmenu", group = "launcher" }),
 	awful.key({ modkey }, "r", function()
-		awful.util.spawn(rofi_launcher)
+		awful.util.spawn(rofi_launcher, false)
 	end, { description = "run launcher", group = "launcher" }),
 	awful.key({ modkey }, "w", function()
-		awful.util.spawn(rofi_window)
+		awful.util.spawn(rofi_window, false)
 	end, { description = "run window", group = "launcher" }),
 	awful.key({ modkey }, "p", function()
-		awful.util.spawn(rofi_powermenu)
+		awful.util.spawn(rofi_powermenu, false)
 	end, { description = "run powermenu", group = "launcher" }),
 	awful.key({ modkey }, "e", function()
 		awful.util.spawn("microsoft-edge-stable")
@@ -415,10 +482,10 @@ local globalkeys = gears.table.join(
 	end, { description = "open kitty", group = "launcher" }),
 
 	awful.key({ modkey, "Shift" }, "q", function()
-		awful.util.spawn("xkill")
+		awful.util.spawn("xkill", false)
 	end, { description = "run xkill", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "s", function()
-		awful.util.spawn("flameshot gui")
+		awful.util.spawn("flameshot gui", false)
 	end, { description = "run flameshot", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "e", function()
 		awful.util.spawn("google-chrome-stable")
@@ -434,13 +501,13 @@ local globalkeys = gears.table.join(
 	end, { description = "run ncmpcpp", group = "launcher" }),
 
 	awful.key({ modkey, "Control" }, "p", function()
-		awful.util.spawn("mpc toggle")
+		awful.util.spawn("mpc toggle", false)
 	end, { description = "mpc toggle", group = "launcher" }),
 	awful.key({ modkey, "Control" }, "Left", function()
-		awful.util.spawn("mpc prev")
+		awful.util.spawn("mpc prev", false)
 	end, { description = "mpc prev", group = "launcher" }),
 	awful.key({ modkey, "Control" }, "Right", function()
-		awful.util.spawn("mpc next")
+		awful.util.spawn("mpc next", false)
 	end, { description = "mpc next", group = "launcher" }),
 
 	awful.key({ altkey }, "Return", function()
@@ -457,25 +524,25 @@ local globalkeys = gears.table.join(
 	end, { description = "run pycharm", group = "launcher" }),
 
 	awful.key({}, "XF86AudioMute", function()
-		awful.spawn("pamixer -t")
+		awful.spawn("pamixer -t", false)
 	end, { description = "toggle mute", group = "launcher" }),
 	awful.key({}, "XF86AudioRaiseVolume", function()
-		awful.spawn("pamixer -i 3")
+		awful.spawn("pamixer -i 3", false)
 	end, { description = "increace volume", group = "launcher" }),
 	awful.key({}, "XF86AudioLowerVolume", function()
-		awful.spawn("pamixer -d 3")
+		awful.spawn("pamixer -d 3", false)
 	end, { description = "decrease volume", group = "launcher" }),
 	awful.key({}, "XF86MonBrightnessUp", function()
-		awful.spawn("light -A 5")
+		awful.spawn("light -A 5", false)
 	end, { description = "increase brightness", group = "launcher" }),
 	awful.key({}, "XF86MonBrightnessDown", function()
-		awful.spawn("light -U 5")
+		awful.spawn("light -U 5", false)
 	end, { description = "decrease brightness", group = "launcher" }),
 	awful.key({}, "Print", function()
-		awful.spawn("flameshot screen -n 0 -c")
+		awful.spawn("flameshot screen -n 0 -c", false)
 	end, { description = "Shot screen 0", group = "launcher" }),
 	awful.key({ "Shift" }, "Print", function()
-		awful.spawn("flameshot screen -n 1 -c")
+		awful.spawn("flameshot screen -n 1 -c", false)
 	end, { description = "Shot screen 1", group = "launcher" }),
 
 	-- Screen manipulation
@@ -538,10 +605,10 @@ local globalkeys = gears.table.join(
 		awful.tag.incncol(-1, nil, true)
 	end, { description = "decrease the number of columns", group = "layout" }),
 
-	awful.key({ modkey }, "space", function()
+	awful.key({ modkey }, "grave", function()
 		awful.layout.inc(1)
 	end, { description = "select next", group = "layout" }),
-	awful.key({ modkey, "Shift" }, "space", function()
+	awful.key({ modkey, "Shift" }, "grave", function()
 		awful.layout.inc(-1)
 	end, { description = "select previous", group = "layout" }),
 
@@ -563,8 +630,8 @@ local clientkeys = gears.table.join(
 		c:kill()
 	end, { description = "close", group = "client" }),
 	awful.key(
-		{ modkey, "Control" },
-		"space",
+		{ modkey, "Shift" },
+		"f",
 		awful.client.floating.toggle,
 		{ description = "toggle floating", group = "client" }
 	),
@@ -702,6 +769,8 @@ awful.rules.rules = {
 				"jetbrains-toolbox",
 				"Wine",
 				"wechat.exe",
+				"Lxappearance",
+				"Nitrogen",
 			},
 
 			-- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -732,7 +801,7 @@ awful.rules.rules = {
 
 	{ rule = { class = "Alacritty" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { class = "yesplaymusic" }, properties = { screen = 1, tag = tag4 } },
-	{ rule = { class = "netease-clous-music" }, properties = { screen = 2, tag = tag4 } },
+	{ rule = { class = "netease-cloud-music" }, properties = { screen = 2, tag = tag4 } },
 
 	{ rule = { class = "Steam" }, properties = { screen = 2, tag = tag5 } },
 
