@@ -63,7 +63,7 @@ case $chosen in
               $confirm == "y" || \
               $confirm == "Y" ]]; \
         then
-            $LPATH/misc/lockscreen
+            betterlockscreen -l
         elif [[ $confirm == "no" || \
                 $confirm == "NO" || \
                 $confirm == "n" || \
