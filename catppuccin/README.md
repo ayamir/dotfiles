@@ -12,7 +12,7 @@
 
 ## Dependency
 
-- wm: awesome(with lain)
+- wm: awesome(with lain, dex)
 - terminal: kitty(with tmux), wezterm, alacritty
 - shell: zsh, fish
 - editor: [neovim](https://github.com/ayamir/nvimdots)
