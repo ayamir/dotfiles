@@ -63,6 +63,8 @@ case $chosen in
               $confirm == "y" || \
               $confirm == "Y" ]]; \
         then
+            mpc -q pause &
+            playerctl play-pause &
             betterlockscreen -l
         elif [[ $confirm == "no" || \
                 $confirm == "NO" || \
@@ -121,7 +123,7 @@ case $chosen in
               $confirm == "Y" ]]; \
         then
             mpc -q pause &
-            amixer set Master mute &
+            playerctl play-pause &
             systemctl suspend
         elif [[ $confirm == "no" || \
                 $confirm == "NO" || \
