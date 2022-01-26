@@ -118,8 +118,11 @@ end)
 
 watch(GET_MPD_CMD, 1, update_graphic, mpdarc)
 
+local spacer = wibox.widget.textbox(" ")
+
 local mpdarc_widget = wibox.widget({
 	mpdarc_icon_widget,
+	spacer,
 	mpdarc_current_song_widget,
 	layout = wibox.layout.align.horizontal,
 })

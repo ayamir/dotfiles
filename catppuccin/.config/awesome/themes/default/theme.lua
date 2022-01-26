@@ -30,7 +30,7 @@ theme.grey = "#6e6c7c"
 
 theme.bg_normal = theme.black
 theme.bg_focus = theme.deep_black
-theme.bg_urgent = theme.black
+theme.bg_urgent = theme.white
 theme.bg_minimize = theme.grey
 theme.bg_systray = theme.black
 
