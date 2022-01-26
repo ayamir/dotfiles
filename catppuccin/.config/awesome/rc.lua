@@ -424,8 +424,8 @@ local globalkeys = gears.table.join(
 		awful.util.spawn("google-chrome-stable")
 	end, { description = "run chrome", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "n", function()
-		awful.util.spawn("nautilus")
-	end, { description = "run nautilus", group = "launcher" }),
+		awful.util.spawn("nemo")
+	end, { description = "run nemo", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "h", function()
 		awful.util.spawn("alacritty -e htop")
 	end, { description = "run htop", group = "launcher" }),
@@ -700,7 +700,8 @@ awful.rules.rules = {
 				"veromix",
 				"xtightvncviewer",
 				"jetbrains-toolbox",
-				"Lxappearance",
+				"Wine",
+				"wechat.exe",
 			},
 
 			-- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -730,13 +731,20 @@ awful.rules.rules = {
 	{ rule = { class = "Google-chrome" }, properties = { screen = 1, tag = tag3 } },
 
 	{ rule = { class = "Alacritty" }, properties = { screen = 1, tag = tag4 } },
+	{ rule = { class = "yesplaymusic" }, properties = { screen = 1, tag = tag4 } },
+	{ rule = { class = "netease-clous-music" }, properties = { screen = 2, tag = tag4 } },
 
 	{ rule = { class = "Steam" }, properties = { screen = 2, tag = tag5 } },
 
+	{ rule = { class = "Wine" }, properties = { screen = 1, tag = tag6 } },
+	{ rule = { class = "wechat.exe" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "TelegramDesktop" }, properties = { screen = 2, tag = tag6 } },
 
 	{ rule = { class = "Solaar" }, properties = { screen = 1, tag = tag7 } },
 	{ rule = { class = "qBittorrent" }, properties = { screen = 1, tag = tag7 } },
+	{ rule = { class = "Clash for Windows" }, properties = { screen = 2, tag = tag7 } },
+
+	{ rule = { class = "winedbg.exe" }, properties = { screen = 1, tag = tag9 } },
 }
 -- }}}
 
@@ -813,5 +821,12 @@ awful.spawn.with_shell(randr)
 awful.spawn.with_shell(random_wall)
 awful.spawn.with_shell("picom --experimental-backends -b --config " .. theme_dir .. "conf/picom.conf")
 awful.spawn.with_shell("copyq")
+awful.spawn.with_shell("fcitx5")
 awful.spawn.with_shell("qBittorrent")
 awful.spawn.with_shell("xfce4-power-manager")
+awful.spawn.with_shell(
+	'if (xrdb -query | grep -q "^awesome\\.started:\\s*true$"); then exit; fi;'
+		.. 'xrdb -merge <<< "awesome.started:true";'
+		-- list each of your autostart commands, followed by ; inside single quotes, followed by ..
+		.. 'dex --environment Awesome --autostart --search-paths "$XDG_CONFIG_DIRS/autostart:$XDG_CONFIG_HOME/autostart"' -- https://github.com/jceb/dex
+)
