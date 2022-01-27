@@ -176,10 +176,10 @@ local function worker()
 				popup:move_next_to(mouse.current_widget_geometry)
 			end
 		end),
-		awful.button({}, 4, function()
+		awful.button({}, 5, function()
 			awful.spawn(NEXT_MPD_CMD, false)
 		end),
-		awful.button({}, 5, function()
+		awful.button({}, 4, function()
 			awful.spawn(PREV_MPD_CMD, false)
 		end),
 		awful.button({}, 1, function()

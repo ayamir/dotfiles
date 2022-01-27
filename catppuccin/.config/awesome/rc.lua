@@ -137,6 +137,7 @@ local termmenu = {
 local multimediamenu = {
 	{ "netease-cloud-music", "netease-cloud-music" },
 	{ "yesplaymusic", "yesplaymusic" },
+	{ "spotify", "spotify" },
 	{ "ncmpcpp", terminal .. " -e ncmpcpp" },
 	{ "vlc", "vlc" },
 	{ "pulseaudio", "pavucontrol" },
@@ -799,7 +800,8 @@ awful.rules.rules = {
 
 	{ rule = { class = "Google-chrome" }, properties = { screen = 1, tag = tag3 } },
 
-	{ rule = { class = "Alacritty" }, properties = { screen = 1, tag = tag4 } },
+	{ rule = { instance = "music" }, properties = { screen = 1, tag = tag4 } },
+	{ rule = { class = "Spotify" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { class = "yesplaymusic" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { class = "netease-cloud-music" }, properties = { screen = 2, tag = tag4 } },
 
@@ -889,13 +891,8 @@ end)
 awful.spawn.with_shell(randr)
 awful.spawn.with_shell(random_wall)
 awful.spawn.with_shell("picom --experimental-backends -b --config " .. theme_dir .. "conf/picom.conf")
-awful.spawn.with_shell("copyq")
-awful.spawn.with_shell("fcitx5")
-awful.spawn.with_shell("qBittorrent")
-awful.spawn.with_shell("xfce4-power-manager")
 awful.spawn.with_shell(
 	'if (xrdb -query | grep -q "^awesome\\.started:\\s*true$"); then exit; fi;'
 		.. 'xrdb -merge <<< "awesome.started:true";'
-		-- list each of your autostart commands, followed by ; inside single quotes, followed by ..
-		.. 'dex --environment Awesome --autostart --search-paths "$XDG_CONFIG_DIRS/autostart:$XDG_CONFIG_HOME/autostart"' -- https://github.com/jceb/dex
+		.. "dex --environment Awesome --autostart"
 )
