@@ -1,5 +1,6 @@
 setw -g xterm-keys on
 set-option -g default-terminal "screen-256color"
+set-option -a terminal-overrides ",*256col*:RGB"
 
 set -s escape-time 10                     # faster command sequences
 set -s focus-events on
