@@ -60,6 +60,7 @@ theme.border_marked = theme.purple
 local taglist_square_size = dpi(10)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(taglist_square_size, theme.fg_normal)
 theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_size, theme.fg_normal)
+theme.taglist_disable_icon = true
 
 -- Variables set for theming notifications:
 theme.notification_font = "JetBrainsMono Nerd Font 12"
@@ -135,7 +136,7 @@ theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.bg_focus
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
-theme.icon_theme = nil
+theme.icon_theme = "/usr/share/icons/Papirus"
 
 return theme
 

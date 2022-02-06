@@ -57,7 +57,7 @@ end
 -- Themes define colours, icons, font and wallpapers.
 
 -- This is used later as the default terminal and editor to run.
-local terminal = "kitty --single-instance"
+local terminal = "st -e zsh"
 local editor = os.getenv("EDITOR") or "nvim"
 local editor_cmd = terminal .. " -e " .. editor
 
@@ -109,8 +109,8 @@ local myawesomemenu = {
 }
 
 local editormenu = {
-	{ "neovim", "wezterm start nvim" },
-	{ "helix", "wezterm start helix" },
+	{ "neovim", "kitty -e nvim" },
+	{ "helix", "kitty -e helix" },
 	{ "vscode", "code" },
 }
 
@@ -129,8 +129,8 @@ local networkmenu = {
 }
 
 local termmenu = {
-	{ "kitty", "kitty" },
-	{ "wezterm", "wezterm" },
+	{ "st", "st" },
+	{ "kitty", "kitty --single-instance" },
 	{ "alacritty", "alacritty" },
 }
 
@@ -138,7 +138,7 @@ local multimediamenu = {
 	{ "netease-cloud-music", "netease-cloud-music" },
 	{ "yesplaymusic", "yesplaymusic" },
 	{ "spotify", "spotify" },
-	{ "ncmpcpp", terminal .. " -e ncmpcpp" },
+	{ "ncmpcpp", "alacritty --class music -e ncmpcpp" },
 	{ "vlc", "vlc" },
 	{ "pulseaudio", "pavucontrol" },
 }
@@ -398,10 +398,10 @@ awful.screen.connect_for_each_screen(function(s)
 		s.mytasklist, -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
-			mpris(),
-			spacer,
-			-- mpd,
+			-- mpris(),
 			-- spacer,
+			mpd,
+			spacer,
 			cpu,
 			spacer,
 			mem,
@@ -433,10 +433,10 @@ local local_bin = os.getenv("HOME") .. "/.local/bin/"
 local rofi_bin = os.getenv("HOME") .. "/.config/rofi/bin/"
 local randr = local_bin .. "randr"
 local random_wall = "python " .. local_bin .. "nitrogen_randomizer.py " .. theme_dir .. "wallpapers"
-local dmenu = local_bin .. "dmenu_run_history"
 local recordmenu = local_bin .. "recordmenu"
 local pycharm = local_bin .. "pycharm"
 local webstorm = local_bin .. "webstorm"
+local rofi_run = rofi_bin .. "rofi_run"
 local rofi_window = rofi_bin .. "rofi_window"
 local rofi_launcher = rofi_bin .. "rofi_launcher"
 local rofi_powermenu = rofi_bin .. "rofi_powermenu"
@@ -455,7 +455,7 @@ local globalkeys = gears.table.join(
 
 	-- Standard program
 	awful.key({ modkey }, "d", function()
-		awful.util.spawn(dmenu, false)
+		awful.util.spawn(rofi_run, false)
 	end, { description = "run dmenu", group = "launcher" }),
 	awful.key({ modkey }, "c", function()
 		awful.util.spawn(recordmenu, false)
@@ -501,6 +501,9 @@ local globalkeys = gears.table.join(
 		awful.util.spawn("alacritty --class music -e ncmpcpp")
 	end, { description = "run ncmpcpp", group = "launcher" }),
 
+	awful.key({ modkey, "Control" }, "e", function()
+		awful.util.spawn("firefox")
+	end, { description = "launch firefox", group = "launcher" }),
 	awful.key({ modkey, "Control" }, "p", function()
 		awful.util.spawn("mpc toggle", false)
 	end, { description = "mpc toggle", group = "launcher" }),
@@ -512,8 +515,8 @@ local globalkeys = gears.table.join(
 	end, { description = "mpc next", group = "launcher" }),
 
 	awful.key({ altkey }, "Return", function()
-		awful.spawn("wezterm")
-	end, { description = "open wezterm", group = "launcher" }),
+		awful.spawn("kitty --single-instance -e fish")
+	end, { description = "open st", group = "launcher" }),
 	awful.key({ altkey }, "v", function()
 		awful.spawn("neovide")
 	end, { description = "run neovide", group = "launcher" }),
@@ -725,6 +728,26 @@ local clientbuttons = gears.table.join(
 root.keys(globalkeys)
 -- }}}
 
+local function myfocus_filter(c)
+	if awful.client.focus.filter(c) then
+		-- This works with tooltips and some popup-menus
+		if c.class == "Wine" and c.above == true then
+			return nil
+		elseif
+			c.class == "Wine"
+			and c.type == "dialog"
+			and c.skip_taskbar == true
+			and c.size_hints.max_width
+			and c.size_hints.max_width < 160
+		then
+			-- for popup item menus of Photoshop CS5
+			return nil
+		else
+			return c
+		end
+	end
+end
+
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
@@ -734,7 +757,7 @@ awful.rules.rules = {
 		properties = {
 			border_width = beautiful.border_width,
 			border_color = beautiful.border_normal,
-			focus = awful.client.focus.filter,
+			focus = myfocus_filter,
 			raise = true,
 			keys = clientkeys,
 			buttons = clientbuttons,
@@ -743,7 +766,17 @@ awful.rules.rules = {
 		},
 	},
 	{
-		rule_any = { class = { "org.wezfurlong.wezterm", "kitty" } },
+		rule_any = {
+			instance = { "Tim.exe", "QQ.exe" },
+		},
+		properties = {
+			focusable = true,
+			floating = true,
+			border_width = 0,
+		},
+	},
+	{
+		rule_any = { class = { "St", "kitty" } },
 		properties = {},
 		callback = awful.client.setslave,
 	},
@@ -772,6 +805,7 @@ awful.rules.rules = {
 				"wechat.exe",
 				"Lxappearance",
 				"Nitrogen",
+				"Nemo",
 			},
 
 			-- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -799,8 +833,10 @@ awful.rules.rules = {
 	{ rule = { class = "jetbrains-pycharm" }, properties = { screen = 1, tag = tag2 } },
 
 	{ rule = { class = "Google-chrome" }, properties = { screen = 1, tag = tag3 } },
+	{ rule = { class = "firefox" }, properties = { screen = 2, tag = tag3 } },
 
 	{ rule = { instance = "music" }, properties = { screen = 1, tag = tag4 } },
+	{ rule = { instance = "spotify" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { class = "Spotify" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { class = "yesplaymusic" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { class = "netease-cloud-music" }, properties = { screen = 2, tag = tag4 } },
@@ -819,6 +855,41 @@ awful.rules.rules = {
 }
 -- }}}
 
+local alt_switch_keys = awful.util.table.join(
+	-- it's easier for a vimer to manage this than figuring out a nice way to loop and concat
+	awful.key({ "Mod1" }, 1, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+1")
+	end),
+	awful.key({ "Mod1" }, 2, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+2")
+	end),
+	awful.key({ "Mod1" }, 3, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+3")
+	end),
+	awful.key({ "Mod1" }, 4, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+4")
+	end),
+	awful.key({ "Mod1" }, 5, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+5")
+	end),
+	awful.key({ "Mod1" }, 6, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+6")
+	end),
+	awful.key({ "Mod1" }, 7, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+7")
+	end),
+	awful.key({ "Mod1" }, 8, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+8")
+	end),
+	awful.key({ "Mod1" }, 9, function(c)
+		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+9")
+	end)
+)
+
+local function bind_alt_switch_tab_keys(client)
+	client:keys(awful.util.table.join(client:keys(), alt_switch_keys))
+end -- }}}
+
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
@@ -829,6 +900,18 @@ client.connect_signal("manage", function(c)
 	if awesome.startup and not c.size_hints.user_position and not c.size_hints.program_position then
 		-- Prevent clients from being unreachable after screen count changes.
 		awful.placement.no_offscreen(c)
+	end
+
+	if c.instance == "tim.exe" then
+		-- 添加 Alt+n 支持
+		bind_alt_switch_tab_keys(c)
+		-- 关闭各类新闻通知小窗口
+		if c.name and c.name:match("^腾讯") and c.above then
+			c:kill()
+		end
+	end
+	if c.instance == "winedbg.exe" then
+		c:kill()
 	end
 end)
 
@@ -891,8 +974,10 @@ end)
 awful.spawn.with_shell(randr)
 awful.spawn.with_shell(random_wall)
 awful.spawn.with_shell("picom --experimental-backends -b --config " .. theme_dir .. "conf/picom.conf")
-awful.spawn.with_shell(
-	'if (xrdb -query | grep -q "^awesome\\.started:\\s*true$"); then exit; fi;'
-		.. 'xrdb -merge <<< "awesome.started:true";'
-		.. "dex --environment Awesome --autostart"
-)
+local xresources_name = "awesome.started"
+local xresources = awful.util.pread("xrdb -query")
+if not xresources:match(xresources_name) then
+	awful.util.spawn_with_shell("xrdb -merge <<< " .. "'" .. xresources_name .. ":true'")
+	-- Execute once for X server
+	os.execute("dex --environment Awesome --autostart --search-paths $XDG_CONFIG_HOME/autostart")
+end

@@ -144,7 +144,7 @@ local function worker()
 		artist = words[2]
 		current_song = words[3]
 		if current_song ~= nil then
-			if string.len(current_song) > 18 then
+			if string.len(current_song) > 30 then
 				current_song = string.sub(current_song, 0, 9) .. ".."
 			end
 		end
