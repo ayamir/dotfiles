@@ -11,14 +11,15 @@
 # southwest
 # west
 # northwest
-LOCATION="center"
-###############################################################
-
-LPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-
-# Rofi config
-rofi_cmd="rofi -theme $LPATH/rasi/launcher.rasi"
-
-# Main
-$rofi_cmd -no-lazy-grab -show window -modi window \
--theme-str 'window {location: '$LOCATION';}' 
+# LOCATION="center"
+# ###############################################################
+#
+# LPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+#
+# # Rofi config
+# rofi_cmd="rofi -theme $LPATH/rasi/launcher.rasi"
+#
+# # Main
+# $rofi_cmd -no-lazy-grab -show window -modi window \
+# -theme-str 'window {location: '$LOCATION';}'
+rofi -show window
