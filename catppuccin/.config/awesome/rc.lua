@@ -293,7 +293,7 @@ local tag4 = "  "
 local tag5 = "  "
 local tag6 = "  "
 local tag7 = "  "
-local tag8 = "  "
+local tag8 = " ﴬ "
 local tag9 = "  "
 
 awful.screen.connect_for_each_screen(function(s)
@@ -880,6 +880,8 @@ awful.rules.rules = {
 	{ rule = { class = "Solaar" }, properties = { screen = 1, tag = tag7 } },
 	{ rule = { class = "qBittorrent" }, properties = { screen = 1, tag = tag7 } },
 	{ rule = { class = "Clash for Windows" }, properties = { screen = 2, tag = tag7 } },
+
+	{ rule = { class = "Joplin" }, properties = { screen = 1, tag = tag8 } },
 
 	{ rule = { class = "winedbg.exe" }, properties = { screen = 1, tag = tag9 } },
 }
