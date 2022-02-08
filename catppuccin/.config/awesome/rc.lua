@@ -22,6 +22,30 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+-- {{{ Autostart
+
+-- Shell programs
+local local_bin = os.getenv("HOME") .. "/.local/bin/"
+local rofi_bin = os.getenv("HOME") .. "/.config/rofi/bin/"
+local randr = local_bin .. "randr"
+local picom = "picom --experimental-backends -b --config " .. theme_dir .. "conf/picom.conf"
+local autostart = local_bin .. "awesome-autostart"
+local random_wall = "python " .. local_bin .. "nitrogen_randomizer.py " .. theme_dir .. "wallpapers"
+local recordmenu = local_bin .. "recordmenu"
+local pycharm = local_bin .. "pycharm"
+local webstorm = local_bin .. "webstorm"
+local rofi_run = rofi_bin .. "rofi_run"
+local rofi_window = rofi_bin .. "rofi_window"
+local rofi_launcher = rofi_bin .. "rofi_launcher"
+local rofi_powermenu = rofi_bin .. "rofi_powermenu"
+
+awful.spawn.with_shell(randr)
+awful.spawn.with_shell(random_wall)
+awful.spawn.with_shell(picom)
+awful.spawn.with_shell(autostart)
+
+-- }}}
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -383,68 +407,65 @@ awful.screen.connect_for_each_screen(function(s)
 		filter = awful.widget.tasklist.filter.currenttags,
 		buttons = tasklist_buttons,
 	})
+
+	-- Create the wibox
+	s.mywibox = awful.wibar({ position = "top", screen = s })
+
+	if s == screen[1] then
+		-- Add widgets to the wibox
+		s.mywibox:setup({
+			layout = wibox.layout.align.horizontal,
+			{ -- Left widgets
+				layout = wibox.layout.fixed.horizontal,
+				mylauncher,
+				s.mytaglist,
+			},
+			s.mytasklist, -- Middle widget
+			{ -- Right widgets
+				layout = wibox.layout.fixed.horizontal,
+				mpris(),
+				spacer,
+				cpu,
+				spacer,
+				mem,
+				spacer,
+				vol,
+				spacer,
+				bat(),
+				mytextclock,
+				systray,
+				spacer,
+				s.mylayoutbox,
+			},
+		})
+	else
+		-- Add widgets to the wibox
+		s.mywibox:setup({
+			layout = wibox.layout.align.horizontal,
+			{ -- Left widgets
+				layout = wibox.layout.fixed.horizontal,
+				mylauncher,
+				s.mytaglist,
+			},
+			s.mytasklist, -- Middle widget
+			{ -- Right widgets
+				layout = wibox.layout.fixed.horizontal,
+				mpd,
+				spacer,
+				cpu,
+				spacer,
+				mem,
+				spacer,
+				vol,
+				spacer,
+				bat(),
+				mytextclock,
+				spacer,
+				s.mylayoutbox,
+			},
+		})
+	end
 end)
-
-local s1 = screen[1]
-
--- Create the wibox
-s1.mywibox = awful.wibar({ position = "top", screen = s1 })
-
--- Add widgets to the wibox
-s1.mywibox:setup({
-	layout = wibox.layout.align.horizontal,
-	{ -- Left widgets
-		layout = wibox.layout.fixed.horizontal,
-		mylauncher,
-		s1.mytaglist,
-	},
-	s1.mytasklist, -- Middle widget
-	{ -- Right widgets
-		layout = wibox.layout.fixed.horizontal,
-		mpris(),
-		cpu,
-		spacer,
-		mem,
-		spacer,
-		vol,
-		spacer,
-		bat(),
-		mytextclock,
-		systray,
-		spacer,
-		s1.mylayoutbox,
-	},
-})
-
-local s2 = screen[2]
-
-s2.mywibox = awful.wibar({ position = "top", screen = s2 })
-
--- Add widgets to the wibox
-s2.mywibox:setup({
-	layout = wibox.layout.align.horizontal,
-	{ -- Left widgets
-		layout = wibox.layout.fixed.horizontal,
-		mylauncher,
-		s2.mytaglist,
-	},
-	s2.mytasklist, -- Middle widget
-	{ -- Right widgets
-		layout = wibox.layout.fixed.horizontal,
-		mpd,
-		spacer,
-		cpu,
-		spacer,
-		mem,
-		spacer,
-		vol,
-		spacer,
-		bat(),
-		mytextclock,
-		spacer,
-		s2.mylayoutbox,
-	},
-})
 
 -- }}}
 
@@ -457,19 +478,6 @@ root.buttons(gears.table.join(
 	-- awful.button({}, 5, awful.tag.viewprev)
 ))
 -- }}}
-
--- Shell programs
-local local_bin = os.getenv("HOME") .. "/.local/bin/"
-local rofi_bin = os.getenv("HOME") .. "/.config/rofi/bin/"
-local randr = local_bin .. "randr"
-local random_wall = "python " .. local_bin .. "nitrogen_randomizer.py " .. theme_dir .. "wallpapers"
-local recordmenu = local_bin .. "recordmenu"
-local pycharm = local_bin .. "pycharm"
-local webstorm = local_bin .. "webstorm"
-local rofi_run = rofi_bin .. "rofi_run"
-local rofi_window = rofi_bin .. "rofi_window"
-local rofi_launcher = rofi_bin .. "rofi_launcher"
-local rofi_powermenu = rofi_bin .. "rofi_powermenu"
 
 -- {{{ Key bindings
 local globalkeys = gears.table.join(
@@ -486,50 +494,53 @@ local globalkeys = gears.table.join(
 	-- Standard program
 	awful.key({ modkey }, "d", function()
 		awful.util.spawn(rofi_run, false)
-	end, { description = "run dmenu", group = "launcher" }),
+	end, { description = "launch rofi_dmenu", group = "launcher" }),
 	awful.key({ modkey }, "c", function()
 		awful.util.spawn(recordmenu, false)
-	end, { description = "run recordmenu", group = "launcher" }),
+	end, { description = "launch recordmenu", group = "launcher" }),
 	awful.key({ modkey }, "r", function()
 		awful.util.spawn(rofi_launcher, false)
-	end, { description = "run launcher", group = "launcher" }),
+	end, { description = "launch launcher", group = "launcher" }),
 	awful.key({ modkey }, "w", function()
 		awful.util.spawn(rofi_window, false)
-	end, { description = "run window", group = "launcher" }),
+	end, { description = "launch window", group = "launcher" }),
 	awful.key({ modkey }, "p", function()
 		awful.util.spawn(rofi_powermenu, false)
-	end, { description = "run powermenu", group = "launcher" }),
+	end, { description = "launch powermenu", group = "launcher" }),
 	awful.key({ modkey }, "e", function()
 		awful.util.spawn("microsoft-edge-stable")
-	end, { description = "run edge", group = "launcher" }),
+	end, { description = "launch edge", group = "launcher" }),
 	awful.key({ modkey }, "x", function()
 		awful.util.spawn("typora")
-	end, { description = "run typora", group = "launcher" }),
+	end, { description = "launch typora", group = "launcher" }),
+	awful.key({ modkey }, "z", function()
+		awful.util.spawn("joplin-desktop")
+	end, { description = "launch joplin-desktop", group = "launcher" }),
 	awful.key({ modkey }, "v", function()
 		awful.util.spawn("glrnvim")
-	end, { description = "run nvim", group = "launcher" }),
+	end, { description = "launch nvim", group = "launcher" }),
 	awful.key({ modkey }, "Return", function()
 		awful.spawn(terminal)
 	end, { description = "open kitty", group = "launcher" }),
 
 	awful.key({ modkey, "Shift" }, "q", function()
 		awful.util.spawn("xkill", false)
-	end, { description = "run xkill", group = "launcher" }),
+	end, { description = "launch xkill", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "s", function()
 		awful.util.spawn("flameshot gui", false)
-	end, { description = "run flameshot", group = "launcher" }),
+	end, { description = "launch flameshot", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "e", function()
 		awful.util.spawn("google-chrome-stable")
-	end, { description = "run chrome", group = "launcher" }),
+	end, { description = "launch chrome", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "n", function()
 		awful.util.spawn("nemo")
-	end, { description = "run nemo", group = "launcher" }),
+	end, { description = "launch nemo", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "h", function()
 		awful.util.spawn("alacritty -e htop")
-	end, { description = "run htop", group = "launcher" }),
+	end, { description = "launch htop", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "m", function()
 		awful.util.spawn("alacritty --class music -e ncmpcpp")
-	end, { description = "run ncmpcpp", group = "launcher" }),
+	end, { description = "launch ncmpcpp", group = "launcher" }),
 
 	awful.key({ modkey, "Control" }, "e", function()
 		awful.util.spawn("firefox")
@@ -549,13 +560,13 @@ local globalkeys = gears.table.join(
 	end, { description = "open st", group = "launcher" }),
 	awful.key({ altkey }, "v", function()
 		awful.spawn("neovide")
-	end, { description = "run neovide", group = "launcher" }),
+	end, { description = "launch neovide", group = "launcher" }),
 	awful.key({ altkey }, "w", function()
 		awful.spawn(webstorm)
-	end, { description = "run webstorm", group = "launcher" }),
+	end, { description = "launch webstorm", group = "launcher" }),
 	awful.key({ altkey }, "p", function()
 		awful.spawn(pycharm)
-	end, { description = "run pycharm", group = "launcher" }),
+	end, { description = "launch pycharm", group = "launcher" }),
 
 	awful.key({}, "XF86AudioMute", function()
 		awful.spawn("pamixer -t", false)
@@ -1002,14 +1013,3 @@ end)
 
 -- }}}
 --
-
-awful.spawn.with_shell(randr)
-awful.spawn.with_shell(random_wall)
-awful.spawn.with_shell("picom --experimental-backends -b --config " .. theme_dir .. "conf/picom.conf")
-local xresources_name = "awesome.started"
-local xresources = awful.util.pread("xrdb -query")
-if not xresources:match(xresources_name) then
-	awful.util.spawn_with_shell("xrdb -merge <<< " .. "'" .. xresources_name .. ":true'")
-	-- Execute once for X server
-	os.execute("dex --environment Awesome --autostart --search-paths $XDG_CONFIG_HOME/autostart")
-end
