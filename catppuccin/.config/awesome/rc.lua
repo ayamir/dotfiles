@@ -353,11 +353,19 @@ awful.screen.connect_for_each_screen(function(s)
 		screen = s,
 	})
 
-	awful.tag.add(tag6, {
-		layout = awful.layout.layouts[5],
-		master_fill_policy = "master_width_factor",
-		screen = s,
-	})
+	if s == screen[1] then
+		awful.tag.add(tag6, {
+			layout = awful.layout.layouts[5],
+			master_fill_policy = "master_width_factor",
+			screen = s,
+		})
+	else
+		awful.tag.add(tag6, {
+			layout = awful.layout.layouts[1],
+			master_fill_policy = "master_width_factor",
+			screen = s,
+		})
+	end
 
 	awful.tag.add(tag7, {
 		layout = awful.layout.layouts[1],
