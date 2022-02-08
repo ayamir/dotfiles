@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [[ ! $(xrdb -query | grep -E "awesome.started:\\s*true$") ]]; then
+	xrdb -merge <<<"awesome.started:true"
+	dex --environment Awesome --autostart
+else
+	echo "started"
+fi
