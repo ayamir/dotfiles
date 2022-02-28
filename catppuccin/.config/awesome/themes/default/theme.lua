@@ -13,7 +13,7 @@ local theme = {}
 theme.font = "JetBrainsMono Nerd Font 10"
 
 theme.useless_gap = 5
-theme.border_width = 5
+theme.border_width = 1
 
 theme.black = "#1e1e28"
 theme.deep_black = "#1b1923"

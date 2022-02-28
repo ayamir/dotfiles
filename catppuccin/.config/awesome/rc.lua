@@ -30,11 +30,11 @@ local rofi_bin = os.getenv("HOME") .. "/.config/rofi/bin/"
 local randr = local_bin .. "randr"
 local picom = "picom --experimental-backends -b --config " .. theme_dir .. "conf/picom.conf"
 local autostart = local_bin .. "awesome-autostart"
-local random_wall = "python " .. local_bin .. "nitrogen_randomizer.py " .. theme_dir .. "wallpapers"
+local random_wall = "python " .. local_bin .. "nitrogen_randomizer.py " .. theme_dir .. "2K"
 local recordmenu = local_bin .. "recordmenu"
 local pycharm = local_bin .. "pycharm"
 local webstorm = local_bin .. "webstorm"
-local rofi_run = rofi_bin .. "rofi_run"
+local dmenu_run = local_bin .. "dmenu_run_history"
 local rofi_window = rofi_bin .. "rofi_window"
 local rofi_launcher = rofi_bin .. "rofi_launcher"
 local rofi_powermenu = rofi_bin .. "rofi_powermenu"
@@ -139,14 +139,13 @@ local editormenu = {
 }
 
 local officemenu = {
-	{ "files", "nemo" },
+	{ "files", "nautilus" },
 	{ "Word", "wps" },
 	{ "Excel", "et" },
 	{ "Power Point", "wpp" },
 }
 
 local networkmenu = {
-	{ "edge", "microsoft-edge-stable" },
 	{ "chrome", "google-chrome-stable" },
 	{ "firefox", "firefox" },
 	{ "nm-editor", "nm-connection-editor" },
@@ -154,7 +153,8 @@ local networkmenu = {
 
 local termmenu = {
 	{ "st", "st" },
-	{ "kitty", "kitty --single-instance" },
+	{ "wezterm", "wezterm" },
+	{ "kitty", "kitty" },
 	{ "alacritty", "alacritty" },
 }
 
@@ -361,7 +361,7 @@ awful.screen.connect_for_each_screen(function(s)
 		})
 	else
 		awful.tag.add(tag6, {
-			layout = awful.layout.layouts[1],
+			layout = awful.layout.layouts[4],
 			master_fill_policy = "master_width_factor",
 			screen = s,
 		})
@@ -501,8 +501,8 @@ local globalkeys = gears.table.join(
 
 	-- Standard program
 	awful.key({ modkey }, "d", function()
-		awful.util.spawn(rofi_run, false)
-	end, { description = "launch rofi_dmenu", group = "launcher" }),
+		awful.util.spawn(dmenu_run, false)
+	end, { description = "launch dmenu", group = "launcher" }),
 	awful.key({ modkey }, "c", function()
 		awful.util.spawn(recordmenu, false)
 	end, { description = "launch recordmenu", group = "launcher" }),
@@ -516,8 +516,8 @@ local globalkeys = gears.table.join(
 		awful.util.spawn(rofi_powermenu, false)
 	end, { description = "launch powermenu", group = "launcher" }),
 	awful.key({ modkey }, "e", function()
-		awful.util.spawn("microsoft-edge-stable")
-	end, { description = "launch edge", group = "launcher" }),
+		awful.util.spawn("firefox")
+	end, { description = "launch firefox", group = "launcher" }),
 	awful.key({ modkey }, "x", function()
 		awful.util.spawn("typora")
 	end, { description = "launch typora", group = "launcher" }),
@@ -541,18 +541,18 @@ local globalkeys = gears.table.join(
 		awful.util.spawn("google-chrome-stable")
 	end, { description = "launch chrome", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "n", function()
-		awful.util.spawn("nemo")
-	end, { description = "launch nemo", group = "launcher" }),
+		awful.util.spawn("nautilus")
+	end, { description = "launch nautilus", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "h", function()
 		awful.util.spawn("alacritty -e htop")
 	end, { description = "launch htop", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "m", function()
 		awful.util.spawn("alacritty --class music -e ncmpcpp")
 	end, { description = "launch ncmpcpp", group = "launcher" }),
+	awful.key({ modkey, "Shift" }, "Return", function()
+		awful.util.spawn("wezterm")
+	end, { description = "launch wezterm", group = "launcher" }),
 
-	awful.key({ modkey, "Control" }, "e", function()
-		awful.util.spawn("firefox")
-	end, { description = "launch firefox", group = "launcher" }),
 	awful.key({ modkey, "Control" }, "p", function()
 		awful.util.spawn("mpc toggle", false)
 	end, { description = "mpc toggle", group = "launcher" }),
@@ -564,7 +564,7 @@ local globalkeys = gears.table.join(
 	end, { description = "mpc next", group = "launcher" }),
 
 	awful.key({ altkey }, "Return", function()
-		awful.spawn("kitty --single-instance -e fish")
+		awful.spawn("kitty")
 	end, { description = "open st", group = "launcher" }),
 	awful.key({ altkey }, "v", function()
 		awful.spawn("neovide")
@@ -597,6 +597,9 @@ local globalkeys = gears.table.join(
 	awful.key({ "Shift" }, "Print", function()
 		awful.spawn("flameshot screen -n 1 -c", false)
 	end, { description = "Shot screen 1", group = "launcher" }),
+	awful.key({ "Control" }, "Print", function()
+		awful.spawn("flameshot full -c", false)
+	end, { description = "Shot all screen", group = "launcher" }),
 
 	-- Screen manipulation
 	awful.key({ modkey }, "l", function()
@@ -854,7 +857,8 @@ awful.rules.rules = {
 				"wechat.exe",
 				"Lxappearance",
 				"Nitrogen",
-				"Nemo",
+				"Org.gnome.Nautilus",
+				"Timeshift-gtk",
 			},
 
 			-- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -874,15 +878,15 @@ awful.rules.rules = {
 	-- Add titlebars to normal clients and dialogs
 	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = false } },
 
-	-- Set Firefox to always map on the tag named "2" on screen 1.
-	{ rule = { class = "Microsoft-edge" }, properties = { screen = 1, tag = tag1 } },
+	-- Set Firefox to always map on the tag1 on screen 1.
+	{ rule = { class = "firefox" }, properties = { screen = 1, tag = tag1 } },
+	{ rule = { instance = "Devtools" }, properties = { screen = 2, tag = tag1 } },
 	{ rule = { class = "Typora" }, properties = { screen = 2, tag = tag1 } },
 
 	{ rule = { class = "jetbrains-webstorm" }, properties = { screen = 1, tag = tag2 } },
 	{ rule = { class = "jetbrains-pycharm" }, properties = { screen = 1, tag = tag2 } },
 
 	{ rule = { class = "Google-chrome" }, properties = { screen = 1, tag = tag3 } },
-	{ rule = { class = "firefox" }, properties = { screen = 2, tag = tag3 } },
 
 	{ rule = { instance = "music" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { instance = "spotify" }, properties = { screen = 1, tag = tag4 } },
@@ -894,6 +898,7 @@ awful.rules.rules = {
 
 	{ rule = { class = "Wine" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "wechat.exe" }, properties = { screen = 1, tag = tag6 } },
+	{ rule = { class = "discord" }, properties = { screen = 2, tag = tag6 } },
 	{ rule = { class = "TelegramDesktop" }, properties = { screen = 2, tag = tag6 } },
 
 	{ rule = { class = "Solaar" }, properties = { screen = 1, tag = tag7 } },
