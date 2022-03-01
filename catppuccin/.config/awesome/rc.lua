@@ -81,7 +81,7 @@ end
 -- Themes define colours, icons, font and wallpapers.
 
 -- This is used later as the default terminal and editor to run.
-local terminal = "st -e zsh"
+local terminal = "kitty"
 local editor = os.getenv("EDITOR") or "nvim"
 local editor_cmd = terminal .. " -e " .. editor
 
@@ -564,8 +564,8 @@ local globalkeys = gears.table.join(
 	end, { description = "mpc next", group = "launcher" }),
 
 	awful.key({ altkey }, "Return", function()
-		awful.spawn("kitty")
-	end, { description = "open st", group = "launcher" }),
+		awful.spawn("st -e zsh")
+	end, { description = "open st with zsh", group = "launcher" }),
 	awful.key({ altkey }, "v", function()
 		awful.spawn("neovide")
 	end, { description = "launch neovide", group = "launcher" }),
