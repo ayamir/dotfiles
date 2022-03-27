@@ -30,6 +30,7 @@ local rofi_bin = os.getenv("HOME") .. "/.config/rofi/bin/"
 local randr = local_bin .. "randr"
 local picom = "picom --experimental-backends -b --config " .. theme_dir .. "conf/picom.conf"
 local autostart = local_bin .. "awesome-autostart"
+local restore_wall = "nitrogen --restore"
 local random_wall = "python " .. local_bin .. "nitrogen_randomizer.py " .. theme_dir .. "2K"
 local recordmenu = local_bin .. "recordmenu"
 local pycharm = local_bin .. "pycharm"
@@ -40,7 +41,7 @@ local rofi_launcher = rofi_bin .. "rofi_launcher"
 local rofi_powermenu = rofi_bin .. "rofi_powermenu"
 
 awful.spawn.with_shell(randr)
-awful.spawn.with_shell(random_wall)
+awful.spawn.with_shell(restore_wall)
 awful.spawn.with_shell(picom)
 awful.spawn.with_shell(autostart)
 
@@ -307,7 +308,6 @@ vol.widget:buttons(awful.util.table.join(
 
 local mpris = require("themes.default.mpris")
 local mpd = require("themes.default.mpdarc")
-local bat = require("themes.default.batteryarc-widget.batteryarc")
 local spacer = wibox.widget.textbox(" ")
 
 local tag1 = "  "
@@ -438,8 +438,6 @@ awful.screen.connect_for_each_screen(function(s)
 				mem,
 				spacer,
 				vol,
-				spacer,
-				bat(),
 				mytextclock,
 				systray,
 				spacer,
@@ -465,8 +463,6 @@ awful.screen.connect_for_each_screen(function(s)
 				mem,
 				spacer,
 				vol,
-				spacer,
-				bat(),
 				mytextclock,
 				spacer,
 				s.mylayoutbox,
@@ -522,12 +518,12 @@ local globalkeys = gears.table.join(
 		awful.util.spawn("typora")
 	end, { description = "launch typora", group = "launcher" }),
 	awful.key({ modkey }, "z", function()
-		awful.util.spawn("joplin-desktop")
-	end, { description = "launch joplin-desktop", group = "launcher" }),
+		awful.util.spawn("obsidian")
+	end, { description = "launch obsidian", group = "launcher" }),
 	awful.key({ modkey }, "v", function()
 		awful.util.spawn("glrnvim")
 	end, { description = "launch nvim", group = "launcher" }),
-	awful.key({ modkey }, "Return", function()
+	awful.key({ altkey }, "Return", function()
 		awful.spawn(terminal)
 	end, { description = "open kitty", group = "launcher" }),
 
@@ -549,9 +545,16 @@ local globalkeys = gears.table.join(
 	awful.key({ modkey, "Shift" }, "m", function()
 		awful.util.spawn("alacritty --class music -e ncmpcpp")
 	end, { description = "launch ncmpcpp", group = "launcher" }),
-	awful.key({ modkey, "Shift" }, "Return", function()
-		awful.util.spawn("wezterm")
-	end, { description = "launch wezterm", group = "launcher" }),
+
+	awful.key({ altkey, "Control" }, "p", function()
+		awful.util.spawn("playerctl play-pause", false)
+	end, { description = "toggle mpris", group = "launcher" }),
+	awful.key({ altkey, "Control" }, "Left", function()
+		awful.util.spawn("playerctl previous", false)
+	end, { description = "play previous mpris", group = "launcher" }),
+	awful.key({ altkey, "Control" }, "Right", function()
+		awful.util.spawn("playerctl next", false)
+	end, { description = "play next mpris", group = "launcher" }),
 
 	awful.key({ modkey, "Control" }, "p", function()
 		awful.util.spawn("mpc toggle", false)
@@ -563,9 +566,9 @@ local globalkeys = gears.table.join(
 		awful.util.spawn("mpc next", false)
 	end, { description = "mpc next", group = "launcher" }),
 
-	awful.key({ altkey }, "Return", function()
-		awful.spawn("st -e zsh")
-	end, { description = "open st with zsh", group = "launcher" }),
+	awful.key({ modkey }, "Return", function()
+		awful.spawn("kitty -e zsh")
+	end, { description = "open kitty with zsh", group = "launcher" }),
 	awful.key({ altkey }, "v", function()
 		awful.spawn("neovide")
 	end, { description = "launch neovide", group = "launcher" }),
@@ -840,6 +843,7 @@ awful.rules.rules = {
 				"DTA", -- Firefox addon DownThemAll.
 				"copyq", -- Includes session name in class.
 				"pinentry",
+				"Places",
 			},
 			class = {
 				"Arandr",
@@ -881,21 +885,23 @@ awful.rules.rules = {
 	-- Set Firefox to always map on the tag1 on screen 1.
 	{ rule = { class = "firefox" }, properties = { screen = 1, tag = tag1 } },
 	{ rule = { instance = "Devtools" }, properties = { screen = 2, tag = tag1 } },
-	{ rule = { class = "Typora" }, properties = { screen = 2, tag = tag1 } },
+	-- { rule = { class = "Typora" }, properties = { screen = 2, tag = tag1 } },
 
 	{ rule = { class = "jetbrains-webstorm" }, properties = { screen = 1, tag = tag2 } },
 	{ rule = { class = "jetbrains-pycharm" }, properties = { screen = 1, tag = tag2 } },
 
 	{ rule = { class = "Google-chrome" }, properties = { screen = 1, tag = tag3 } },
 
-	{ rule = { instance = "music" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { instance = "spotify" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { class = "Spotify" }, properties = { screen = 1, tag = tag4 } },
-	{ rule = { class = "yesplaymusic" }, properties = { screen = 1, tag = tag4 } },
-	{ rule = { class = "netease-cloud-music" }, properties = { screen = 2, tag = tag4 } },
+	{ rule = { class = "netease-cloud-music" }, properties = { screen = 1, tag = tag4 } },
+	{ rule = { class = "electron-netease-cloud-music" }, properties = { screen = 1, tag = tag4 } },
+	{ rule = { instance = "music" }, properties = { screen = 2, tag = tag4 } },
+	{ rule = { class = "yesplaymusic" }, properties = { screen = 2, tag = tag4 } },
 
 	{ rule = { class = "Steam" }, properties = { screen = 2, tag = tag5 } },
 
+	{ rule = { class = "icalingua" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "Wine" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "wechat.exe" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "discord" }, properties = { screen = 2, tag = tag6 } },
@@ -910,66 +916,6 @@ awful.rules.rules = {
 	{ rule = { class = "winedbg.exe" }, properties = { screen = 1, tag = tag9 } },
 }
 -- }}}
-
-local alt_switch_keys = awful.util.table.join(
-	-- it's easier for a vimer to manage this than figuring out a nice way to loop and concat
-	awful.key({ "Mod1" }, 1, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+1")
-	end),
-	awful.key({ "Mod1" }, 2, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+2")
-	end),
-	awful.key({ "Mod1" }, 3, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+3")
-	end),
-	awful.key({ "Mod1" }, 4, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+4")
-	end),
-	awful.key({ "Mod1" }, 5, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+5")
-	end),
-	awful.key({ "Mod1" }, 6, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+6")
-	end),
-	awful.key({ "Mod1" }, 7, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+7")
-	end),
-	awful.key({ "Mod1" }, 8, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+8")
-	end),
-	awful.key({ "Mod1" }, 9, function(c)
-		awful.util.spawn("xdotool key --window " .. c.window .. " ctrl+9")
-	end)
-)
-
-local function bind_alt_switch_tab_keys(client)
-	client:keys(awful.util.table.join(client:keys(), alt_switch_keys))
-end -- }}}
-
--- {{{ Signals
--- Signal function to execute when a new client appears.
-client.connect_signal("manage", function(c)
-	-- Set the windows at the slave,
-	-- i.e. put it at the end of others instead of setting it master.
-	-- if not awesome.startup then awful.client.setslave(c) end
-
-	if awesome.startup and not c.size_hints.user_position and not c.size_hints.program_position then
-		-- Prevent clients from being unreachable after screen count changes.
-		awful.placement.no_offscreen(c)
-	end
-
-	if c.instance == "tim.exe" then
-		-- 添加 Alt+n 支持
-		bind_alt_switch_tab_keys(c)
-		-- 关闭各类新闻通知小窗口
-		if c.name and c.name:match("^腾讯") and c.above then
-			c:kill()
-		end
-	end
-	if c.instance == "winedbg.exe" then
-		c:kill()
-	end
-end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
