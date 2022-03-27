@@ -19,10 +19,9 @@ if status --is-interactive
 	abbr --add --global vf "nvim ~/.config/fish/config.fish"
 	abbr --add --global sf "source ~/.config/fish/config.fish"
 
-	abbr --add --global ls "logo-ls"
+	abbr --add --global ls "lsd"
 	abbr --add --global l "exa -l --color=auto"
 	abbr --add --global la "exa -alh --color=auto"
-	abbr --add --global l. "exa -d .* --color=auto"
 
 	abbr --add --global vc "nvim ~/.config/awesome/rc.lua"
 
@@ -46,8 +45,10 @@ if status --is-interactive
 	abbr --add --global gu "gitui"
 	abbr --add --global gc "git clone"
 	abbr --add --global ga "git add"
+	abbr --add --global gr "git restore ."
 	abbr --add --global gm "git commit -m"
 	abbr --add --global gps "git push"
+	abbr --add --global gpl "git pull"
 
 	abbr --add --global load "kill -USR1 (pidof st)"
 	abbr --add --global use "xrdb merge"
@@ -77,6 +78,7 @@ if status --is-interactive
 	abbr --add --global :q "exit"
 
 	abbr --add --global hugo "hugo --enableGitInfo"
+	abbr --add --global pb "hugo && hugo-algolia -s"
 	abbr --add --global md "devour typora"
 	abbr --add --global jn "jupyter notebook"
 
