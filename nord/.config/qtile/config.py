@@ -21,11 +21,13 @@ from libqtile.config import (
 from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
 from libqtile.lazy import lazy
+
 # from libqtile import qtile
 # from typing import List  # noqa: F401
 from custom.bsp import Bsp as CustomBsp
 from custom.bsp import Bsp as CustomBspMargins
 from custom.zoomy import Zoomy as CustomZoomy
+
 # from custom.stack import Stack as CustomStack
 # from custom.windowname import WindowName as CustomWindowName
 
@@ -36,7 +38,7 @@ terminal = "kitty"
 
 @hook.subscribe.client_new
 def floating_dialogs(window):
-    dialog = window.window.get_wm_type() == 'tk'
+    dialog = window.window.get_wm_type() == "tk"
     transient = window.window.get_wm_transient_for()
     if dialog or transient:
         window.floating = True
@@ -44,7 +46,7 @@ def floating_dialogs(window):
 
 @hook.subscribe.startup_once
 def autostart():
-    home = os.path.expanduser('~/.config/qtile/autostart.sh')
+    home = os.path.expanduser("~/.config/qtile/autostart.sh")
     subprocess.call([home])
 
 
@@ -59,14 +61,14 @@ def resize(qtile, direction):
             layout_all = False
 
             if (direction == "left" and parent.split_horizontal) or (
-                    direction == "up" and not parent.split_horizontal):
-                parent.split_ratio = max(
-                    5, parent.split_ratio - layout.grow_amount)
+                direction == "up" and not parent.split_horizontal
+            ):
+                parent.split_ratio = max(5, parent.split_ratio - layout.grow_amount)
                 layout_all = True
             elif (direction == "right" and parent.split_horizontal) or (
-                    direction == "down" and not parent.split_horizontal):
-                parent.split_ratio = min(
-                    95, parent.split_ratio + layout.grow_amount)
+                direction == "down" and not parent.split_horizontal
+            ):
+                parent.split_ratio = min(95, parent.split_ratio + layout.grow_amount)
                 layout_all = True
 
             if layout_all:
@@ -184,8 +186,8 @@ keys = [
     Key(
         [mod],
         "e",
-        lazy.spawn("google-chrome-stable"),
-        desc="Launches chrome",
+        lazy.spawn("firefox"),
+        desc="Launches firefox",
     ),
     Key(
         [mod, "shift"],
@@ -283,7 +285,6 @@ keys = [
         lazy.spawn("goland"),
         desc="Launches goland",
     ),
-
     # Window controls
     Key(
         [mod],
@@ -400,14 +401,12 @@ keys = [
         desc="Toggle window between minimum and maximum sizes",
     ),
     Key(
-        [mod, "control"],
-        "k",
-        lazy.layout.section_up()  # Move up a section in treetab
+        [mod, "control"], "k", lazy.layout.section_up()  # Move up a section in treetab
     ),
     Key(
         [mod, "control"],
         "j",
-        lazy.layout.section_down()  # Move down a section in treetab
+        lazy.layout.section_down(),  # Move down a section in treetab
     ),
     Key(
         [mod, "shift"],
@@ -421,7 +420,6 @@ keys = [
         lazy.window.toggle_floating(),
         desc="Toggle floating on focused window",
     ),
-
     # Stack controls
     # Key(
     #     [mod],
@@ -436,7 +434,6 @@ keys = [
     #     lazy.layout.toggle_split(),
     #     desc="Toggle between split and unsplit sides of stack",
     # ),
-
     # Shot Screen
     Key(
         [mod, "shift"],
@@ -463,10 +460,12 @@ keys = [
         lazy.spawn("playerctl next"),
         desc="Play next audio",
     ),
-    Key([],
+    Key(
+        [],
         "XF86AudioPlay",
         lazy.spawn("playerctl play-pause"),
-        desc="Toggle play/pause audio"),
+        desc="Toggle play/pause audio",
+    ),
     Key(
         [],
         "XF86AudioPrev",
@@ -491,10 +490,12 @@ keys = [
         lazy.spawn("pactl set-sink-volume @DEFAULT_SINK@ -1%"),
         desc="Lower volume",
     ),
-    Key([mod],
+    Key(
+        [mod],
         "grave",
-        lazy.group['scratchpad'].dropdown_toggle("term"),
-        desc="Toggle scratchpad")
+        lazy.group["scratchpad"].dropdown_toggle("term"),
+        desc="Toggle scratchpad",
+    ),
 ]
 
 # Command to find out wm_class of window: xprop | grep WM_CLASS
@@ -510,14 +511,10 @@ workspaces = [
         "spawn": ["solaar"],
     },
     {
-        "name":
-        "2",
-        "key":
-        "2",
-        "label":
-        "",
-        "layout":
-        "bsp",
+        "name": "2",
+        "key": "2",
+        "label": "",
+        "layout": "bsp",
         "matches": [
             Match(wm_class="jetbrains-idea"),
             Match(wm_class="jetbrains-pycharm"),
@@ -527,14 +524,10 @@ workspaces = [
         "spawn": [],
     },
     {
-        "name":
-        "3",
-        "key":
-        "3",
-        "label":
-        "",
-        "layout":
-        "bsp",
+        "name": "3",
+        "key": "3",
+        "label": "",
+        "layout": "bsp",
         "matches": [
             Match(wm_class="microsoft-edge"),
             Match(wm_class="google-chrome"),
@@ -543,14 +536,10 @@ workspaces = [
         "spawn": ["google-chrome-stable"],
     },
     {
-        "name":
-        "4",
-        "key":
-        "4",
-        "label":
-        "",
-        "layout":
-        "max",
+        "name": "4",
+        "key": "4",
+        "label": "",
+        "layout": "max",
         "matches": [
             Match(wm_class="spotify"),
             Match(wm_class="ncmpcpp"),
@@ -570,14 +559,10 @@ workspaces = [
         "spawn": [],
     },
     {
-        "name":
-        "6",
-        "key":
-        "6",
-        "label":
-        "",
-        "layout":
-        "max",
+        "name": "6",
+        "key": "6",
+        "label": "",
+        "layout": "max",
         "matches": [
             Match(wm_class="VirtualBox Manager"),
             Match(wm_class="VirtualBox Machine"),
@@ -630,38 +615,47 @@ for workspace in workspaces:
             layout=workspace["layout"],
             spawn=workspace["spawn"],
             label=workspace["label"],
-        ))
+        )
+    )
     keys.append(
         Key(
             [mod],
             workspace["key"],
             lazy.group[workspace["name"]].toscreen(),
             desc="Focus certain workspace",
-        ))
+        )
+    )
     keys.append(
         Key(
             [mod, "shift"],
             workspace["key"],
             lazy.window.togroup(workspace["name"]),
             desc="Move focused window to another workspace",
-        ))
+        )
+    )
 
 groups.append(
-    ScratchPad("scratchpad", [
-        DropDown("term",
-                 "wezterm",
-                 x=0.7,
-                 y=0.01,
-                 width=0.3,
-                 height=0.3,
-                 on_focus_lost_hide=False),
-    ]))
+    ScratchPad(
+        "scratchpad",
+        [
+            DropDown(
+                "term",
+                "wezterm",
+                x=0.7,
+                y=0.01,
+                width=0.3,
+                height=0.3,
+                on_focus_lost_hide=False,
+            ),
+        ],
+    )
+)
 
 layout_theme = {
     "border_width": 3,
     "margin": 5,
-    "border_focus": "fafafa",
-    "border_normal": "fafafa",
+    "border_focus": "3b4252",
+    "border_normal": "3b4252",
     "font": "FiraCode Nerd Font",
     "grow_amount": 4,
 }
@@ -670,8 +664,8 @@ layout_theme_margins = {
     "name": "bsp-margins",
     "border_width": 3,
     "margin": [150, 300, 150, 300],
-    "border_focus": "fafafa",
-    "border_normal": "fafafa",
+    "border_focus": "3b4252",
+    "border_normal": "3b4252",
     "font": "FiraCode Nerd Font",
     "grow_amount": 4,
 }
@@ -680,8 +674,8 @@ layout_audio = {
     "name": "monadwide-audio",
     "border_width": 3,
     "margin": 100,
-    "border_focus": "fafafa",
-    "border_normal": "fafafa",
+    "border_focus": "3b4252",
+    "border_normal": "3b4252",
     "font": "FiraCode Nerd Font",
     "ratio": 0.65,
     "new_client_position": "after_current",
@@ -705,26 +699,29 @@ layouts = [
     ),
     layout.MonadTall(**layout_theme),
     layout.MonadWide(**layout_theme),
-    layout.Floating(float_rules=[
-        Match(wm_type='utility'),
-        Match(wm_type='notification'),
-        Match(wm_type='toolbar'),
-        Match(wm_type='splash'),
-        Match(wm_type='dialog'),
-        Match(wm_class='file_progress'),
-        Match(wm_class='confirm'),
-        Match(wm_class='dialog'),
-        Match(wm_class='download'),
-        Match(wm_class='error'),
-        Match(wm_class='notification'),
-        Match(wm_class='splash'),
-        Match(wm_class='toolbar'),
-        Match(func=lambda c: c.has_fixed_size()),
-        Match(func=lambda c: c.has_fixed_ratio()),
-        Match(wm_class="xdman-Main"),
-        Match(wm_class="nitrogen"),
-        Match(wm_class="lxappearance"),
-    ], **layout_theme),
+    layout.Floating(
+        float_rules=[
+            Match(wm_type="utility"),
+            Match(wm_type="notification"),
+            Match(wm_type="toolbar"),
+            Match(wm_type="splash"),
+            Match(wm_type="dialog"),
+            Match(wm_class="file_progress"),
+            Match(wm_class="confirm"),
+            Match(wm_class="dialog"),
+            Match(wm_class="download"),
+            Match(wm_class="error"),
+            Match(wm_class="notification"),
+            Match(wm_class="splash"),
+            Match(wm_class="toolbar"),
+            Match(func=lambda c: c.has_fixed_size()),
+            Match(func=lambda c: c.has_fixed_ratio()),
+            Match(wm_class="xdman-Main"),
+            Match(wm_class="nitrogen"),
+            Match(wm_class="lxappearance"),
+        ],
+        **layout_theme,
+    ),
     # layout.Columns(
     #    **layout_theme,
     #    border_on_single=True,
@@ -743,10 +740,12 @@ layouts = [
 
 # Setup bar
 
-widget_defaults = dict(font="JetBrainsMono Nerd Font Mono Medium",
-                       fontsize=18,
-                       padding=3,
-                       background=colors[0])
+widget_defaults = dict(
+    font="JetBrainsMono Nerd Font Mono Medium",
+    fontsize=25,
+    padding=3,
+    background=colors[0],
+)
 extension_defaults = widget_defaults.copy()
 
 # Drag floating layouts.
@@ -757,10 +756,9 @@ mouse = [
         lazy.window.set_position_floating(),
         start=lazy.window.get_position(),
     ),
-    Drag([mod],
-         "Button3",
-         lazy.window.set_size_floating(),
-         start=lazy.window.get_size()),
+    Drag(
+        [mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()
+    ),
     Click([mod], "Button2", lazy.window.bring_to_front()),
 ]
 

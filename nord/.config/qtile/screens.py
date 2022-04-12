@@ -14,8 +14,10 @@ from libqtile.config import (
 )
 from libqtile.command import lazy
 from libqtile import bar, widget  # , hook, layout
+
 # from libqtile.lazy import lazy
 from libqtile import qtile
+
 # from custom.bsp import Bsp as CustomBsp
 # from custom.zoomy import Zoomy as CustomZoomy
 # from custom.stack import Stack as CustomStack
@@ -49,8 +51,8 @@ group_box_settings = {
     "urgent_border": colors[3],
 }
 
-text_size = 18
-icon_size = 14
+text_size = 25
+icon_size = 25
 
 screens = [
     Screen(
@@ -64,18 +66,19 @@ screens = [
                     padding=30,
                     size_percent=40,
                 ),
-                widget.TextBox(background=colors[1],
-                               foreground=colors[0],
-                               fontsize=20,
-                               font="JetBrainsMono Nerd Font",
-                               text="望 ",
-                               mouse_callbacks={
-                                   'Button1':
-                                   lambda: qtile.cmd_spawn("toggle_all"),
-                               }),
+                widget.TextBox(
+                    background=colors[1],
+                    foreground=colors[0],
+                    fontsize=25,
+                    font="JetBrainsMono Nerd Font",
+                    text="望 ",
+                    mouse_callbacks={
+                        "Button1": lambda: qtile.cmd_spawn("toggle_all"),
+                    },
+                ),
                 widget.GroupBox(
                     **group_box_settings,
-                    fontsize=12,
+                    fontsize=20,
                 ),
                 widget.Sep(
                     linewidth=0,
@@ -84,24 +87,11 @@ screens = [
                     size_percent=40,
                 ),
                 widget.CurrentLayoutIcon(
-                    custom_icon_paths=[
-                        os.path.expanduser("~/.config/qtile/icons")
-                    ],
+                    custom_icon_paths=[os.path.expanduser("~/.config/qtile/icons")],
                     foreground=colors[8],
                     background=colors[1],
                     padding=-2,
                     scale=0.45,
-                ),
-                widget.Sep(
-                    linewidth=0,
-                    background=colors[1],
-                    padding=10,
-                    size_percent=50,
-                ),
-                widget.Systray(
-                    padding=10,
-                    foreground=colors[8],
-                    background=colors[1],
                 ),
                 widget.TextBox(
                     background=colors[1],
@@ -115,49 +105,9 @@ screens = [
                     foreground=colors[0],
                     width=bar.CALCULATED,
                     empty_group_string="Desktop",
-                    max_chars=45,
+                    max_chars=40,
                 ),
                 widget.Spacer(background=colors[1]),
-                widget.Sep(
-                    linewidth=0,
-                    padding=10,
-                    size_percent=50,
-                    background=colors[1],
-                ),
-                widget.OpenWeather(background=colors[1],
-                                   foreground=colors[0],
-                                   app_key="eaf0bf95962bd42471d02500acc89aa1",
-                                   location="Beijing",
-                                   language="zh_cn",
-                                   format="{main_temp}°{units_temperature} {humidity}% {weather_details}"
-                                   ),
-                widget.Sep(
-                    linewidth=0,
-                    padding=10,
-                    size_percent=50,
-                    background=colors[1],
-                ),
-                widget.TextBox(
-                    background=colors[1],
-                    foreground=colors[3],
-                    text=" ",
-                    font="Font Awesome 5 Free Solid",
-                    fontsize=icon_size,
-                ),
-                widget.Mpd2(background=colors[1],
-                            foreground=colors[0],
-                            mouse_callbacks={
-                                "Button1":
-                                lambda: qtile.cmd_spawn("mpc toggle"),
-                                "Button2": lambda: qtile.cmd_spawn("mpc next"),
-                                "Button3": lambda: qtile.cmd_spawn("mpc prev"),
-                            }),
-                widget.Sep(
-                    linewidth=0,
-                    padding=10,
-                    size_percent=50,
-                    background=colors[1],
-                ),
                 widget.Sep(
                     linewidth=0,
                     padding=10,
@@ -171,9 +121,7 @@ screens = [
                     font="Font Awesome 5 Free Solid",
                     fontsize=icon_size,
                 ),
-                widget.Net(background=colors[1],
-                           foreground=colors[0],
-                           format="{down}"),
+                widget.Net(background=colors[1], foreground=colors[0], format="{down}"),
                 widget.Sep(
                     linewidth=0,
                     padding=10,
@@ -264,7 +212,7 @@ screens = [
                     foreground=colors[4],
                     text=" ",
                     font="Font Awesome 5 Free Solid",
-                    fontsize=14,
+                    fontsize=icon_size,
                 ),
                 widget.Clock(
                     background=colors[1],
@@ -279,7 +227,7 @@ screens = [
                     size_percent=50,
                 ),
             ],
-            32,
+            50,
             margin=[0, -10, 5, -10],
         ),
         bottom=bar.Gap(5),
@@ -297,18 +245,19 @@ screens = [
                     padding=30,
                     size_percent=40,
                 ),
-                widget.TextBox(background=colors[1],
-                               foreground=colors[0],
-                               fontsize=20,
-                               font="JetBrainsMono Nerd Font",
-                               text="望 ",
-                               mouse_callbacks={
-                                   'Button1':
-                                   lambda: qtile.cmd_spawn("toggle_all"),
-                               }),
+                widget.TextBox(
+                    background=colors[1],
+                    foreground=colors[0],
+                    fontsize=20,
+                    font="JetBrainsMono Nerd Font",
+                    text="望 ",
+                    mouse_callbacks={
+                        "Button1": lambda: qtile.cmd_spawn("toggle_all"),
+                    },
+                ),
                 widget.GroupBox(
                     **group_box_settings,
-                    fontsize=12,
+                    fontsize=20,
                 ),
                 widget.Sep(
                     linewidth=0,
@@ -317,9 +266,7 @@ screens = [
                     size_percent=40,
                 ),
                 widget.CurrentLayoutIcon(
-                    custom_icon_paths=[
-                        os.path.expanduser("~/.config/qtile/icons")
-                    ],
+                    custom_icon_paths=[os.path.expanduser("~/.config/qtile/icons")],
                     foreground=colors[8],
                     background=colors[1],
                     padding=-2,
@@ -335,12 +282,20 @@ screens = [
                     padding=10,
                     foreground=colors[8],
                     background=colors[1],
+                    icon_size=icon_size,
+                ),
+                widget.Sep(
+                    linewidth=0,
+                    background=colors[1],
+                    padding=10,
+                    size_percent=50,
                 ),
                 widget.TextBox(
                     background=colors[1],
                     foreground=colors[3],
                     text="",
                     font="Font Awesome 5 Free Solid",
+                    fontsize=icon_size,
                     padding=15,
                 ),
                 CustomWindowName(
@@ -348,7 +303,7 @@ screens = [
                     foreground=colors[0],
                     width=bar.CALCULATED,
                     empty_group_string="Desktop",
-                    max_chars=30,
+                    max_chars=40,
                 ),
                 widget.Spacer(background=colors[1]),
                 widget.Sep(
@@ -357,99 +312,18 @@ screens = [
                     size_percent=50,
                     background=colors[1],
                 ),
-                widget.TextBox(
-                    background=colors[1],
-                    foreground=colors[11],
-                    text=" ",
-                    font="Font Awesome 5 Free Solid",
-                    fontsize=icon_size,
-                ),
-                widget.Net(background=colors[1],
-                           foreground=colors[0],
-                           format="{down}"),
-                widget.Sep(
-                    linewidth=0,
-                    padding=10,
-                    size_percent=50,
-                    background=colors[1],
-                ),
-                widget.TextBox(
-                    background=colors[1],
-                    foreground=colors[8],
-                    text=" ",
-                    font="Font Awesome 5 Free Solid",
-                    fontsize=icon_size,
-                ),
-                widget.PulseVolume(
+                widget.OpenWeather(
                     background=colors[1],
                     foreground=colors[0],
-                    limit_max_volume="True",
-                    update_interval=0.1,
-                    mouse_callbacks={"Button3": open_pavu},
-                    fontsize=text_size,
+                    app_key="eaf0bf95962bd42471d02500acc89aa1",
+                    cityid="1812537",
+                    language="zh_cn",
+                    format="{main_temp}°{units_temperature} {humidity}% {weather_details}",
                 ),
                 widget.Sep(
                     background=colors[1],
                     linewidth=0,
-                    padding=10,
-                    size_percent=50,
-                ),
-                widget.TextBox(
-                    background=colors[1],
-                    foreground=colors[7],
-                    text="",
-                    font="Font Awesome 5 Free Solid",
-                    fontsize=icon_size,
-                ),
-                widget.CPU(
-                    background=colors[1],
-                    foreground=colors[0],
-                    update_interval=1,
-                    format="{load_percent: .0f} %",
-                    fontsize=text_size,
-                ),
-                widget.Sep(
-                    background=colors[1],
-                    linewidth=0,
-                    padding=10,
-                    size_percent=50,
-                ),
-                widget.TextBox(
-                    text="",
-                    font="Font Awesome 5 Free Solid",
-                    background=colors[1],
-                    foreground=colors[6],
-                    fontsize=icon_size,
-                ),
-                widget.Memory(
-                    background=colors[1],
-                    foreground=colors[0],
-                    format="{MemPercent: .0f} %",
-                    fontsize=text_size,
-                ),
-                widget.Sep(
-                    background=colors[1],
-                    linewidth=0,
-                    padding=10,
-                    size_percent=50,
-                ),
-                widget.TextBox(
-                    background=colors[1],
-                    foreground=colors[5],
-                    text=" ",
-                    font="Font Awesome 5 Free Solid",
-                    fontsize=icon_size,
-                ),
-                widget.Battery(
-                    background=colors[1],
-                    foreground=colors[0],
-                    format="{percent:2.0%}",
-                    fontsize=text_size,
-                ),
-                widget.Sep(
-                    background=colors[1],
-                    linewidth=0,
-                    padding=10,
+                    padding=25,
                     size_percent=50,
                 ),
                 widget.TextBox(
@@ -457,7 +331,7 @@ screens = [
                     foreground=colors[4],
                     text=" ",
                     font="Font Awesome 5 Free Solid",
-                    fontsize=14,
+                    fontsize=icon_size,
                 ),
                 widget.Clock(
                     background=colors[1],
@@ -472,7 +346,7 @@ screens = [
                     size_percent=50,
                 ),
             ],
-            32,
+            50,
             margin=[0, -10, 5, -10],
         ),
         bottom=bar.Gap(5),
