@@ -1,0 +1,30 @@
+#!/bin/sh
+
+start() {
+  if ! pgrep -f $1 ;
+  then
+    $@&
+  fi 
+}
+
+randr
+
+# music
+start mpd
+start mpDris2 # add playerctl support to mpd
+
+start solaar
+start fcitx5
+
+
+# compositor
+start picom --experimental-backends --config $HOME/.config/awesome/configuration/picom.conf
+
+# auth
+start /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+
+# load X colors
+start xrdb $HOME/.Xresources
+
+# network manager
+start nm-applet
