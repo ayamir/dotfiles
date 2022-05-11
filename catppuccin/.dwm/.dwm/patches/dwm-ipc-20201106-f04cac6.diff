@@ -1,0 +1,3246 @@
+From 9c4c16485ac374583a1055ff7c26cba53ac92c05 Mon Sep 17 00:00:00 2001
+From: mihirlad55 <mihirlad55@gmail.com>
+Date: Fri, 6 Nov 2020 17:13:42 +0000
+Subject: [PATCH] Add IPC support through a unix socket
+
+This patch currently supports the following requests:
+* Run custom commands with arguments (similar to key bind functions)
+* Get monitor properties
+* Get all available layouts
+* Get available tags
+* Get client properties
+* Subscribe to tag change, client focus change, and layout change,
+  monitor focus change, focused title change, and client state change
+  events
+
+This patch includes a dwm-msg cli program that supports all of the
+above requests for easy integration into shell scripts.
+
+The messages are sent in a JSON format to promote integration to
+increase scriptability in languages like Python/JavaScript.
+
+The patch requires YAJL for JSON parsing and a system with epoll
+support. Portability is planned to be increased in the future.
+
+This patch is best applied after all other patches to avoid merge
+conflicts.
+
+For more info on the IPC implementation and how to send/receive
+messages, documentation can be found at
+https://github.com/mihirlad55/dwm-ipc
+---
+ IPCClient.c  |   66 +++
+ IPCClient.h  |   61 +++
+ Makefile     |   10 +-
+ config.def.h |   18 +
+ config.mk    |    8 +-
+ dwm-msg.c    |  548 +++++++++++++++++++++++
+ dwm.c        |  150 ++++++-
+ ipc.c        | 1202 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ ipc.h        |  320 ++++++++++++++
+ util.c       |  135 ++++++
+ util.h       |   10 +
+ yajl_dumps.c |  351 +++++++++++++++
+ yajl_dumps.h |   65 +++
+ 13 files changed, 2931 insertions(+), 13 deletions(-)
+ create mode 100644 IPCClient.c
+ create mode 100644 IPCClient.h
+ create mode 100644 dwm-msg.c
+ create mode 100644 ipc.c
+ create mode 100644 ipc.h
+ create mode 100644 yajl_dumps.c
+ create mode 100644 yajl_dumps.h
+
+diff --git a/IPCClient.c b/IPCClient.c
+new file mode 100644
+index 0000000..0d3eefb
+--- /dev/null
++++ b/IPCClient.c
+@@ -0,0 +1,66 @@
++#include "IPCClient.h"
++
++#include <string.h>
++#include <sys/epoll.h>
++
++#include "util.h"
++
++IPCClient *
++ipc_client_new(int fd)
++{
++  IPCClient *c = (IPCClient *)malloc(sizeof(IPCClient));
++
++  if (c == NULL) return NULL;
++
++  // Initialize struct
++  memset(&c->event, 0, sizeof(struct epoll_event));
++
++  c->buffer_size = 0;
++  c->buffer = NULL;
++  c->fd = fd;
++  c->event.data.fd = fd;
++  c->next = NULL;
++  c->prev = NULL;
++  c->subscriptions = 0;
++
++  return c;
++}
++
++void
++ipc_list_add_client(IPCClientList *list, IPCClient *nc)
++{
++  DEBUG("Adding client with fd %d to list\n", nc->fd);
++
++  if (*list == NULL) {
++    // List is empty, point list at first client
++    *list = nc;
++  } else {
++    IPCClient *c;
++    // Go to last client in list
++    for (c = *list; c && c->next; c = c->next)
++      ;
++    c->next = nc;
++    nc->prev = c;
++  }
++}
++
++void
++ipc_list_remove_client(IPCClientList *list, IPCClient *c)
++{
++  IPCClient *cprev = c->prev;
++  IPCClient *cnext = c->next;
++
++  if (cprev != NULL) cprev->next = c->next;
++  if (cnext != NULL) cnext->prev = c->prev;
++  if (c == *list) *list = c->next;
++}
++
++IPCClient *
++ipc_list_get_client(IPCClientList list, int fd)
++{
++  for (IPCClient *c = list; c; c = c->next) {
++    if (c->fd == fd) return c;
++  }
++
++  return NULL;
++}
+diff --git a/IPCClient.h b/IPCClient.h
+new file mode 100644
+index 0000000..307dfba
+--- /dev/null
++++ b/IPCClient.h
+@@ -0,0 +1,61 @@
++#ifndef IPC_CLIENT_H_
++#define IPC_CLIENT_H_
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/epoll.h>
++
++typedef struct IPCClient IPCClient;
++/**
++ * This structure contains the details of an IPC Client and pointers for a
++ * linked list
++ */
++struct IPCClient {
++  int fd;
++  int subscriptions;
++
++  char *buffer;
++  uint32_t buffer_size;
++
++  struct epoll_event event;
++  IPCClient *next;
++  IPCClient *prev;
++};
++
++typedef IPCClient *IPCClientList;
++
++/**
++ * Allocate memory for new IPCClient with the specified file descriptor and
++ * initialize struct.
++ *
++ * @param fd File descriptor of IPC client
++ *
++ * @return Address to allocated IPCClient struct
++ */
++IPCClient *ipc_client_new(int fd);
++
++/**
++ * Add an IPC Client to the specified list
++ *
++ * @param list Address of the list to add the client to
++ * @param nc Address of the IPCClient
++ */
++void ipc_list_add_client(IPCClientList *list, IPCClient *nc);
++
++/**
++ * Remove an IPCClient from the specified list
++ *
++ * @param list Address of the list to remove the client from
++ * @param c Address of the IPCClient
++ */
++void ipc_list_remove_client(IPCClientList *list, IPCClient *c);
++
++/**
++ * Get an IPCClient from the specified IPCClient list
++ *
++ * @param list List to remove the client from
++ * @param fd File descriptor of the IPCClient
++ */
++IPCClient *ipc_list_get_client(IPCClientList list, int fd);
++
++#endif  // IPC_CLIENT_H_
+diff --git a/Makefile b/Makefile
+index 77bcbc0..0456754 100644
+--- a/Makefile
++++ b/Makefile
+@@ -6,7 +6,7 @@ include config.mk
+ SRC = drw.c dwm.c util.c
+ OBJ = ${SRC:.c=.o}
+ 
+-all: options dwm
++all: options dwm dwm-msg
+ 
+ options:
+ 	@echo dwm build options:
+@@ -25,8 +25,11 @@ config.h:
+ dwm: ${OBJ}
+ 	${CC} -o $@ ${OBJ} ${LDFLAGS}
+ 
++dwm-msg: dwm-msg.o
++	${CC} -o $@ $< ${LDFLAGS}
++
+ clean:
+-	rm -f dwm ${OBJ} dwm-${VERSION}.tar.gz
++	rm -f dwm dwm-msg ${OBJ} dwm-${VERSION}.tar.gz
+ 
+ dist: clean
+ 	mkdir -p dwm-${VERSION}
+@@ -38,8 +41,9 @@ dist: clean
+ 
+ install: all
+ 	mkdir -p ${DESTDIR}${PREFIX}/bin
+-	cp -f dwm ${DESTDIR}${PREFIX}/bin
++	cp -f dwm dwm-msg ${DESTDIR}${PREFIX}/bin
+ 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm
++	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm-msg
+ 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
+ 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
+ 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
+diff --git a/config.def.h b/config.def.h
+index 1c0b587..059a831 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -113,3 +113,21 @@ static Button buttons[] = {
+ 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+ };
+ 
++static const char *ipcsockpath = "/tmp/dwm.sock";
++static IPCCommand ipccommands[] = {
++  IPCCOMMAND(  view,                1,      {ARG_TYPE_UINT}   ),
++  IPCCOMMAND(  toggleview,          1,      {ARG_TYPE_UINT}   ),
++  IPCCOMMAND(  tag,                 1,      {ARG_TYPE_UINT}   ),
++  IPCCOMMAND(  toggletag,           1,      {ARG_TYPE_UINT}   ),
++  IPCCOMMAND(  tagmon,              1,      {ARG_TYPE_UINT}   ),
++  IPCCOMMAND(  focusmon,            1,      {ARG_TYPE_SINT}   ),
++  IPCCOMMAND(  focusstack,          1,      {ARG_TYPE_SINT}   ),
++  IPCCOMMAND(  zoom,                1,      {ARG_TYPE_NONE}   ),
++  IPCCOMMAND(  incnmaster,          1,      {ARG_TYPE_SINT}   ),
++  IPCCOMMAND(  killclient,          1,      {ARG_TYPE_SINT}   ),
++  IPCCOMMAND(  togglefloating,      1,      {ARG_TYPE_NONE}   ),
++  IPCCOMMAND(  setmfact,            1,      {ARG_TYPE_FLOAT}  ),
++  IPCCOMMAND(  setlayoutsafe,       1,      {ARG_TYPE_PTR}    ),
++  IPCCOMMAND(  quit,                1,      {ARG_TYPE_NONE}   )
++};
++
+diff --git a/config.mk b/config.mk
+index 7084c33..8570938 100644
+--- a/config.mk
++++ b/config.mk
+@@ -20,9 +20,13 @@ FREETYPEINC = /usr/include/freetype2
+ # OpenBSD (uncomment)
+ #FREETYPEINC = ${X11INC}/freetype2
+ 
++# yajl
++YAJLLIBS = -lyajl
++YAJLINC = /usr/include/yajl
++
+ # includes and libs
+-INCS = -I${X11INC} -I${FREETYPEINC}
+-LIBS = -L${X11LIB} -lX11 ${XINERAMALIBS} ${FREETYPELIBS}
++INCS = -I${X11INC} -I${FREETYPEINC} -I${YAJLINC}
++LIBS = -L${X11LIB} -lX11 ${XINERAMALIBS} ${FREETYPELIBS} ${YAJLLIBS}
+ 
+ # flags
+ CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
+diff --git a/dwm-msg.c b/dwm-msg.c
+new file mode 100644
+index 0000000..1971d32
+--- /dev/null
++++ b/dwm-msg.c
+@@ -0,0 +1,548 @@
++#include <ctype.h>
++#include <errno.h>
++#include <inttypes.h>
++#include <stdarg.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/socket.h>
++#include <sys/un.h>
++#include <unistd.h>
++#include <yajl/yajl_gen.h>
++
++#define IPC_MAGIC "DWM-IPC"
++// clang-format off
++#define IPC_MAGIC_ARR { 'D', 'W', 'M', '-', 'I', 'P', 'C' }
++// clang-format on
++#define IPC_MAGIC_LEN 7  // Not including null char
++
++#define IPC_EVENT_TAG_CHANGE "tag_change_event"
++#define IPC_EVENT_CLIENT_FOCUS_CHANGE "client_focus_change_event"
++#define IPC_EVENT_LAYOUT_CHANGE "layout_change_event"
++#define IPC_EVENT_MONITOR_FOCUS_CHANGE "monitor_focus_change_event"
++#define IPC_EVENT_FOCUSED_TITLE_CHANGE "focused_title_change_event"
++#define IPC_EVENT_FOCUSED_STATE_CHANGE "focused_state_change_event"
++
++#define YSTR(str) yajl_gen_string(gen, (unsigned char *)str, strlen(str))
++#define YINT(num) yajl_gen_integer(gen, num)
++#define YDOUBLE(num) yajl_gen_double(gen, num)
++#define YBOOL(v) yajl_gen_bool(gen, v)
++#define YNULL() yajl_gen_null(gen)
++#define YARR(body)                                                             \
++  {                                                                            \
++    yajl_gen_array_open(gen);                                                  \
++    body;                                                                      \
++    yajl_gen_array_close(gen);                                                 \
++  }
++#define YMAP(body)                                                             \
++  {                                                                            \
++    yajl_gen_map_open(gen);                                                    \
++    body;                                                                      \
++    yajl_gen_map_close(gen);                                                   \
++  }
++
++typedef unsigned long Window;
++
++const char *DEFAULT_SOCKET_PATH = "/tmp/dwm.sock";
++static int sock_fd = -1;
++static unsigned int ignore_reply = 0;
++
++typedef enum IPCMessageType {
++  IPC_TYPE_RUN_COMMAND = 0,
++  IPC_TYPE_GET_MONITORS = 1,
++  IPC_TYPE_GET_TAGS = 2,
++  IPC_TYPE_GET_LAYOUTS = 3,
++  IPC_TYPE_GET_DWM_CLIENT = 4,
++  IPC_TYPE_SUBSCRIBE = 5,
++  IPC_TYPE_EVENT = 6
++} IPCMessageType;
++
++// Every IPC message must begin with this
++typedef struct dwm_ipc_header {
++  uint8_t magic[IPC_MAGIC_LEN];
++  uint32_t size;
++  uint8_t type;
++} __attribute((packed)) dwm_ipc_header_t;
++
++static int
++recv_message(uint8_t *msg_type, uint32_t *reply_size, uint8_t **reply)
++{
++  uint32_t read_bytes = 0;
++  const int32_t to_read = sizeof(dwm_ipc_header_t);
++  char header[to_read];
++  char *walk = header;
++
++  // Try to read header
++  while (read_bytes < to_read) {
++    ssize_t n = read(sock_fd, header + read_bytes, to_read - read_bytes);
++
++    if (n == 0) {
++      if (read_bytes == 0) {
++        fprintf(stderr, "Unexpectedly reached EOF while reading header.");
++        fprintf(stderr,
++                "Read %" PRIu32 " bytes, expected %" PRIu32 " total bytes.\n",
++                read_bytes, to_read);
++        return -2;
++      } else {
++        fprintf(stderr, "Unexpectedly reached EOF while reading header.");
++        fprintf(stderr,
++                "Read %" PRIu32 " bytes, expected %" PRIu32 " total bytes.\n",
++                read_bytes, to_read);
++        return -3;
++      }
++    } else if (n == -1) {
++      return -1;
++    }
++
++    read_bytes += n;
++  }
++
++  // Check if magic string in header matches
++  if (memcmp(walk, IPC_MAGIC, IPC_MAGIC_LEN) != 0) {
++    fprintf(stderr, "Invalid magic string. Got '%.*s', expected '%s'\n",
++            IPC_MAGIC_LEN, walk, IPC_MAGIC);
++    return -3;
++  }
++
++  walk += IPC_MAGIC_LEN;
++
++  // Extract reply size
++  memcpy(reply_size, walk, sizeof(uint32_t));
++  walk += sizeof(uint32_t);
++
++  // Extract message type
++  memcpy(msg_type, walk, sizeof(uint8_t));
++  walk += sizeof(uint8_t);
++
++  (*reply) = malloc(*reply_size);
++
++  // Extract payload
++  read_bytes = 0;
++  while (read_bytes < *reply_size) {
++    ssize_t n = read(sock_fd, *reply + read_bytes, *reply_size - read_bytes);
++
++    if (n == 0) {
++      fprintf(stderr, "Unexpectedly reached EOF while reading payload.");
++      fprintf(stderr, "Read %" PRIu32 " bytes, expected %" PRIu32 " bytes.\n",
++              read_bytes, *reply_size);
++      free(*reply);
++      return -2;
++    } else if (n == -1) {
++      if (errno == EINTR || errno == EAGAIN) continue;
++      free(*reply);
++      return -1;
++    }
++
++    read_bytes += n;
++  }
++
++  return 0;
++}
++
++static int
++read_socket(IPCMessageType *msg_type, uint32_t *msg_size, char **msg)
++{
++  int ret = -1;
++
++  while (ret != 0) {
++    ret = recv_message((uint8_t *)msg_type, msg_size, (uint8_t **)msg);
++
++    if (ret < 0) {
++      // Try again (non-fatal error)
++      if (ret == -1 && (errno == EINTR || errno == EAGAIN)) continue;
++
++      fprintf(stderr, "Error receiving response from socket. ");
++      fprintf(stderr, "The connection might have been lost.\n");
++      exit(2);
++    }
++  }
++
++  return 0;
++}
++
++static ssize_t
++write_socket(const void *buf, size_t count)
++{
++  size_t written = 0;
++
++  while (written < count) {
++    const ssize_t n =
++        write(sock_fd, ((uint8_t *)buf) + written, count - written);
++
++    if (n == -1) {
++      if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
++        continue;
++      else
++        return n;
++    }
++    written += n;
++  }
++  return written;
++}
++
++static void
++connect_to_socket()
++{
++  struct sockaddr_un addr;
++
++  int sock = socket(AF_UNIX, SOCK_STREAM, 0);
++
++  // Initialize struct to 0
++  memset(&addr, 0, sizeof(struct sockaddr_un));
++
++  addr.sun_family = AF_UNIX;
++  strcpy(addr.sun_path, DEFAULT_SOCKET_PATH);
++
++  connect(sock, (const struct sockaddr *)&addr, sizeof(struct sockaddr_un));
++
++  sock_fd = sock;
++}
++
++static int
++send_message(IPCMessageType msg_type, uint32_t msg_size, uint8_t *msg)
++{
++  dwm_ipc_header_t header = {
++      .magic = IPC_MAGIC_ARR, .size = msg_size, .type = msg_type};
++
++  size_t header_size = sizeof(dwm_ipc_header_t);
++  size_t total_size = header_size + msg_size;
++
++  uint8_t buffer[total_size];
++
++  // Copy header to buffer
++  memcpy(buffer, &header, header_size);
++  // Copy message to buffer
++  memcpy(buffer + header_size, msg, header.size);
++
++  write_socket(buffer, total_size);
++
++  return 0;
++}
++
++static int
++is_float(const char *s)
++{
++  size_t len = strlen(s);
++  int is_dot_used = 0;
++  int is_minus_used = 0;
++
++  // Floats can only have one decimal point in between or digits
++  // Optionally, floats can also be below zero (negative)
++  for (int i = 0; i < len; i++) {
++    if (isdigit(s[i]))
++      continue;
++    else if (!is_dot_used && s[i] == '.' && i != 0 && i != len - 1) {
++      is_dot_used = 1;
++      continue;
++    } else if (!is_minus_used && s[i] == '-' && i == 0) {
++      is_minus_used = 1;
++      continue;
++    } else
++      return 0;
++  }
++
++  return 1;
++}
++
++static int
++is_unsigned_int(const char *s)
++{
++  size_t len = strlen(s);
++
++  // Unsigned int can only have digits
++  for (int i = 0; i < len; i++) {
++    if (isdigit(s[i]))
++      continue;
++    else
++      return 0;
++  }
++
++  return 1;
++}
++
++static int
++is_signed_int(const char *s)
++{
++  size_t len = strlen(s);
++
++  // Signed int can only have digits and a negative sign at the start
++  for (int i = 0; i < len; i++) {
++    if (isdigit(s[i]))
++      continue;
++    else if (i == 0 && s[i] == '-') {
++      continue;
++    } else
++      return 0;
++  }
++
++  return 1;
++}
++
++static void
++flush_socket_reply()
++{
++  IPCMessageType reply_type;
++  uint32_t reply_size;
++  char *reply;
++
++  read_socket(&reply_type, &reply_size, &reply);
++
++  free(reply);
++}
++
++static void
++print_socket_reply()
++{
++  IPCMessageType reply_type;
++  uint32_t reply_size;
++  char *reply;
++
++  read_socket(&reply_type, &reply_size, &reply);
++
++  printf("%.*s\n", reply_size, reply);
++  fflush(stdout);
++  free(reply);
++}
++
++static int
++run_command(const char *name, char *args[], int argc)
++{
++  const unsigned char *msg;
++  size_t msg_size;
++
++  yajl_gen gen = yajl_gen_alloc(NULL);
++
++  // Message format:
++  // {
++  //   "command": "<name>",
++  //   "args": [ ... ]
++  // }
++  // clang-format off
++  YMAP(
++    YSTR("command"); YSTR(name);
++    YSTR("args"); YARR(
++      for (int i = 0; i < argc; i++) {
++        if (is_signed_int(args[i])) {
++          long long num = atoll(args[i]);
++          YINT(num);
++        } else if (is_float(args[i])) {
++          float num = atof(args[i]);
++          YDOUBLE(num);
++        } else {
++          YSTR(args[i]);
++        }
++      }
++    )
++  )
++  // clang-format on
++
++  yajl_gen_get_buf(gen, &msg, &msg_size);
++
++  send_message(IPC_TYPE_RUN_COMMAND, msg_size, (uint8_t *)msg);
++
++  if (!ignore_reply)
++    print_socket_reply();
++  else
++    flush_socket_reply();
++
++  yajl_gen_free(gen);
++
++  return 0;
++}
++
++static int
++get_monitors()
++{
++  send_message(IPC_TYPE_GET_MONITORS, 1, (uint8_t *)"");
++  print_socket_reply();
++  return 0;
++}
++
++static int
++get_tags()
++{
++  send_message(IPC_TYPE_GET_TAGS, 1, (uint8_t *)"");
++  print_socket_reply();
++
++  return 0;
++}
++
++static int
++get_layouts()
++{
++  send_message(IPC_TYPE_GET_LAYOUTS, 1, (uint8_t *)"");
++  print_socket_reply();
++
++  return 0;
++}
++
++static int
++get_dwm_client(Window win)
++{
++  const unsigned char *msg;
++  size_t msg_size;
++
++  yajl_gen gen = yajl_gen_alloc(NULL);
++
++  // Message format:
++  // {
++  //   "client_window_id": "<win>"
++  // }
++  // clang-format off
++  YMAP(
++    YSTR("client_window_id"); YINT(win);
++  )
++  // clang-format on
++
++  yajl_gen_get_buf(gen, &msg, &msg_size);
++
++  send_message(IPC_TYPE_GET_DWM_CLIENT, msg_size, (uint8_t *)msg);
++
++  print_socket_reply();
++
++  yajl_gen_free(gen);
++
++  return 0;
++}
++
++static int
++subscribe(const char *event)
++{
++  const unsigned char *msg;
++  size_t msg_size;
++
++  yajl_gen gen = yajl_gen_alloc(NULL);
++
++  // Message format:
++  // {
++  //   "event": "<event>",
++  //   "action": "subscribe"
++  // }
++  // clang-format off
++  YMAP(
++    YSTR("event"); YSTR(event);
++    YSTR("action"); YSTR("subscribe");
++  )
++  // clang-format on
++
++  yajl_gen_get_buf(gen, &msg, &msg_size);
++
++  send_message(IPC_TYPE_SUBSCRIBE, msg_size, (uint8_t *)msg);
++
++  if (!ignore_reply)
++    print_socket_reply();
++  else
++    flush_socket_reply();
++
++  yajl_gen_free(gen);
++
++  return 0;
++}
++
++static void
++usage_error(const char *prog_name, const char *format, ...)
++{
++  va_list args;
++  va_start(args, format);
++
++  fprintf(stderr, "Error: ");
++  vfprintf(stderr, format, args);
++  fprintf(stderr, "\nusage: %s <command> [...]\n", prog_name);
++  fprintf(stderr, "Try '%s help'\n", prog_name);
++
++  va_end(args);
++  exit(1);
++}
++
++static void
++print_usage(const char *name)
++{
++  printf("usage: %s [options] <command> [...]\n", name);
++  puts("");
++  puts("Commands:");
++  puts("  run_command <name> [args...]    Run an IPC command");
++  puts("");
++  puts("  get_monitors                    Get monitor properties");
++  puts("");
++  puts("  get_tags                        Get list of tags");
++  puts("");
++  puts("  get_layouts                     Get list of layouts");
++  puts("");
++  puts("  get_dwm_client <window_id>      Get dwm client proprties");
++  puts("");
++  puts("  subscribe [events...]           Subscribe to specified events");
++  puts("                                  Options: " IPC_EVENT_TAG_CHANGE ",");
++  puts("                                  " IPC_EVENT_LAYOUT_CHANGE ",");
++  puts("                                  " IPC_EVENT_CLIENT_FOCUS_CHANGE ",");
++  puts("                                  " IPC_EVENT_MONITOR_FOCUS_CHANGE ",");
++  puts("                                  " IPC_EVENT_FOCUSED_TITLE_CHANGE ",");
++  puts("                                  " IPC_EVENT_FOCUSED_STATE_CHANGE);
++  puts("");
++  puts("  help                            Display this message");
++  puts("");
++  puts("Options:");
++  puts("  --ignore-reply                  Don't print reply messages from");
++  puts("                                  run_command and subscribe.");
++  puts("");
++}
++
++int
++main(int argc, char *argv[])
++{
++  const char *prog_name = argv[0];
++
++  connect_to_socket();
++  if (sock_fd == -1) {
++    fprintf(stderr, "Failed to connect to socket\n");
++    return 1;
++  }
++
++  int i = 1;
++  if (i < argc && strcmp(argv[i], "--ignore-reply") == 0) {
++    ignore_reply = 1;
++    i++;
++  }
++
++  if (i >= argc) usage_error(prog_name, "Expected an argument, got none");
++
++  if (strcmp(argv[i], "help") == 0)
++    print_usage(prog_name);
++  else if (strcmp(argv[i], "run_command") == 0) {
++    if (++i >= argc) usage_error(prog_name, "No command specified");
++    // Command name
++    char *command = argv[i];
++    // Command arguments are everything after command name
++    char **command_args = argv + ++i;
++    // Number of command arguments
++    int command_argc = argc - i;
++    run_command(command, command_args, command_argc);
++  } else if (strcmp(argv[i], "get_monitors") == 0) {
++    get_monitors();
++  } else if (strcmp(argv[i], "get_tags") == 0) {
++    get_tags();
++  } else if (strcmp(argv[i], "get_layouts") == 0) {
++    get_layouts();
++  } else if (strcmp(argv[i], "get_dwm_client") == 0) {
++    if (++i < argc) {
++      if (is_unsigned_int(argv[i])) {
++        Window win = atol(argv[i]);
++        get_dwm_client(win);
++      } else
++        usage_error(prog_name, "Expected unsigned integer argument");
++    } else
++      usage_error(prog_name, "Expected the window id");
++  } else if (strcmp(argv[i], "subscribe") == 0) {
++    if (++i < argc) {
++      for (int j = i; j < argc; j++) subscribe(argv[j]);
++    } else
++      usage_error(prog_name, "Expected event name");
++    // Keep listening for events forever
++    while (1) {
++      print_socket_reply();
++    }
++  } else
++    usage_error(prog_name, "Invalid argument '%s'", argv[i]);
++
++  return 0;
++}
+diff --git a/dwm.c b/dwm.c
+index 9fd0286..c90c61a 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -30,6 +30,7 @@
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <sys/epoll.h>
+ #include <X11/cursorfont.h>
+ #include <X11/keysym.h>
+ #include <X11/Xatom.h>
+@@ -67,9 +68,21 @@ enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms *
+ enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+ 
++typedef struct TagState TagState;
++struct TagState {
++	int selected;
++	int occupied;
++	int urgent;
++};
++
++typedef struct ClientState ClientState;
++struct ClientState {
++	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
++};
++
+ typedef union {
+-	int i;
+-	unsigned int ui;
++	long i;
++	unsigned long ui;
+ 	float f;
+ 	const void *v;
+ } Arg;
+@@ -97,6 +110,7 @@ struct Client {
+ 	Client *snext;
+ 	Monitor *mon;
+ 	Window win;
++	ClientState prevstate;
+ };
+ 
+ typedef struct {
+@@ -111,8 +125,10 @@ typedef struct {
+ 	void (*arrange)(Monitor *);
+ } Layout;
+ 
++
+ struct Monitor {
+ 	char ltsymbol[16];
++	char lastltsymbol[16];
+ 	float mfact;
+ 	int nmaster;
+ 	int num;
+@@ -122,14 +138,17 @@ struct Monitor {
+ 	unsigned int seltags;
+ 	unsigned int sellt;
+ 	unsigned int tagset[2];
++	TagState tagstate;
+ 	int showbar;
+ 	int topbar;
+ 	Client *clients;
+ 	Client *sel;
++	Client *lastsel;
+ 	Client *stack;
+ 	Monitor *next;
+ 	Window barwin;
+ 	const Layout *lt[2];
++	const Layout *lastlt;
+ };
+ 
+ typedef struct {
+@@ -175,6 +194,7 @@ static long getstate(Window w);
+ static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
+ static void grabbuttons(Client *c, int focused);
+ static void grabkeys(void);
++static int handlexevent(struct epoll_event *ev);
+ static void incnmaster(const Arg *arg);
+ static void keypress(XEvent *e);
+ static void killclient(const Arg *arg);
+@@ -201,8 +221,10 @@ static void setclientstate(Client *c, long state);
+ static void setfocus(Client *c);
+ static void setfullscreen(Client *c, int fullscreen);
+ static void setlayout(const Arg *arg);
++static void setlayoutsafe(const Arg *arg);
+ static void setmfact(const Arg *arg);
+ static void setup(void);
++static void setupepoll(void);
+ static void seturgent(Client *c, int urg);
+ static void showhide(Client *c);
+ static void sigchld(int unused);
+@@ -261,17 +283,27 @@ static void (*handler[LASTEvent]) (XEvent *) = {
+ 	[UnmapNotify] = unmapnotify
+ };
+ static Atom wmatom[WMLast], netatom[NetLast];
++static int epoll_fd;
++static int dpy_fd;
+ static int running = 1;
+ static Cur *cursor[CurLast];
+ static Clr **scheme;
+ static Display *dpy;
+ static Drw *drw;
+-static Monitor *mons, *selmon;
++static Monitor *mons, *selmon, *lastselmon;
+ static Window root, wmcheckwin;
+ 
++#include "ipc.h"
++
+ /* configuration, allows nested code to access above variables */
+ #include "config.h"
+ 
++#ifdef VERSION
++#include "IPCClient.c"
++#include "yajl_dumps.c"
++#include "ipc.c"
++#endif
++
+ /* compile-time check if all tags fit into an unsigned int bit array. */
+ struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+ 
+@@ -492,6 +524,12 @@ cleanup(void)
+ 	XSync(dpy, False);
+ 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
+ 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
++
++	ipc_cleanup();
++
++	if (close(epoll_fd) < 0) {
++			fprintf(stderr, "Failed to close epoll file descriptor\n");
++	}
+ }
+ 
+ void
+@@ -964,6 +1002,25 @@ grabkeys(void)
+ 	}
+ }
+ 
++int
++handlexevent(struct epoll_event *ev)
++{
++	if (ev->events & EPOLLIN) {
++		XEvent ev;
++		while (running && XPending(dpy)) {
++			XNextEvent(dpy, &ev);
++			if (handler[ev.type]) {
++				handler[ev.type](&ev); /* call handler */
++				ipc_send_events(mons, &lastselmon, selmon);
++			}
++		}
++	} else if (ev-> events & EPOLLHUP) {
++		return -1;
++	}
++
++	return 0;
++}
++
+ void
+ incnmaster(const Arg *arg)
+ {
+@@ -1373,12 +1430,40 @@ restack(Monitor *m)
+ void
+ run(void)
+ {
+-	XEvent ev;
+-	/* main event loop */
++	int event_count = 0;
++	const int MAX_EVENTS = 10;
++	struct epoll_event events[MAX_EVENTS];
++
+ 	XSync(dpy, False);
+-	while (running && !XNextEvent(dpy, &ev))
+-		if (handler[ev.type])
+-			handler[ev.type](&ev); /* call handler */
++
++	/* main event loop */
++	while (running) {
++		event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
++
++		for (int i = 0; i < event_count; i++) {
++			int event_fd = events[i].data.fd;
++			DEBUG("Got event from fd %d\n", event_fd);
++
++			if (event_fd == dpy_fd) {
++				// -1 means EPOLLHUP
++				if (handlexevent(events + i) == -1)
++					return;
++			} else if (event_fd == ipc_get_sock_fd()) {
++				ipc_handle_socket_epoll_event(events + i);
++			} else if (ipc_is_client_registered(event_fd)){
++				if (ipc_handle_client_epoll_event(events + i, mons, &lastselmon, selmon,
++							tags, LENGTH(tags), layouts, LENGTH(layouts)) < 0) {
++					fprintf(stderr, "Error handling IPC event on fd %d\n", event_fd);
++				}
++			} else {
++				fprintf(stderr, "Got event from unknown fd %d, ptr %p, u32 %d, u64 %lu",
++						event_fd, events[i].data.ptr, events[i].data.u32,
++						events[i].data.u64);
++				fprintf(stderr, " with events %d\n", events[i].events);
++				return;
++			}
++		}
++	}
+ }
+ 
+ void
+@@ -1512,6 +1597,18 @@ setlayout(const Arg *arg)
+ 		drawbar(selmon);
+ }
+ 
++void
++setlayoutsafe(const Arg *arg)
++{
++	const Layout *ltptr = (Layout *)arg->v;
++	if (ltptr == 0)
++			setlayout(arg);
++	for (int i = 0; i < LENGTH(layouts); i++) {
++		if (ltptr == &layouts[i])
++			setlayout(arg);
++	}
++}
++
+ /* arg > 1.0 will set mfact absolutely */
+ void
+ setmfact(const Arg *arg)
+@@ -1595,8 +1692,37 @@ setup(void)
+ 	XSelectInput(dpy, root, wa.event_mask);
+ 	grabkeys();
+ 	focus(NULL);
++	setupepoll();
+ }
+ 
++void
++setupepoll(void)
++{
++	epoll_fd = epoll_create1(0);
++	dpy_fd = ConnectionNumber(dpy);
++	struct epoll_event dpy_event;
++
++	// Initialize struct to 0
++	memset(&dpy_event, 0, sizeof(dpy_event));
++
++	DEBUG("Display socket is fd %d\n", dpy_fd);
++
++	if (epoll_fd == -1) {
++		fputs("Failed to create epoll file descriptor", stderr);
++	}
++
++	dpy_event.events = EPOLLIN;
++	dpy_event.data.fd = dpy_fd;
++	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, dpy_fd, &dpy_event)) {
++		fputs("Failed to add display file descriptor to epoll", stderr);
++		close(epoll_fd);
++		exit(1);
++	}
++
++	if (ipc_init(ipcsockpath, epoll_fd, ipccommands, LENGTH(ipccommands)) < 0) {
++		fputs("Failed to initialize IPC\n", stderr);
++	}
++}
+ 
+ void
+ seturgent(Client *c, int urg)
+@@ -1998,10 +2124,18 @@ updatestatus(void)
+ void
+ updatetitle(Client *c)
+ {
++	char oldname[sizeof(c->name)];
++	strcpy(oldname, c->name);
++
+ 	if (!gettextprop(c->win, netatom[NetWMName], c->name, sizeof c->name))
+ 		gettextprop(c->win, XA_WM_NAME, c->name, sizeof c->name);
+ 	if (c->name[0] == '\0') /* hack to mark broken clients */
+ 		strcpy(c->name, broken);
++
++	for (Monitor *m = mons; m; m = m->next) {
++		if (m->sel == c && strcmp(oldname, c->name) != 0)
++			ipc_focused_title_change_event(m->num, c->win, oldname, c->name);
++	}
+ }
+ 
+ void
+diff --git a/ipc.c b/ipc.c
+new file mode 100644
+index 0000000..c404791
+--- /dev/null
++++ b/ipc.c
+@@ -0,0 +1,1202 @@
++#include "ipc.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <inttypes.h>
++#include <stdarg.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/epoll.h>
++#include <sys/socket.h>
++#include <sys/un.h>
++#include <unistd.h>
++#include <yajl/yajl_gen.h>
++#include <yajl/yajl_tree.h>
++
++#include "util.h"
++#include "yajl_dumps.h"
++
++static struct sockaddr_un sockaddr;
++static struct epoll_event sock_epoll_event;
++static IPCClientList ipc_clients = NULL;
++static int epoll_fd = -1;
++static int sock_fd = -1;
++static IPCCommand *ipc_commands;
++static unsigned int ipc_commands_len;
++// Max size is 1 MB
++static const uint32_t MAX_MESSAGE_SIZE = 1000000;
++static const int IPC_SOCKET_BACKLOG = 5;
++
++/**
++ * Create IPC socket at specified path and return file descriptor to socket.
++ * This initializes the static variable sockaddr.
++ */
++static int
++ipc_create_socket(const char *filename)
++{
++  char *normal_filename;
++  char *parent;
++  const size_t addr_size = sizeof(struct sockaddr_un);
++  const int sock_type = SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC;
++
++  normalizepath(filename, &normal_filename);
++
++  // In case socket file exists
++  unlink(normal_filename);
++
++  // For portability clear the addr structure, since some implementations have
++  // nonstandard fields in the structure
++  memset(&sockaddr, 0, addr_size);
++
++  parentdir(normal_filename, &parent);
++  // Create parent directories
++  mkdirp(parent);
++  free(parent);
++
++  sockaddr.sun_family = AF_LOCAL;
++  strcpy(sockaddr.sun_path, normal_filename);
++  free(normal_filename);
++
++  sock_fd = socket(AF_LOCAL, sock_type, 0);
++  if (sock_fd == -1) {
++    fputs("Failed to create socket\n", stderr);
++    return -1;
++  }
++
++  DEBUG("Created socket at %s\n", sockaddr.sun_path);
++
++  if (bind(sock_fd, (const struct sockaddr *)&sockaddr, addr_size) == -1) {
++    fputs("Failed to bind socket\n", stderr);
++    return -1;
++  }
++
++  DEBUG("Socket binded\n");
++
++  if (listen(sock_fd, IPC_SOCKET_BACKLOG) < 0) {
++    fputs("Failed to listen for connections on socket\n", stderr);
++    return -1;
++  }
++
++  DEBUG("Now listening for connections on socket\n");
++
++  return sock_fd;
++}
++
++/**
++ * Internal function used to receive IPC messages from a given file descriptor.
++ *
++ * Returns -1 on error reading (could be EAGAIN or EINTR)
++ * Returns -2 if EOF before header could be read
++ * Returns -3 if invalid IPC header
++ * Returns -4 if message length exceeds MAX_MESSAGE_SIZE
++ */
++static int
++ipc_recv_message(int fd, uint8_t *msg_type, uint32_t *reply_size,
++                 uint8_t **reply)
++{
++  uint32_t read_bytes = 0;
++  const int32_t to_read = sizeof(dwm_ipc_header_t);
++  char header[to_read];
++  char *walk = header;
++
++  // Try to read header
++  while (read_bytes < to_read) {
++    const ssize_t n = read(fd, header + read_bytes, to_read - read_bytes);
++
++    if (n == 0) {
++      if (read_bytes == 0) {
++        fprintf(stderr, "Unexpectedly reached EOF while reading header.");
++        fprintf(stderr,
++                "Read %" PRIu32 " bytes, expected %" PRIu32 " total bytes.\n",
++                read_bytes, to_read);
++        return -2;
++      } else {
++        fprintf(stderr, "Unexpectedly reached EOF while reading header.");
++        fprintf(stderr,
++                "Read %" PRIu32 " bytes, expected %" PRIu32 " total bytes.\n",
++                read_bytes, to_read);
++        return -3;
++      }
++    } else if (n == -1) {
++      // errno will still be set
++      return -1;
++    }
++
++    read_bytes += n;
++  }
++
++  // Check if magic string in header matches
++  if (memcmp(walk, IPC_MAGIC, IPC_MAGIC_LEN) != 0) {
++    fprintf(stderr, "Invalid magic string. Got '%.*s', expected '%s'\n",
++            IPC_MAGIC_LEN, walk, IPC_MAGIC);
++    return -3;
++  }
++
++  walk += IPC_MAGIC_LEN;
++
++  // Extract reply size
++  memcpy(reply_size, walk, sizeof(uint32_t));
++  walk += sizeof(uint32_t);
++
++  if (*reply_size > MAX_MESSAGE_SIZE) {
++    fprintf(stderr, "Message too long: %" PRIu32 " bytes. ", *reply_size);
++    fprintf(stderr, "Maximum message size is: %d\n", MAX_MESSAGE_SIZE);
++    return -4;
++  }
++
++  // Extract message type
++  memcpy(msg_type, walk, sizeof(uint8_t));
++  walk += sizeof(uint8_t);
++
++  if (*reply_size > 0)
++    (*reply) = malloc(*reply_size);
++  else
++    return 0;
++
++  read_bytes = 0;
++  while (read_bytes < *reply_size) {
++    const ssize_t n = read(fd, *reply + read_bytes, *reply_size - read_bytes);
++
++    if (n == 0) {
++      fprintf(stderr, "Unexpectedly reached EOF while reading payload.");
++      fprintf(stderr, "Read %" PRIu32 " bytes, expected %" PRIu32 " bytes.\n",
++              read_bytes, *reply_size);
++      free(*reply);
++      return -2;
++    } else if (n == -1) {
++      // TODO: Should we return and wait for another epoll event?
++      // This would require saving the partial read in some way.
++      if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK) continue;
++
++      free(*reply);
++      return -1;
++    }
++
++    read_bytes += n;
++  }
++
++  return 0;
++}
++
++/**
++ * Internal function used to write a buffer to a file descriptor
++ *
++ * Returns number of bytes written if successful write
++ * Returns 0 if no bytes were written due to EAGAIN or EWOULDBLOCK
++ * Returns -1 on unknown error trying to write, errno will carry over from
++ *   write() call
++ */
++static ssize_t
++ipc_write_message(int fd, const void *buf, size_t count)
++{
++  size_t written = 0;
++
++  while (written < count) {
++    const ssize_t n = write(fd, (uint8_t *)buf + written, count - written);
++
++    if (n == -1) {
++      if (errno == EAGAIN || errno == EWOULDBLOCK)
++        return written;
++      else if (errno == EINTR)
++        continue;
++      else
++        return n;
++    }
++
++    written += n;
++    DEBUG("Wrote %zu/%zu to client at fd %d\n", written, count, fd);
++  }
++
++  return written;
++}
++
++/**
++ * Initialization for generic event message. This is used to allocate the yajl
++ * handle, set yajl options, and in the future any other initialization that
++ * should occur for event messages.
++ */
++static void
++ipc_event_init_message(yajl_gen *gen)
++{
++  *gen = yajl_gen_alloc(NULL);
++  yajl_gen_config(*gen, yajl_gen_beautify, 1);
++}
++
++/**
++ * Prepares buffers of IPC subscribers of specified event using buffer from yajl
++ * handle.
++ */
++static void
++ipc_event_prepare_send_message(yajl_gen gen, IPCEvent event)
++{
++  const unsigned char *buffer;
++  size_t len = 0;
++
++  yajl_gen_get_buf(gen, &buffer, &len);
++  len++;  // For null char
++
++  for (IPCClient *c = ipc_clients; c; c = c->next) {
++    if (c->subscriptions & event) {
++      DEBUG("Sending selected client change event to fd %d\n", c->fd);
++      ipc_prepare_send_message(c, IPC_TYPE_EVENT, len, (char *)buffer);
++    }
++  }
++
++  // Not documented, but this frees temp_buffer
++  yajl_gen_free(gen);
++}
++
++/**
++ * Initialization for generic reply message. This is used to allocate the yajl
++ * handle, set yajl options, and in the future any other initialization that
++ * should occur for reply messages.
++ */
++static void
++ipc_reply_init_message(yajl_gen *gen)
++{
++  *gen = yajl_gen_alloc(NULL);
++  yajl_gen_config(*gen, yajl_gen_beautify, 1);
++}
++
++/**
++ * Prepares the IPC client's buffer with a message using the buffer of the yajl
++ * handle.
++ */
++static void
++ipc_reply_prepare_send_message(yajl_gen gen, IPCClient *c,
++                               IPCMessageType msg_type)
++{
++  const unsigned char *buffer;
++  size_t len = 0;
++
++  yajl_gen_get_buf(gen, &buffer, &len);
++  len++;  // For null char
++
++  ipc_prepare_send_message(c, msg_type, len, (const char *)buffer);
++
++  // Not documented, but this frees temp_buffer
++  yajl_gen_free(gen);
++}
++
++/**
++ * Find the IPCCommand with the specified name
++ *
++ * Returns 0 if a command with the specified name was found
++ * Returns -1 if a command with the specified name could not be found
++ */
++static int
++ipc_get_ipc_command(const char *name, IPCCommand *ipc_command)
++{
++  for (int i = 0; i < ipc_commands_len; i++) {
++    if (strcmp(ipc_commands[i].name, name) == 0) {
++      *ipc_command = ipc_commands[i];
++      return 0;
++    }
++  }
++
++  return -1;
++}
++
++/**
++ * Parse a IPC_TYPE_RUN_COMMAND message from a client. This function extracts
++ * the arguments, argument count, argument types, and command name and returns
++ * the parsed information as an IPCParsedCommand. If this function returns
++ * successfully, the parsed_command must be freed using
++ * ipc_free_parsed_command_members.
++ *
++ * Returns 0 if the message was successfully parsed
++ * Returns -1 otherwise
++ */
++static int
++ipc_parse_run_command(char *msg, IPCParsedCommand *parsed_command)
++{
++  char error_buffer[1000];
++  yajl_val parent = yajl_tree_parse(msg, error_buffer, 1000);
++
++  if (parent == NULL) {
++    fputs("Failed to parse command from client\n", stderr);
++    fprintf(stderr, "%s\n", error_buffer);
++    fprintf(stderr, "Tried to parse: %s\n", msg);
++    return -1;
++  }
++
++  // Format:
++  // {
++  //   "command": "<command name>"
++  //   "args": [ "arg1", "arg2", ... ]
++  // }
++  const char *command_path[] = {"command", 0};
++  yajl_val command_val = yajl_tree_get(parent, command_path, yajl_t_string);
++
++  if (command_val == NULL) {
++    fputs("No command key found in client message\n", stderr);
++    yajl_tree_free(parent);
++    return -1;
++  }
++
++  const char *command_name = YAJL_GET_STRING(command_val);
++  size_t command_name_len = strlen(command_name);
++  parsed_command->name = (char *)malloc((command_name_len + 1) * sizeof(char));
++  strcpy(parsed_command->name, command_name);
++
++  DEBUG("Received command: %s\n", parsed_command->name);
++
++  const char *args_path[] = {"args", 0};
++  yajl_val args_val = yajl_tree_get(parent, args_path, yajl_t_array);
++
++  if (args_val == NULL) {
++    fputs("No args key found in client message\n", stderr);
++    yajl_tree_free(parent);
++    return -1;
++  }
++
++  unsigned int *argc = &parsed_command->argc;
++  Arg **args = &parsed_command->args;
++  ArgType **arg_types = &parsed_command->arg_types;
++
++  *argc = args_val->u.array.len;
++
++  // If no arguments are specified, make a dummy argument to pass to the
++  // function. This is just the way dwm's void(Arg*) functions are setup.
++  if (*argc == 0) {
++    *args = (Arg *)malloc(sizeof(Arg));
++    *arg_types = (ArgType *)malloc(sizeof(ArgType));
++    (*arg_types)[0] = ARG_TYPE_NONE;
++    (*args)[0].i = 0;
++    (*argc)++;
++  } else if (*argc > 0) {
++    *args = (Arg *)calloc(*argc, sizeof(Arg));
++    *arg_types = (ArgType *)malloc(*argc * sizeof(ArgType));
++
++    for (int i = 0; i < *argc; i++) {
++      yajl_val arg_val = args_val->u.array.values[i];
++
++      if (YAJL_IS_NUMBER(arg_val)) {
++        if (YAJL_IS_INTEGER(arg_val)) {
++          // Any values below 0 must be a signed int
++          if (YAJL_GET_INTEGER(arg_val) < 0) {
++            (*args)[i].i = YAJL_GET_INTEGER(arg_val);
++            (*arg_types)[i] = ARG_TYPE_SINT;
++            DEBUG("i=%ld\n", (*args)[i].i);
++            // Any values above 0 should be an unsigned int
++          } else if (YAJL_GET_INTEGER(arg_val) >= 0) {
++            (*args)[i].ui = YAJL_GET_INTEGER(arg_val);
++            (*arg_types)[i] = ARG_TYPE_UINT;
++            DEBUG("ui=%ld\n", (*args)[i].i);
++          }
++          // If the number is not an integer, it must be a float
++        } else {
++          (*args)[i].f = (float)YAJL_GET_DOUBLE(arg_val);
++          (*arg_types)[i] = ARG_TYPE_FLOAT;
++          DEBUG("f=%f\n", (*args)[i].f);
++          // If argument is not a number, it must be a string
++        }
++      } else if (YAJL_IS_STRING(arg_val)) {
++        char *arg_s = YAJL_GET_STRING(arg_val);
++        size_t arg_s_size = (strlen(arg_s) + 1) * sizeof(char);
++        (*args)[i].v = (char *)malloc(arg_s_size);
++        (*arg_types)[i] = ARG_TYPE_STR;
++        strcpy((char *)(*args)[i].v, arg_s);
++      }
++    }
++  }
++
++  yajl_tree_free(parent);
++
++  return 0;
++}
++
++/**
++ * Free the members of a IPCParsedCommand struct
++ */
++static void
++ipc_free_parsed_command_members(IPCParsedCommand *command)
++{
++  for (int i = 0; i < command->argc; i++) {
++    if (command->arg_types[i] == ARG_TYPE_STR) free((void *)command->args[i].v);
++  }
++  free(command->args);
++  free(command->arg_types);
++  free(command->name);
++}
++
++/**
++ * Check if the given arguments are the correct length and type. Also do any
++ * casting to correct the types.
++ *
++ * Returns 0 if the arguments were the correct length and types
++ * Returns -1 if the argument count doesn't match
++ * Returns -2 if the argument types don't match
++ */
++static int
++ipc_validate_run_command(IPCParsedCommand *parsed, const IPCCommand actual)
++{
++  if (actual.argc != parsed->argc) return -1;
++
++  for (int i = 0; i < parsed->argc; i++) {
++    ArgType ptype = parsed->arg_types[i];
++    ArgType atype = actual.arg_types[i];
++
++    if (ptype != atype) {
++      if (ptype == ARG_TYPE_UINT && atype == ARG_TYPE_PTR)
++        // If this argument is supposed to be a void pointer, cast it
++        parsed->args[i].v = (void *)parsed->args[i].ui;
++      else if (ptype == ARG_TYPE_UINT && atype == ARG_TYPE_SINT)
++        // If this argument is supposed to be a signed int, cast it
++        parsed->args[i].i = parsed->args[i].ui;
++      else
++        return -2;
++    }
++  }
++
++  return 0;
++}
++
++/**
++ * Convert event name to their IPCEvent equivalent enum value
++ *
++ * Returns 0 if a valid event name was given
++ * Returns -1 otherwise
++ */
++static int
++ipc_event_stoi(const char *subscription, IPCEvent *event)
++{
++  if (strcmp(subscription, "tag_change_event") == 0)
++    *event = IPC_EVENT_TAG_CHANGE;
++  else if (strcmp(subscription, "client_focus_change_event") == 0)
++    *event = IPC_EVENT_CLIENT_FOCUS_CHANGE;
++  else if (strcmp(subscription, "layout_change_event") == 0)
++    *event = IPC_EVENT_LAYOUT_CHANGE;
++  else if (strcmp(subscription, "monitor_focus_change_event") == 0)
++    *event = IPC_EVENT_MONITOR_FOCUS_CHANGE;
++  else if (strcmp(subscription, "focused_title_change_event") == 0)
++    *event = IPC_EVENT_FOCUSED_TITLE_CHANGE;
++  else if (strcmp(subscription, "focused_state_change_event") == 0)
++    *event = IPC_EVENT_FOCUSED_STATE_CHANGE;
++  else
++    return -1;
++  return 0;
++}
++
++/**
++ * Parse a IPC_TYPE_SUBSCRIBE message from a client. This function extracts the
++ * event name and the subscription action from the message.
++ *
++ * Returns 0 if message was successfully parsed
++ * Returns -1 otherwise
++ */
++static int
++ipc_parse_subscribe(const char *msg, IPCSubscriptionAction *subscribe,
++                    IPCEvent *event)
++{
++  char error_buffer[100];
++  yajl_val parent = yajl_tree_parse((char *)msg, error_buffer, 100);
++
++  if (parent == NULL) {
++    fputs("Failed to parse command from client\n", stderr);
++    fprintf(stderr, "%s\n", error_buffer);
++    return -1;
++  }
++
++  // Format:
++  // {
++  //   "event": "<event name>"
++  //   "action": "<subscribe|unsubscribe>"
++  // }
++  const char *event_path[] = {"event", 0};
++  yajl_val event_val = yajl_tree_get(parent, event_path, yajl_t_string);
++
++  if (event_val == NULL) {
++    fputs("No 'event' key found in client message\n", stderr);
++    return -1;
++  }
++
++  const char *event_str = YAJL_GET_STRING(event_val);
++  DEBUG("Received event: %s\n", event_str);
++
++  if (ipc_event_stoi(event_str, event) < 0) return -1;
++
++  const char *action_path[] = {"action", 0};
++  yajl_val action_val = yajl_tree_get(parent, action_path, yajl_t_string);
++
++  if (action_val == NULL) {
++    fputs("No 'action' key found in client message\n", stderr);
++    return -1;
++  }
++
++  const char *action = YAJL_GET_STRING(action_val);
++
++  if (strcmp(action, "subscribe") == 0)
++    *subscribe = IPC_ACTION_SUBSCRIBE;
++  else if (strcmp(action, "unsubscribe") == 0)
++    *subscribe = IPC_ACTION_UNSUBSCRIBE;
++  else {
++    fputs("Invalid action specified for subscription\n", stderr);
++    return -1;
++  }
++
++  yajl_tree_free(parent);
++
++  return 0;
++}
++
++/**
++ * Parse an IPC_TYPE_GET_DWM_CLIENT message from a client. This function
++ * extracts the window id from the message.
++ *
++ * Returns 0 if message was successfully parsed
++ * Returns -1 otherwise
++ */
++static int
++ipc_parse_get_dwm_client(const char *msg, Window *win)
++{
++  char error_buffer[100];
++
++  yajl_val parent = yajl_tree_parse(msg, error_buffer, 100);
++
++  if (parent == NULL) {
++    fputs("Failed to parse message from client\n", stderr);
++    fprintf(stderr, "%s\n", error_buffer);
++    return -1;
++  }
++
++  // Format:
++  // {
++  //   "client_window_id": <client window id>
++  // }
++  const char *win_path[] = {"client_window_id", 0};
++  yajl_val win_val = yajl_tree_get(parent, win_path, yajl_t_number);
++
++  if (win_val == NULL) {
++    fputs("No client window id found in client message\n", stderr);
++    return -1;
++  }
++
++  *win = YAJL_GET_INTEGER(win_val);
++
++  yajl_tree_free(parent);
++
++  return 0;
++}
++
++/**
++ * Called when an IPC_TYPE_RUN_COMMAND message is received from a client. This
++ * function parses, executes the given command, and prepares a reply message to
++ * the client indicating success/failure.
++ *
++ * NOTE: There is currently no check for argument validity beyond the number of
++ * arguments given and types of arguments. There is also no way to check if the
++ * function succeeded based on dwm's void(const Arg*) function types. Pointer
++ * arguments can cause crashes if they are not validated in the function itself.
++ *
++ * Returns 0 if message was successfully parsed
++ * Returns -1 on failure parsing message
++ */
++static int
++ipc_run_command(IPCClient *ipc_client, char *msg)
++{
++  IPCParsedCommand parsed_command;
++  IPCCommand ipc_command;
++
++  // Initialize struct
++  memset(&parsed_command, 0, sizeof(IPCParsedCommand));
++
++  if (ipc_parse_run_command(msg, &parsed_command) < 0) {
++    ipc_prepare_reply_failure(ipc_client, IPC_TYPE_RUN_COMMAND,
++                              "Failed to parse run command");
++    return -1;
++  }
++
++  if (ipc_get_ipc_command(parsed_command.name, &ipc_command) < 0) {
++    ipc_prepare_reply_failure(ipc_client, IPC_TYPE_RUN_COMMAND,
++                              "Command %s not found", parsed_command.name);
++    ipc_free_parsed_command_members(&parsed_command);
++    return -1;
++  }
++
++  int res = ipc_validate_run_command(&parsed_command, ipc_command);
++  if (res < 0) {
++    if (res == -1)
++      ipc_prepare_reply_failure(ipc_client, IPC_TYPE_RUN_COMMAND,
++                                "%u arguments provided, %u expected",
++                                parsed_command.argc, ipc_command.argc);
++    else if (res == -2)
++      ipc_prepare_reply_failure(ipc_client, IPC_TYPE_RUN_COMMAND,
++                                "Type mismatch");
++    ipc_free_parsed_command_members(&parsed_command);
++    return -1;
++  }
++
++  if (parsed_command.argc == 1)
++    ipc_command.func.single_param(parsed_command.args);
++  else if (parsed_command.argc > 1)
++    ipc_command.func.array_param(parsed_command.args, parsed_command.argc);
++
++  DEBUG("Called function for command %s\n", parsed_command.name);
++
++  ipc_free_parsed_command_members(&parsed_command);
++
++  ipc_prepare_reply_success(ipc_client, IPC_TYPE_RUN_COMMAND);
++  return 0;
++}
++
++/**
++ * Called when an IPC_TYPE_GET_MONITORS message is received from a client. It
++ * prepares a reply with the properties of all of the monitors in JSON.
++ */
++static void
++ipc_get_monitors(IPCClient *c, Monitor *mons, Monitor *selmon)
++{
++  yajl_gen gen;
++  ipc_reply_init_message(&gen);
++  dump_monitors(gen, mons, selmon);
++
++  ipc_reply_prepare_send_message(gen, c, IPC_TYPE_GET_MONITORS);
++}
++
++/**
++ * Called when an IPC_TYPE_GET_TAGS message is received from a client. It
++ * prepares a reply with info about all the tags in JSON.
++ */
++static void
++ipc_get_tags(IPCClient *c, const char *tags[], const int tags_len)
++{
++  yajl_gen gen;
++  ipc_reply_init_message(&gen);
++
++  dump_tags(gen, tags, tags_len);
++
++  ipc_reply_prepare_send_message(gen, c, IPC_TYPE_GET_TAGS);
++}
++
++/**
++ * Called when an IPC_TYPE_GET_LAYOUTS message is received from a client. It
++ * prepares a reply with a JSON array of available layouts
++ */
++static void
++ipc_get_layouts(IPCClient *c, const Layout layouts[], const int layouts_len)
++{
++  yajl_gen gen;
++  ipc_reply_init_message(&gen);
++
++  dump_layouts(gen, layouts, layouts_len);
++
++  ipc_reply_prepare_send_message(gen, c, IPC_TYPE_GET_LAYOUTS);
++}
++
++/**
++ * Called when an IPC_TYPE_GET_DWM_CLIENT message is received from a client. It
++ * prepares a JSON reply with the properties of the client with the specified
++ * window XID.
++ *
++ * Returns 0 if the message was successfully parsed and if the client with the
++ *   specified window XID was found
++ * Returns -1 if the message could not be parsed
++ */
++static int
++ipc_get_dwm_client(IPCClient *ipc_client, const char *msg, const Monitor *mons)
++{
++  Window win;
++
++  if (ipc_parse_get_dwm_client(msg, &win) < 0) return -1;
++
++  // Find client with specified window XID
++  for (const Monitor *m = mons; m; m = m->next)
++    for (Client *c = m->clients; c; c = c->next)
++      if (c->win == win) {
++        yajl_gen gen;
++        ipc_reply_init_message(&gen);
++
++        dump_client(gen, c);
++
++        ipc_reply_prepare_send_message(gen, ipc_client,
++                                       IPC_TYPE_GET_DWM_CLIENT);
++
++        return 0;
++      }
++
++  ipc_prepare_reply_failure(ipc_client, IPC_TYPE_GET_DWM_CLIENT,
++                            "Client with window id %d not found", win);
++  return -1;
++}
++
++/**
++ * Called when an IPC_TYPE_SUBSCRIBE message is received from a client. It
++ * subscribes/unsubscribes the client from the specified event and replies with
++ * the result.
++ *
++ * Returns 0 if the message was successfully parsed.
++ * Returns -1 if the message could not be parsed
++ */
++static int
++ipc_subscribe(IPCClient *c, const char *msg)
++{
++  IPCSubscriptionAction action = IPC_ACTION_SUBSCRIBE;
++  IPCEvent event = 0;
++
++  if (ipc_parse_subscribe(msg, &action, &event)) {
++    ipc_prepare_reply_failure(c, IPC_TYPE_SUBSCRIBE, "Event does not exist");
++    return -1;
++  }
++
++  if (action == IPC_ACTION_SUBSCRIBE) {
++    DEBUG("Subscribing client on fd %d to %d\n", c->fd, event);
++    c->subscriptions |= event;
++  } else if (action == IPC_ACTION_UNSUBSCRIBE) {
++    DEBUG("Unsubscribing client on fd %d to %d\n", c->fd, event);
++    c->subscriptions ^= event;
++  } else {
++    ipc_prepare_reply_failure(c, IPC_TYPE_SUBSCRIBE,
++                              "Invalid subscription action");
++    return -1;
++  }
++
++  ipc_prepare_reply_success(c, IPC_TYPE_SUBSCRIBE);
++  return 0;
++}
++
++int
++ipc_init(const char *socket_path, const int p_epoll_fd, IPCCommand commands[],
++         const int commands_len)
++{
++  // Initialize struct to 0
++  memset(&sock_epoll_event, 0, sizeof(sock_epoll_event));
++
++  int socket_fd = ipc_create_socket(socket_path);
++  if (socket_fd < 0) return -1;
++
++  ipc_commands = commands;
++  ipc_commands_len = commands_len;
++
++  epoll_fd = p_epoll_fd;
++
++  // Wake up to incoming connection requests
++  sock_epoll_event.data.fd = socket_fd;
++  sock_epoll_event.events = EPOLLIN;
++  if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, socket_fd, &sock_epoll_event)) {
++    fputs("Failed to add sock file descriptor to epoll", stderr);
++    return -1;
++  }
++
++  return socket_fd;
++}
++
++void
++ipc_cleanup()
++{
++  IPCClient *c = ipc_clients;
++  // Free clients and their buffers
++  while (c) {
++    ipc_drop_client(c);
++    c = ipc_clients;
++  }
++
++  // Stop waking up for socket events
++  epoll_ctl(epoll_fd, EPOLL_CTL_DEL, sock_fd, &sock_epoll_event);
++
++  // Uninitialize all static variables
++  epoll_fd = -1;
++  sock_fd = -1;
++  ipc_commands = NULL;
++  ipc_commands_len = 0;
++  memset(&sock_epoll_event, 0, sizeof(struct epoll_event));
++  memset(&sockaddr, 0, sizeof(struct sockaddr_un));
++
++  // Delete socket
++  unlink(sockaddr.sun_path);
++
++  shutdown(sock_fd, SHUT_RDWR);
++  close(sock_fd);
++}
++
++int
++ipc_get_sock_fd()
++{
++  return sock_fd;
++}
++
++IPCClient *
++ipc_get_client(int fd)
++{
++  return ipc_list_get_client(ipc_clients, fd);
++}
++
++int
++ipc_is_client_registered(int fd)
++{
++  return (ipc_get_client(fd) != NULL);
++}
++
++int
++ipc_accept_client()
++{
++  int fd = -1;
++
++  struct sockaddr_un client_addr;
++  socklen_t len = 0;
++
++  // For portability clear the addr structure, since some implementations
++  // have nonstandard fields in the structure
++  memset(&client_addr, 0, sizeof(struct sockaddr_un));
++
++  fd = accept(sock_fd, (struct sockaddr *)&client_addr, &len);
++  if (fd < 0 && errno != EINTR) {
++    fputs("Failed to accept IPC connection from client", stderr);
++    return -1;
++  }
++
++  if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0) {
++    shutdown(fd, SHUT_RDWR);
++    close(fd);
++    fputs("Failed to set flags on new client fd", stderr);
++  }
++
++  IPCClient *nc = ipc_client_new(fd);
++  if (nc == NULL) return -1;
++
++  // Wake up to messages from this client
++  nc->event.data.fd = fd;
++  nc->event.events = EPOLLIN | EPOLLHUP;
++  epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &nc->event);
++
++  ipc_list_add_client(&ipc_clients, nc);
++
++  DEBUG("%s%d\n", "New client at fd: ", fd);
++
++  return fd;
++}
++
++int
++ipc_drop_client(IPCClient *c)
++{
++  int fd = c->fd;
++  shutdown(fd, SHUT_RDWR);
++  int res = close(fd);
++
++  if (res == 0) {
++    struct epoll_event ev;
++
++    // Stop waking up to messages from this client
++    epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, &ev);
++    ipc_list_remove_client(&ipc_clients, c);
++
++    free(c->buffer);
++    free(c);
++
++    DEBUG("Successfully removed client on fd %d\n", fd);
++  } else if (res < 0 && res != EINTR) {
++    fprintf(stderr, "Failed to close fd %d\n", fd);
++  }
++
++  return res;
++}
++
++int
++ipc_read_client(IPCClient *c, IPCMessageType *msg_type, uint32_t *msg_size,
++                char **msg)
++{
++  int fd = c->fd;
++  int ret =
++      ipc_recv_message(fd, (uint8_t *)msg_type, msg_size, (uint8_t **)msg);
++
++  if (ret < 0) {
++    // This will happen if these errors occur while reading header
++    if (ret == -1 &&
++        (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK))
++      return -2;
++
++    fprintf(stderr, "Error reading message: dropping client at fd %d\n", fd);
++    ipc_drop_client(c);
++
++    return -1;
++  }
++
++  // Make sure receive message is null terminated to avoid parsing issues
++  if (*msg_size > 0) {
++    size_t len = *msg_size;
++    nullterminate(msg, &len);
++    *msg_size = len;
++  }
++
++  DEBUG("[fd %d] ", fd);
++  if (*msg_size > 0)
++    DEBUG("Received message: '%.*s' ", *msg_size, *msg);
++  else
++    DEBUG("Received empty message ");
++  DEBUG("Message type: %" PRIu8 " ", (uint8_t)*msg_type);
++  DEBUG("Message size: %" PRIu32 "\n", *msg_size);
++
++  return 0;
++}
++
++ssize_t
++ipc_write_client(IPCClient *c)
++{
++  const ssize_t n = ipc_write_message(c->fd, c->buffer, c->buffer_size);
++
++  if (n < 0) return n;
++
++  // TODO: Deal with client timeouts
++
++  if (n == c->buffer_size) {
++    c->buffer_size = 0;
++    free(c->buffer);
++    // No dangling pointers!
++    c->buffer = NULL;
++    // Stop waking up when client is ready to receive messages
++    if (c->event.events & EPOLLOUT) {
++      c->event.events -= EPOLLOUT;
++      epoll_ctl(epoll_fd, EPOLL_CTL_MOD, c->fd, &c->event);
++    }
++    return n;
++  }
++
++  // Shift unwritten buffer to beginning of buffer and reallocate
++  c->buffer_size -= n;
++  memmove(c->buffer, c->buffer + n, c->buffer_size);
++  c->buffer = (char *)realloc(c->buffer, c->buffer_size);
++
++  return n;
++}
++
++void
++ipc_prepare_send_message(IPCClient *c, const IPCMessageType msg_type,
++                         const uint32_t msg_size, const char *msg)
++{
++  dwm_ipc_header_t header = {
++      .magic = IPC_MAGIC_ARR, .type = msg_type, .size = msg_size};
++
++  uint32_t header_size = sizeof(dwm_ipc_header_t);
++  uint32_t packet_size = header_size + msg_size;
++
++  if (c->buffer == NULL)
++    c->buffer = (char *)malloc(c->buffer_size + packet_size);
++  else
++    c->buffer = (char *)realloc(c->buffer, c->buffer_size + packet_size);
++
++  // Copy header to end of client buffer
++  memcpy(c->buffer + c->buffer_size, &header, header_size);
++  c->buffer_size += header_size;
++
++  // Copy message to end of client buffer
++  memcpy(c->buffer + c->buffer_size, msg, msg_size);
++  c->buffer_size += msg_size;
++
++  // Wake up when client is ready to receive messages
++  c->event.events |= EPOLLOUT;
++  epoll_ctl(epoll_fd, EPOLL_CTL_MOD, c->fd, &c->event);
++}
++
++void
++ipc_prepare_reply_failure(IPCClient *c, IPCMessageType msg_type,
++                          const char *format, ...)
++{
++  yajl_gen gen;
++  va_list args;
++
++  // Get output size
++  va_start(args, format);
++  size_t len = vsnprintf(NULL, 0, format, args);
++  va_end(args);
++  char *buffer = (char *)malloc((len + 1) * sizeof(char));
++
++  ipc_reply_init_message(&gen);
++
++  va_start(args, format);
++  vsnprintf(buffer, len + 1, format, args);
++  va_end(args);
++  dump_error_message(gen, buffer);
++
++  ipc_reply_prepare_send_message(gen, c, msg_type);
++  fprintf(stderr, "[fd %d] Error: %s\n", c->fd, buffer);
++
++  free(buffer);
++}
++
++void
++ipc_prepare_reply_success(IPCClient *c, IPCMessageType msg_type)
++{
++  const char *success_msg = "{\"result\":\"success\"}";
++  const size_t msg_len = strlen(success_msg) + 1;  // +1 for null char
++
++  ipc_prepare_send_message(c, msg_type, msg_len, success_msg);
++}
++
++void
++ipc_tag_change_event(int mon_num, TagState old_state, TagState new_state)
++{
++  yajl_gen gen;
++  ipc_event_init_message(&gen);
++  dump_tag_event(gen, mon_num, old_state, new_state);
++  ipc_event_prepare_send_message(gen, IPC_EVENT_TAG_CHANGE);
++}
++
++void
++ipc_client_focus_change_event(int mon_num, Client *old_client,
++                              Client *new_client)
++{
++  yajl_gen gen;
++  ipc_event_init_message(&gen);
++  dump_client_focus_change_event(gen, old_client, new_client, mon_num);
++  ipc_event_prepare_send_message(gen, IPC_EVENT_CLIENT_FOCUS_CHANGE);
++}
++
++void
++ipc_layout_change_event(const int mon_num, const char *old_symbol,
++                        const Layout *old_layout, const char *new_symbol,
++                        const Layout *new_layout)
++{
++  yajl_gen gen;
++  ipc_event_init_message(&gen);
++  dump_layout_change_event(gen, mon_num, old_symbol, old_layout, new_symbol,
++                           new_layout);
++  ipc_event_prepare_send_message(gen, IPC_EVENT_LAYOUT_CHANGE);
++}
++
++void
++ipc_monitor_focus_change_event(const int last_mon_num, const int new_mon_num)
++{
++  yajl_gen gen;
++  ipc_event_init_message(&gen);
++  dump_monitor_focus_change_event(gen, last_mon_num, new_mon_num);
++  ipc_event_prepare_send_message(gen, IPC_EVENT_MONITOR_FOCUS_CHANGE);
++}
++
++void
++ipc_focused_title_change_event(const int mon_num, const Window client_id,
++                               const char *old_name, const char *new_name)
++{
++  yajl_gen gen;
++  ipc_event_init_message(&gen);
++  dump_focused_title_change_event(gen, mon_num, client_id, old_name, new_name);
++  ipc_event_prepare_send_message(gen, IPC_EVENT_FOCUSED_TITLE_CHANGE);
++}
++
++void
++ipc_focused_state_change_event(const int mon_num, const Window client_id,
++                               const ClientState *old_state,
++                               const ClientState *new_state)
++{
++  yajl_gen gen;
++  ipc_event_init_message(&gen);
++  dump_focused_state_change_event(gen, mon_num, client_id, old_state,
++                                  new_state);
++  ipc_event_prepare_send_message(gen, IPC_EVENT_FOCUSED_STATE_CHANGE);
++}
++
++void
++ipc_send_events(Monitor *mons, Monitor **lastselmon, Monitor *selmon)
++{
++  for (Monitor *m = mons; m; m = m->next) {
++    unsigned int urg = 0, occ = 0, tagset = 0;
++
++    for (Client *c = m->clients; c; c = c->next) {
++      occ |= c->tags;
++
++      if (c->isurgent) urg |= c->tags;
++    }
++    tagset = m->tagset[m->seltags];
++
++    TagState new_state = {.selected = tagset, .occupied = occ, .urgent = urg};
++
++    if (memcmp(&m->tagstate, &new_state, sizeof(TagState)) != 0) {
++      ipc_tag_change_event(m->num, m->tagstate, new_state);
++      m->tagstate = new_state;
++    }
++
++    if (m->lastsel != m->sel) {
++      ipc_client_focus_change_event(m->num, m->lastsel, m->sel);
++      m->lastsel = m->sel;
++    }
++
++    if (strcmp(m->ltsymbol, m->lastltsymbol) != 0 ||
++        m->lastlt != m->lt[m->sellt]) {
++      ipc_layout_change_event(m->num, m->lastltsymbol, m->lastlt, m->ltsymbol,
++                              m->lt[m->sellt]);
++      strcpy(m->lastltsymbol, m->ltsymbol);
++      m->lastlt = m->lt[m->sellt];
++    }
++
++    if (*lastselmon != selmon) {
++      if (*lastselmon != NULL)
++        ipc_monitor_focus_change_event((*lastselmon)->num, selmon->num);
++      *lastselmon = selmon;
++    }
++
++    Client *sel = m->sel;
++    if (!sel) continue;
++    ClientState *o = &m->sel->prevstate;
++    ClientState n = {.oldstate = sel->oldstate,
++                     .isfixed = sel->isfixed,
++                     .isfloating = sel->isfloating,
++                     .isfullscreen = sel->isfullscreen,
++                     .isurgent = sel->isurgent,
++                     .neverfocus = sel->neverfocus};
++    if (memcmp(o, &n, sizeof(ClientState)) != 0) {
++      ipc_focused_state_change_event(m->num, m->sel->win, o, &n);
++      *o = n;
++    }
++  }
++}
++
++int
++ipc_handle_client_epoll_event(struct epoll_event *ev, Monitor *mons,
++                              Monitor **lastselmon, Monitor *selmon,
++                              const char *tags[], const int tags_len,
++                              const Layout *layouts, const int layouts_len)
++{
++  int fd = ev->data.fd;
++  IPCClient *c = ipc_get_client(fd);
++
++  if (ev->events & EPOLLHUP) {
++    DEBUG("EPOLLHUP received from client at fd %d\n", fd);
++    ipc_drop_client(c);
++  } else if (ev->events & EPOLLOUT) {
++    DEBUG("Sending message to client at fd %d...\n", fd);
++    if (c->buffer_size) ipc_write_client(c);
++  } else if (ev->events & EPOLLIN) {
++    IPCMessageType msg_type = 0;
++    uint32_t msg_size = 0;
++    char *msg = NULL;
++
++    DEBUG("Received message from fd %d\n", fd);
++    if (ipc_read_client(c, &msg_type, &msg_size, &msg) < 0) return -1;
++
++    if (msg_type == IPC_TYPE_GET_MONITORS)
++      ipc_get_monitors(c, mons, selmon);
++    else if (msg_type == IPC_TYPE_GET_TAGS)
++      ipc_get_tags(c, tags, tags_len);
++    else if (msg_type == IPC_TYPE_GET_LAYOUTS)
++      ipc_get_layouts(c, layouts, layouts_len);
++    else if (msg_type == IPC_TYPE_RUN_COMMAND) {
++      if (ipc_run_command(c, msg) < 0) return -1;
++      ipc_send_events(mons, lastselmon, selmon);
++    } else if (msg_type == IPC_TYPE_GET_DWM_CLIENT) {
++      if (ipc_get_dwm_client(c, msg, mons) < 0) return -1;
++    } else if (msg_type == IPC_TYPE_SUBSCRIBE) {
++      if (ipc_subscribe(c, msg) < 0) return -1;
++    } else {
++      fprintf(stderr, "Invalid message type received from fd %d", fd);
++      ipc_prepare_reply_failure(c, msg_type, "Invalid message type: %d",
++                                msg_type);
++    }
++    free(msg);
++  } else {
++    fprintf(stderr, "Epoll event returned %d from fd %d\n", ev->events, fd);
++    return -1;
++  }
++
++  return 0;
++}
++
++int
++ipc_handle_socket_epoll_event(struct epoll_event *ev)
++{
++  if (!(ev->events & EPOLLIN)) return -1;
++
++  // EPOLLIN means incoming client connection request
++  fputs("Received EPOLLIN event on socket\n", stderr);
++  int new_fd = ipc_accept_client();
++
++  return new_fd;
++}
+diff --git a/ipc.h b/ipc.h
+new file mode 100644
+index 0000000..e3b5bba
+--- /dev/null
++++ b/ipc.h
+@@ -0,0 +1,320 @@
++#ifndef IPC_H_
++#define IPC_H_
++
++#include <stdint.h>
++#include <sys/epoll.h>
++#include <yajl/yajl_gen.h>
++
++#include "IPCClient.h"
++
++// clang-format off
++#define IPC_MAGIC "DWM-IPC"
++#define IPC_MAGIC_ARR { 'D', 'W', 'M', '-', 'I', 'P', 'C'}
++#define IPC_MAGIC_LEN 7 // Not including null char
++
++#define IPCCOMMAND(FUNC, ARGC, TYPES)                                          \
++  { #FUNC, {FUNC }, ARGC, (ArgType[ARGC])TYPES }
++// clang-format on
++
++typedef enum IPCMessageType {
++  IPC_TYPE_RUN_COMMAND = 0,
++  IPC_TYPE_GET_MONITORS = 1,
++  IPC_TYPE_GET_TAGS = 2,
++  IPC_TYPE_GET_LAYOUTS = 3,
++  IPC_TYPE_GET_DWM_CLIENT = 4,
++  IPC_TYPE_SUBSCRIBE = 5,
++  IPC_TYPE_EVENT = 6
++} IPCMessageType;
++
++typedef enum IPCEvent {
++  IPC_EVENT_TAG_CHANGE = 1 << 0,
++  IPC_EVENT_CLIENT_FOCUS_CHANGE = 1 << 1,
++  IPC_EVENT_LAYOUT_CHANGE = 1 << 2,
++  IPC_EVENT_MONITOR_FOCUS_CHANGE = 1 << 3,
++  IPC_EVENT_FOCUSED_TITLE_CHANGE = 1 << 4,
++  IPC_EVENT_FOCUSED_STATE_CHANGE = 1 << 5
++} IPCEvent;
++
++typedef enum IPCSubscriptionAction {
++  IPC_ACTION_UNSUBSCRIBE = 0,
++  IPC_ACTION_SUBSCRIBE = 1
++} IPCSubscriptionAction;
++
++/**
++ * Every IPC packet starts with this structure
++ */
++typedef struct dwm_ipc_header {
++  uint8_t magic[IPC_MAGIC_LEN];
++  uint32_t size;
++  uint8_t type;
++} __attribute((packed)) dwm_ipc_header_t;
++
++typedef enum ArgType {
++  ARG_TYPE_NONE = 0,
++  ARG_TYPE_UINT = 1,
++  ARG_TYPE_SINT = 2,
++  ARG_TYPE_FLOAT = 3,
++  ARG_TYPE_PTR = 4,
++  ARG_TYPE_STR = 5
++} ArgType;
++
++/**
++ * An IPCCommand function can have either of these function signatures
++ */
++typedef union ArgFunction {
++  void (*single_param)(const Arg *);
++  void (*array_param)(const Arg *, int);
++} ArgFunction;
++
++typedef struct IPCCommand {
++  char *name;
++  ArgFunction func;
++  unsigned int argc;
++  ArgType *arg_types;
++} IPCCommand;
++
++typedef struct IPCParsedCommand {
++  char *name;
++  Arg *args;
++  ArgType *arg_types;
++  unsigned int argc;
++} IPCParsedCommand;
++
++/**
++ * Initialize the IPC socket and the IPC module
++ *
++ * @param socket_path Path to create the socket at
++ * @param epoll_fd File descriptor for epoll
++ * @param commands Address of IPCCommands array defined in config.h
++ * @param commands_len Length of commands[] array
++ *
++ * @return int The file descriptor of the socket if it was successfully created,
++ *   -1 otherwise
++ */
++int ipc_init(const char *socket_path, const int p_epoll_fd,
++             IPCCommand commands[], const int commands_len);
++
++/**
++ * Uninitialize the socket and module. Free allocated memory and restore static
++ * variables to their state before ipc_init
++ */
++void ipc_cleanup();
++
++/**
++ * Get the file descriptor of the IPC socket
++ *
++ * @return int File descriptor of IPC socket, -1 if socket not created.
++ */
++int ipc_get_sock_fd();
++
++/**
++ * Get address to IPCClient with specified file descriptor
++ *
++ * @param fd File descriptor of IPC Client
++ *
++ * @return Address to IPCClient with specified file descriptor, -1 otherwise
++ */
++IPCClient *ipc_get_client(int fd);
++
++/**
++ * Check if an IPC client exists with the specified file descriptor
++ *
++ * @param fd File descriptor
++ *
++ * @return int 1 if client exists, 0 otherwise
++ */
++int ipc_is_client_registered(int fd);
++
++/**
++ * Disconnect an IPCClient from the socket and remove the client from the list
++ *   of known connected clients
++ *
++ * @param c Address of IPCClient
++ *
++ * @return 0 if the client's file descriptor was closed successfully, the
++ * result of executing close() on the file descriptor otherwise.
++ */
++int ipc_drop_client(IPCClient *c);
++
++/**
++ * Accept an IPC Client requesting to connect to the socket and add it to the
++ *   list of clients
++ *
++ * @return File descriptor of new client, -1 on error
++ */
++int ipc_accept_client();
++
++/**
++ * Read an incoming message from an accepted IPC client
++ *
++ * @param c Address of IPCClient
++ * @param msg_type Address to IPCMessageType variable which will be assigned
++ *   the message type of the received message
++ * @param msg_size Address to uint32_t variable which will be assigned the size
++ *   of the received message
++ * @param msg Address to char* variable which will be assigned the address of
++ *   the received message. This must be freed using free().
++ *
++ * @return 0 on success, -1 on error reading message, -2 if reading the message
++ * resulted in EAGAIN, EINTR, or EWOULDBLOCK.
++ */
++int ipc_read_client(IPCClient *c, IPCMessageType *msg_type, uint32_t *msg_size,
++                    char **msg);
++
++/**
++ * Write any pending buffer of the client to the client's socket
++ *
++ * @param c Client whose buffer to write
++ *
++ * @return Number of bytes written >= 0, -1 otherwise. errno will still be set
++ * from the write operation.
++ */
++ssize_t ipc_write_client(IPCClient *c);
++
++/**
++ * Prepare a message in the specified client's buffer.
++ *
++ * @param c Client to prepare message for
++ * @param msg_type Type of message to prepare
++ * @param msg_size Size of the message in bytes. Should not exceed
++ *   MAX_MESSAGE_SIZE
++ * @param msg Message to prepare (not including header). This pointer can be
++ *   freed after the function invocation.
++ */
++void ipc_prepare_send_message(IPCClient *c, const IPCMessageType msg_type,
++                              const uint32_t msg_size, const char *msg);
++
++/**
++ * Prepare an error message in the specified client's buffer
++ *
++ * @param c Client to prepare message for
++ * @param msg_type Type of message
++ * @param format Format string following vsprintf
++ * @param ... Arguments for format string
++ */
++void ipc_prepare_reply_failure(IPCClient *c, IPCMessageType msg_type,
++                               const char *format, ...);
++
++/**
++ * Prepare a success message in the specified client's buffer
++ *
++ * @param c Client to prepare message for
++ * @param msg_type Type of message
++ */
++void ipc_prepare_reply_success(IPCClient *c, IPCMessageType msg_type);
++
++/**
++ * Send a tag_change_event to all subscribers. Should be called only when there
++ * has been a tag state change.
++ *
++ * @param mon_num The index of the monitor (Monitor.num property)
++ * @param old_state The old tag state
++ * @param new_state The new (now current) tag state
++ */
++void ipc_tag_change_event(const int mon_num, TagState old_state,
++                          TagState new_state);
++
++/**
++ * Send a client_focus_change_event to all subscribers. Should be called only
++ * when the client focus changes.
++ *
++ * @param mon_num The index of the monitor (Monitor.num property)
++ * @param old_client The old DWM client selection (Monitor.oldsel)
++ * @param new_client The new (now current) DWM client selection
++ */
++void ipc_client_focus_change_event(const int mon_num, Client *old_client,
++                                   Client *new_client);
++
++/**
++ * Send a layout_change_event to all subscribers. Should be called only
++ * when there has been a layout change.
++ *
++ * @param mon_num The index of the monitor (Monitor.num property)
++ * @param old_symbol The old layout symbol
++ * @param old_layout Address to the old Layout
++ * @param new_symbol The new (now current) layout symbol
++ * @param new_layout Address to the new Layout
++ */
++void ipc_layout_change_event(const int mon_num, const char *old_symbol,
++                             const Layout *old_layout, const char *new_symbol,
++                             const Layout *new_layout);
++
++/**
++ * Send a monitor_focus_change_event to all subscribers. Should be called only
++ * when the monitor focus changes.
++ *
++ * @param last_mon_num The index of the previously selected monitor
++ * @param new_mon_num The index of the newly selected monitor
++ */
++void ipc_monitor_focus_change_event(const int last_mon_num,
++                                    const int new_mon_num);
++
++/**
++ * Send a focused_title_change_event to all subscribers. Should only be called
++ * if a selected client has a title change.
++ *
++ * @param mon_num Index of the client's monitor
++ * @param client_id Window XID of client
++ * @param old_name Old name of the client window
++ * @param new_name New name of the client window
++ */
++void ipc_focused_title_change_event(const int mon_num, const Window client_id,
++                                    const char *old_name, const char *new_name);
++
++/**
++ * Send a focused_state_change_event to all subscribers. Should only be called
++ * if a selected client has a state change.
++ *
++ * @param mon_num Index of the client's monitor
++ * @param client_id Window XID of client
++ * @param old_state Old state of the client
++ * @param new_state New state of the client
++ */
++void ipc_focused_state_change_event(const int mon_num, const Window client_id,
++                                    const ClientState *old_state,
++                                    const ClientState *new_state);
++/**
++ * Check to see if an event has occured and call the *_change_event functions
++ * accordingly
++ *
++ * @param mons Address of Monitor pointing to start of linked list
++ * @param lastselmon Address of pointer to previously selected monitor
++ * @param selmon Address of selected Monitor
++ */
++void ipc_send_events(Monitor *mons, Monitor **lastselmon, Monitor *selmon);
++
++/**
++ * Handle an epoll event caused by a registered IPC client. Read, process, and
++ * handle any received messages from clients. Write pending buffer to client if
++ * the client is ready to receive messages. Drop clients that have sent an
++ * EPOLLHUP.
++ *
++ * @param ev Associated epoll event returned by epoll_wait
++ * @param mons Address of Monitor pointing to start of linked list
++ * @param selmon Address of selected Monitor
++ * @param lastselmon Address of pointer to previously selected monitor
++ * @param tags Array of tag names
++ * @param tags_len Length of tags array
++ * @param layouts Array of available layouts
++ * @param layouts_len Length of layouts array
++ *
++ * @return 0 if event was successfully handled, -1 on any error receiving
++ * or handling incoming messages or unhandled epoll event.
++ */
++int ipc_handle_client_epoll_event(struct epoll_event *ev, Monitor *mons,
++                                  Monitor **lastselmon, Monitor *selmon,
++                                  const char *tags[], const int tags_len,
++                                  const Layout *layouts, const int layouts_len);
++
++/**
++ * Handle an epoll event caused by the IPC socket. This function only handles an
++ * EPOLLIN event indicating a new client requesting to connect to the socket.
++ *
++ * @param ev Associated epoll event returned by epoll_wait
++ *
++ * @return 0, if the event was successfully handled, -1 if not an EPOLLIN event
++ * or if a new IPC client connection request could not be accepted.
++ */
++int ipc_handle_socket_epoll_event(struct epoll_event *ev);
++
++#endif /* IPC_H_ */
+diff --git a/util.c b/util.c
+index fe044fc..dca4794 100644
+--- a/util.c
++++ b/util.c
+@@ -3,6 +3,8 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <errno.h>
++#include <sys/stat.h>
+ 
+ #include "util.h"
+ 
+@@ -33,3 +35,136 @@ die(const char *fmt, ...) {
+ 
+ 	exit(1);
+ }
++
++int
++normalizepath(const char *path, char **normal)
++{
++  size_t len = strlen(path);
++  *normal = (char *)malloc((len + 1) * sizeof(char));
++  const char *walk = path;
++  const char *match;
++  size_t newlen = 0;
++
++  while ((match = strchr(walk, '/'))) {
++    // Copy everything between match and walk
++    strncpy(*normal + newlen, walk, match - walk);
++    newlen += match - walk;
++    walk += match - walk;
++
++    // Skip all repeating slashes
++    while (*walk == '/')
++      walk++;
++
++    // If not last character in path
++    if (walk != path + len)
++      (*normal)[newlen++] = '/';
++  }
++
++  (*normal)[newlen++] = '\0';
++
++  // Copy remaining path
++  strcat(*normal, walk);
++  newlen += strlen(walk);
++
++  *normal = (char *)realloc(*normal, newlen * sizeof(char));
++
++  return 0;
++}
++
++int
++parentdir(const char *path, char **parent)
++{
++  char *normal;
++  char *walk;
++
++  normalizepath(path, &normal);
++
++  // Pointer to last '/'
++  if (!(walk = strrchr(normal, '/'))) {
++    free(normal);
++    return -1;
++  }
++
++  // Get path up to last '/'
++  size_t len = walk - normal;
++  *parent = (char *)malloc((len + 1) * sizeof(char));
++
++  // Copy path up to last '/'
++  strncpy(*parent, normal, len);
++  // Add null char
++  (*parent)[len] = '\0';
++
++  free(normal);
++
++  return 0;
++}
++
++int
++mkdirp(const char *path)
++{
++  char *normal;
++  char *walk;
++  size_t normallen;
++
++  normalizepath(path, &normal);
++  normallen = strlen(normal);
++  walk = normal;
++
++  while (walk < normal + normallen + 1) {
++    // Get length from walk to next /
++    size_t n = strcspn(walk, "/");
++
++    // Skip path /
++    if (n == 0) {
++      walk++;
++      continue;
++    }
++
++    // Length of current path segment
++    size_t curpathlen = walk - normal + n;
++    char curpath[curpathlen + 1];
++    struct stat s;
++
++    // Copy path segment to stat
++    strncpy(curpath, normal, curpathlen);
++    strcpy(curpath + curpathlen, "");
++    int res = stat(curpath, &s);
++
++    if (res < 0) {
++      if (errno == ENOENT) {
++        DEBUG("Making directory %s\n", curpath);
++        if (mkdir(curpath, 0700) < 0) {
++          fprintf(stderr, "Failed to make directory %s\n", curpath);
++          perror("");
++          free(normal);
++          return -1;
++        }
++      } else {
++        fprintf(stderr, "Error statting directory %s\n", curpath);
++        perror("");
++        free(normal);
++        return -1;
++      }
++    }
++
++    // Continue to next path segment
++    walk += n;
++  }
++
++  free(normal);
++
++  return 0;
++}
++
++int
++nullterminate(char **str, size_t *len)
++{
++  if ((*str)[*len - 1] == '\0')
++    return 0;
++
++  (*len)++;
++  *str = (char*)realloc(*str, *len * sizeof(char));
++  (*str)[*len - 1] = '\0';
++
++  return 0;
++}
+diff --git a/util.h b/util.h
+index f633b51..73a238e 100644
+--- a/util.h
++++ b/util.h
+@@ -4,5 +4,15 @@
+ #define MIN(A, B)               ((A) < (B) ? (A) : (B))
+ #define BETWEEN(X, A, B)        ((A) <= (X) && (X) <= (B))
+ 
++#ifdef _DEBUG
++#define DEBUG(...) fprintf(stderr, __VA_ARGS__)
++#else
++#define DEBUG(...)
++#endif
++
+ void die(const char *fmt, ...);
+ void *ecalloc(size_t nmemb, size_t size);
++int normalizepath(const char *path, char **normal);
++int mkdirp(const char *path);
++int parentdir(const char *path, char **parent);
++int nullterminate(char **str, size_t *len);
+diff --git a/yajl_dumps.c b/yajl_dumps.c
+new file mode 100644
+index 0000000..8bf9688
+--- /dev/null
++++ b/yajl_dumps.c
+@@ -0,0 +1,351 @@
++#include "yajl_dumps.h"
++
++#include <stdint.h>
++
++int
++dump_tag(yajl_gen gen, const char *name, const int tag_mask)
++{
++  // clang-format off
++  YMAP(
++    YSTR("bit_mask"); YINT(tag_mask);
++    YSTR("name"); YSTR(name);
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_tags(yajl_gen gen, const char *tags[], int tags_len)
++{
++  // clang-format off
++  YARR(
++    for (int i = 0; i < tags_len; i++)
++      dump_tag(gen, tags[i], 1 << i);
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_client(yajl_gen gen, Client *c)
++{
++  // clang-format off
++  YMAP(
++    YSTR("name"); YSTR(c->name);
++    YSTR("tags"); YINT(c->tags);
++    YSTR("window_id"); YINT(c->win);
++    YSTR("monitor_number"); YINT(c->mon->num);
++
++    YSTR("geometry"); YMAP(
++      YSTR("current"); YMAP (
++        YSTR("x"); YINT(c->x);
++        YSTR("y"); YINT(c->y);
++        YSTR("width"); YINT(c->w);
++        YSTR("height"); YINT(c->h);
++      )
++      YSTR("old"); YMAP(
++        YSTR("x"); YINT(c->oldx);
++        YSTR("y"); YINT(c->oldy);
++        YSTR("width"); YINT(c->oldw);
++        YSTR("height"); YINT(c->oldh);
++      )
++    )
++
++    YSTR("size_hints"); YMAP(
++      YSTR("base"); YMAP(
++        YSTR("width"); YINT(c->basew);
++        YSTR("height"); YINT(c->baseh);
++      )
++      YSTR("step"); YMAP(
++        YSTR("width"); YINT(c->incw);
++        YSTR("height"); YINT(c->inch);
++      )
++      YSTR("max"); YMAP(
++        YSTR("width"); YINT(c->maxw);
++        YSTR("height"); YINT(c->maxh);
++      )
++      YSTR("min"); YMAP(
++        YSTR("width"); YINT(c->minw);
++        YSTR("height"); YINT(c->minh);
++      )
++      YSTR("aspect_ratio"); YMAP(
++        YSTR("min"); YDOUBLE(c->mina);
++        YSTR("max"); YDOUBLE(c->maxa);
++      )
++    )
++
++    YSTR("border_width"); YMAP(
++      YSTR("current"); YINT(c->bw);
++      YSTR("old"); YINT(c->oldbw);
++    )
++
++    YSTR("states"); YMAP(
++      YSTR("is_fixed"); YBOOL(c->isfixed);
++      YSTR("is_floating"); YBOOL(c->isfloating);
++      YSTR("is_urgent"); YBOOL(c->isurgent);
++      YSTR("never_focus"); YBOOL(c->neverfocus);
++      YSTR("old_state"); YBOOL(c->oldstate);
++      YSTR("is_fullscreen"); YBOOL(c->isfullscreen);
++    )
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_monitor(yajl_gen gen, Monitor *mon, int is_selected)
++{
++  // clang-format off
++  YMAP(
++    YSTR("master_factor"); YDOUBLE(mon->mfact);
++    YSTR("num_master"); YINT(mon->nmaster);
++    YSTR("num"); YINT(mon->num);
++    YSTR("is_selected"); YBOOL(is_selected);
++
++    YSTR("monitor_geometry"); YMAP(
++      YSTR("x"); YINT(mon->mx);
++      YSTR("y"); YINT(mon->my);
++      YSTR("width"); YINT(mon->mw);
++      YSTR("height"); YINT(mon->mh);
++    )
++
++    YSTR("window_geometry"); YMAP(
++      YSTR("x"); YINT(mon->wx);
++      YSTR("y"); YINT(mon->wy);
++      YSTR("width"); YINT(mon->ww);
++      YSTR("height"); YINT(mon->wh);
++    )
++
++    YSTR("tagset"); YMAP(
++      YSTR("current");  YINT(mon->tagset[mon->seltags]);
++      YSTR("old"); YINT(mon->tagset[mon->seltags ^ 1]);
++    )
++
++    YSTR("tag_state"); dump_tag_state(gen, mon->tagstate);
++
++    YSTR("clients"); YMAP(
++      YSTR("selected"); YINT(mon->sel ? mon->sel->win : 0);
++      YSTR("stack"); YARR(
++        for (Client* c = mon->stack; c; c = c->snext)
++          YINT(c->win);
++      )
++      YSTR("all"); YARR(
++        for (Client* c = mon->clients; c; c = c->next)
++          YINT(c->win);
++      )
++    )
++
++    YSTR("layout"); YMAP(
++      YSTR("symbol"); YMAP(
++        YSTR("current"); YSTR(mon->ltsymbol);
++        YSTR("old"); YSTR(mon->lastltsymbol);
++      )
++      YSTR("address"); YMAP(
++        YSTR("current"); YINT((uintptr_t)mon->lt[mon->sellt]);
++        YSTR("old"); YINT((uintptr_t)mon->lt[mon->sellt ^ 1]);
++      )
++    )
++
++    YSTR("bar"); YMAP(
++      YSTR("y"); YINT(mon->by);
++      YSTR("is_shown"); YBOOL(mon->showbar);
++      YSTR("is_top"); YBOOL(mon->topbar);
++      YSTR("window_id"); YINT(mon->barwin);
++    )
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_monitors(yajl_gen gen, Monitor *mons, Monitor *selmon)
++{
++  // clang-format off
++  YARR(
++    for (Monitor *mon = mons; mon; mon = mon->next) {
++      if (mon == selmon)
++        dump_monitor(gen, mon, 1);
++      else
++        dump_monitor(gen, mon, 0);
++    }
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_layouts(yajl_gen gen, const Layout layouts[], const int layouts_len)
++{
++  // clang-format off
++  YARR(
++    for (int i = 0; i < layouts_len; i++) {
++      YMAP(
++        // Check for a NULL pointer. The cycle layouts patch adds an entry at
++        // the end of the layouts array with a NULL pointer for the symbol
++        YSTR("symbol"); YSTR((layouts[i].symbol ? layouts[i].symbol : ""));
++        YSTR("address"); YINT((uintptr_t)(layouts + i));
++      )
++    }
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_tag_state(yajl_gen gen, TagState state)
++{
++  // clang-format off
++  YMAP(
++    YSTR("selected"); YINT(state.selected);
++    YSTR("occupied"); YINT(state.occupied);
++    YSTR("urgent"); YINT(state.urgent);
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_tag_event(yajl_gen gen, int mon_num, TagState old_state,
++               TagState new_state)
++{
++  // clang-format off
++  YMAP(
++    YSTR("tag_change_event"); YMAP(
++      YSTR("monitor_number"); YINT(mon_num);
++      YSTR("old_state"); dump_tag_state(gen, old_state);
++      YSTR("new_state"); dump_tag_state(gen, new_state);
++    )
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_client_focus_change_event(yajl_gen gen, Client *old_client,
++                               Client *new_client, int mon_num)
++{
++  // clang-format off
++  YMAP(
++    YSTR("client_focus_change_event"); YMAP(
++      YSTR("monitor_number"); YINT(mon_num);
++      YSTR("old_win_id"); old_client == NULL ? YNULL() : YINT(old_client->win);
++      YSTR("new_win_id"); new_client == NULL ? YNULL() : YINT(new_client->win);
++    )
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_layout_change_event(yajl_gen gen, const int mon_num,
++                         const char *old_symbol, const Layout *old_layout,
++                         const char *new_symbol, const Layout *new_layout)
++{
++  // clang-format off
++  YMAP(
++    YSTR("layout_change_event"); YMAP(
++      YSTR("monitor_number"); YINT(mon_num);
++      YSTR("old_symbol"); YSTR(old_symbol);
++      YSTR("old_address"); YINT((uintptr_t)old_layout);
++      YSTR("new_symbol"); YSTR(new_symbol);
++      YSTR("new_address"); YINT((uintptr_t)new_layout);
++    )
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_monitor_focus_change_event(yajl_gen gen, const int last_mon_num,
++                                const int new_mon_num)
++{
++  // clang-format off
++  YMAP(
++    YSTR("monitor_focus_change_event"); YMAP(
++      YSTR("old_monitor_number"); YINT(last_mon_num);
++      YSTR("new_monitor_number"); YINT(new_mon_num);
++    )
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_focused_title_change_event(yajl_gen gen, const int mon_num,
++                                const Window client_id, const char *old_name,
++                                const char *new_name)
++{
++  // clang-format off
++  YMAP(
++    YSTR("focused_title_change_event"); YMAP(
++      YSTR("monitor_number"); YINT(mon_num);
++      YSTR("client_window_id"); YINT(client_id);
++      YSTR("old_name"); YSTR(old_name);
++      YSTR("new_name"); YSTR(new_name);
++    )
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_client_state(yajl_gen gen, const ClientState *state)
++{
++  // clang-format off
++  YMAP(
++    YSTR("old_state"); YBOOL(state->oldstate);
++    YSTR("is_fixed"); YBOOL(state->isfixed);
++    YSTR("is_floating"); YBOOL(state->isfloating);
++    YSTR("is_fullscreen"); YBOOL(state->isfullscreen);
++    YSTR("is_urgent"); YBOOL(state->isurgent);
++    YSTR("never_focus"); YBOOL(state->neverfocus);
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_focused_state_change_event(yajl_gen gen, const int mon_num,
++                                const Window client_id,
++                                const ClientState *old_state,
++                                const ClientState *new_state)
++{
++  // clang-format off
++  YMAP(
++    YSTR("focused_state_change_event"); YMAP(
++      YSTR("monitor_number"); YINT(mon_num);
++      YSTR("client_window_id"); YINT(client_id);
++      YSTR("old_state"); dump_client_state(gen, old_state);
++      YSTR("new_state"); dump_client_state(gen, new_state);
++    )
++  )
++  // clang-format on
++
++  return 0;
++}
++
++int
++dump_error_message(yajl_gen gen, const char *reason)
++{
++  // clang-format off
++  YMAP(
++    YSTR("result"); YSTR("error");
++    YSTR("reason"); YSTR(reason);
++  )
++  // clang-format on
++
++  return 0;
++}
+diff --git a/yajl_dumps.h b/yajl_dumps.h
+new file mode 100644
+index 0000000..ee9948e
+--- /dev/null
++++ b/yajl_dumps.h
+@@ -0,0 +1,65 @@
++#ifndef YAJL_DUMPS_H_
++#define YAJL_DUMPS_H_
++
++#include <string.h>
++#include <yajl/yajl_gen.h>
++
++#define YSTR(str) yajl_gen_string(gen, (unsigned char *)str, strlen(str))
++#define YINT(num) yajl_gen_integer(gen, num)
++#define YDOUBLE(num) yajl_gen_double(gen, num)
++#define YBOOL(v) yajl_gen_bool(gen, v)
++#define YNULL() yajl_gen_null(gen)
++#define YARR(body)                                                             \
++  {                                                                            \
++    yajl_gen_array_open(gen);                                                  \
++    body;                                                                      \
++    yajl_gen_array_close(gen);                                                 \
++  }
++#define YMAP(body)                                                             \
++  {                                                                            \
++    yajl_gen_map_open(gen);                                                    \
++    body;                                                                      \
++    yajl_gen_map_close(gen);                                                   \
++  }
++
++int dump_tag(yajl_gen gen, const char *name, const int tag_mask);
++
++int dump_tags(yajl_gen gen, const char *tags[], int tags_len);
++
++int dump_client(yajl_gen gen, Client *c);
++
++int dump_monitor(yajl_gen gen, Monitor *mon, int is_selected);
++
++int dump_monitors(yajl_gen gen, Monitor *mons, Monitor *selmon);
++
++int dump_layouts(yajl_gen gen, const Layout layouts[], const int layouts_len);
++
++int dump_tag_state(yajl_gen gen, TagState state);
++
++int dump_tag_event(yajl_gen gen, int mon_num, TagState old_state,
++                   TagState new_state);
++
++int dump_client_focus_change_event(yajl_gen gen, Client *old_client,
++                                   Client *new_client, int mon_num);
++
++int dump_layout_change_event(yajl_gen gen, const int mon_num,
++                             const char *old_symbol, const Layout *old_layout,
++                             const char *new_symbol, const Layout *new_layout);
++
++int dump_monitor_focus_change_event(yajl_gen gen, const int last_mon_num,
++                                    const int new_mon_num);
++
++int dump_focused_title_change_event(yajl_gen gen, const int mon_num,
++                                    const Window client_id,
++                                    const char *old_name, const char *new_name);
++
++int dump_client_state(yajl_gen gen, const ClientState *state);
++
++int dump_focused_state_change_event(yajl_gen gen, const int mon_num,
++                                    const Window client_id,
++                                    const ClientState *old_state,
++                                    const ClientState *new_state);
++
++int dump_error_message(yajl_gen gen, const char *reason);
++
++#endif  // YAJL_DUMPS_H_
+-- 
+2.29.2
+
