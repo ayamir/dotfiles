@@ -21,7 +21,7 @@ margin-top = 0
 
 include-file = ~/.config/polybar/colors
 
-[bar/main0]
+[bar/main1]
 monitor = ${env:MONITOR}
 monitor-strict = false
 override-redirect = false
@@ -78,7 +78,7 @@ tray-padding = 0
 tray-scale = 1.0
 enable-ipc = true
 
-[bar/main1]
+[bar/main0]
 monitor = ${env:MONITOR}
 monitor-strict = false
 override-redirect = false
@@ -170,13 +170,13 @@ exec = ~/.config/polybar/script/scroll_spotify_status.sh
 
 [module/playerctl-prev]
 type = custom/script
-exec = echo "ﭢ "
+exec = echo "ﭢ"
 click-left = playerctl previous -p ElectronNCM
 
 [module/playerctl-play-pause]
 type = custom/ipc
-hook-0 = echo " "
-hook-1 = echo " "
+hook-0 = echo ""
+hook-1 = echo ""
 initial = 1
 click-left = playerctl play-pause -p ElectronNCM
 
@@ -223,7 +223,7 @@ secondary-layout-symbol = [M]
 label-title = %title%
 label-title-padding = 1
 label-title-foreground = ${color.CYAN}
-label-title-maxlen = 25
+label-title-maxlen = 20
 
 ; Symbol of current layout
 ; Available tokens:
@@ -405,7 +405,7 @@ ramp-volume-7 = 墳
 ramp-volume-8 = 墳
 ramp-volume-9 = 墳
 ramp-volume-font = 2
-ramp-volume-foreground = ${color.BLUE}
+ramp-volume-foreground = ${color.GREEN}
 
 ramp-headphones-0 = 
 ramp-headphones-1 = 
