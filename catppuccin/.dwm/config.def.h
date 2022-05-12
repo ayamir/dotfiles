@@ -111,7 +111,6 @@ static const Rule rules[] = {
     {"xdman-Main", NULL, NULL, 0, 1, -1},
     {"copyq", NULL, NULL, 0, 1, -1},
     {"Nitrogen", NULL, NULL, 0, 1, -1},
-    {NULL, NULL, "图片查看", 0, 1, -1},
     {"lxappearance", NULL, NULL, 0, 1, -1},
     {"Org.gnome.Nautilus", NULL, NULL, 0, 1, -1},
 
@@ -180,7 +179,7 @@ static const char *downbrt[] = {"light", "-U", "5", NULL};
 
 static Key keys[] = {
     /* modifier                     key             function        argument */
-    {MODKEY | ShiftMask, XK_Return, spawn, CMD("alacritty")},
+    {MODKEY | ShiftMask, XK_Return, spawn, CMD("st -e zsh")},
     {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_grave, togglescratch, {.v = scratchpadcmd}},
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
@@ -223,7 +222,7 @@ static Key keys[] = {
     {MODKEY, XK_e, spawn, CMD("firefox")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_v, spawn, CMD("glrnvim")},
-    {MODKEY | ShiftMask, XK_q, spawn, CMD("google-chrome-stable")},
+    {MODKEY | ShiftMask, XK_e, spawn, CMD("google-chrome-stable")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
     {MODKEY | ShiftMask, XK_s, spawn, CMD("flameshot gui")},
     {MODKEY | ShiftMask, XK_n, spawn, CMD("nautilus")},
@@ -239,15 +238,14 @@ static Key keys[] = {
     {Mod1Mask, XK_p, spawn, CMD("pycharm")},
     {Mod1Mask, XK_g, spawn, CMD("goland")},
 
-    /* Switch nord and light */
-    {MODKEY | ControlMask, XK_n, spawn, CMD("sh ~/.local/bin/switch n")},
-    {MODKEY | ControlMask, XK_l, spawn, CMD("sh ~/.local/bin/switch l")},
-    {MODKEY | ControlMask, XK_s, spawn, CMD("sh ~/.local/bin/switch-dwm")},
-
     /* Mpd control */
     {MODKEY | ControlMask, XK_p, spawn, CMD("mpc toggle")},
     {MODKEY | ControlMask, XK_Left, spawn, CMD("mpc prev")},
     {MODKEY | ControlMask, XK_Right, spawn, CMD("mpc next")},
+
+    {Mod1Mask | ControlMask, XK_p, spawn, CMD("playerctl play-pause")},
+    {Mod1Mask | ControlMask, XK_Left, spawn, CMD("playerctl previous")},
+    {Mod1Mask | ControlMask, XK_Right, spawn, CMD("playerctl next")},
 
     /* XF86Keys */
     {0, XF86XK_AudioMute, spawn, {.v = mutevol}},
