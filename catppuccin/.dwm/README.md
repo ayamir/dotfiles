@@ -1,4 +1,3 @@
-
 # Table of Contents
 
 1.  [My Own Dwm Config](#org27716e3)
@@ -9,19 +8,19 @@
         1.  [Xsessions config](#org1745859)
         2.  [Recompile](#org3f8fde8)
 
-
-
 <a id="org27716e3"></a>
 
 # My Own Dwm Config
-
 
 <a id="org4976554"></a>
 
 ## Color Scheme
 
-Nord and Light
+Catppuccin
 
+![Desktop](../Pictures/shots/desktop.png)
+
+![Window](../Pictures/shots/window.png)
 
 <a id="org2026491"></a>
 
@@ -103,11 +102,9 @@ You can see all of 16 patches I have applied in `./patches` dir.
 
 You can see all of keybindings in `./config.def.h` clearly.
 
-
 <a id="org1958ae2"></a>
 
 ## Other
-
 
 <a id="org1745859"></a>
 
@@ -134,4 +131,3 @@ Type=XSession
 ### Recompile
 
 The script called `recompile` need your user can execute `sudo` command without password.
-
