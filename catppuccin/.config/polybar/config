@@ -21,7 +21,7 @@ margin-top = 0
 
 include-file = ~/.config/polybar/colors
 
-[bar/main1]
+[section/base]
 monitor = ${env:MONITOR}
 monitor-strict = false
 override-redirect = false
@@ -51,16 +51,12 @@ module-margin-left = 1
 module-margin-right = 1
 
 
-font-0 = "Liga SFMono Nerd Font:size=18;3"
-font-1 = "LiterationMono Nerd Font:size=18;3"
-font-2 = NotoColorEmoji:pixelsize=8;1:fontformat=truetype:scale=10:antialias=true;3
-font-3 = Weather Icons:style=Regular:size=10;3
-font-4 = Sarasa UI SC:size=18;2
-
-
-modules-left = dwm
-modules-center = playerctl playerctl-prev playerctl-play-pause playerctl-next
-modules-right = network cpu memory volume backlight battery date
+font-0 = "Sono:size=18;3"
+font-1 = "Liga SFMono Nerd Font:size=18;3"
+font-2 = "LiterationMono Nerd Font:size=18;3"
+font-3 = NotoColorEmoji:pixelsize=8;1:fontformat=truetype:scale=10:antialias=true;3
+font-4 = Weather Icons:style=Regular:size=10;3
+font-5 = Sarasa UI SC:size=18;2
 
 separator =
 spacing = 0
@@ -78,62 +74,21 @@ tray-padding = 0
 tray-scale = 1.0
 enable-ipc = true
 
+
 [bar/main0]
-monitor = ${env:MONITOR}
-monitor-strict = false
-override-redirect = false
-
-bottom = false
-fixed-center = true
-
-width = 100%
-height = 40
-offset-x = 0
-offset-y = 0
-
-background = ${color.BACKGROUND}
-foreground = ${color.FOREGROUND}
-
-radius-top = 0.0
-radius-bottom = 0.0
-
-line-size = 3
-line-color = ${color.BLUE}
-
-border-size = 5
-border-color = ${color.BACKGROUND}
-
-padding = 1
-module-margin-left = 1
-module-margin-right = 1
-
-
-font-0 = "Liga SFMono Nerd Font:size=18;3"
-font-1 = "LiterationMono Nerd Font:size=18;3"
-font-2 = NotoColorEmoji:pixelsize=8;1:fontformat=truetype:scale=10:antialias=true;3
-font-3 = Weather Icons:style=Regular:size=10;3
-font-4 = Sarasa UI SC:size=18;2
-
+inherit = section/base
 
 modules-left = dwm
 modules-center = mpd
 modules-right = network cpu memory volume backlight battery date
 
-separator =
-spacing = 0
+[bar/main1]
+inherit = section/base
 
-dim-value = 1.0
+modules-left = dwm
+modules-center = playerctl playerctl-prev playerctl-play-pause playerctl-next
+modules-right = network cpu memory volume backlight battery date
 
-tray-position = none
-tray-detached = false
-tray-maxsize = 16
-pesudo-transparent = false
-tray-background = ${color.BACKGROUND}
-tray-offset-x = 0
-tray-offset-y = 0
-tray-padding = 0
-tray-scale = 1.0
-enable-ipc = true
 
 [settings]
 throttle-output = 5
