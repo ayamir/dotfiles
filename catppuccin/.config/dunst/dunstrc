@@ -1,0 +1,94 @@
+[colors]
+	frame_color = "#96CDFB"
+	separator_color= frame
+
+[global]
+    ### Display ###
+
+    monitor = 0
+    follow = keyboard
+
+    #geometry = "262x5-829-46"
+    #geometry = "262x3-14+46"
+    geometry = "300x50-10+50"
+    indicate_hidden = yes
+    shrink = false
+    transparency = 0
+    notification_height = 0
+    separator_height = 2
+    padding = 20
+    horizontal_padding = 20
+    frame_width = 2
+    corner_radius = 10
+
+    separator_color = auto
+    sort = yes
+    idle_threshold = 120
+
+    ### Text ###
+    font = Liga SFMono Nerd Font, Font Awesome 5 Free Solid 9, Sarasa UI SC
+    line_height = 0
+
+    markup = full
+
+    # The format of the message.  Possible variables are:
+    #   %a  appname
+    #   %s  summary
+    #   %b  body
+    #   %i  iconname (including its path)
+    #   %I  iconname (without its path)
+    #   %p  progress value if set ([  0%] to [100%]) or nothing
+    #   %n  progress value if set without any extra characters
+    #   %%  Literal %
+    # Markup is allowed
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    show_age_threshold = 60
+    word_wrap = true
+    ellipsize = middle
+    ignore_newline = false
+    stack_duplicates = true
+    hide_duplicate_count = true
+    show_indicators = true
+
+    ### Icons ###
+    icon_position = left
+    max_icon_size = 64
+    icon_path = /usr/share/icons/Papirus/48x48/status/:/usr/share/icons/Nord-Icon/48x48/devices/:/usr/share/icons/Nord-Icon/48x48/apps
+
+    ### History ###
+    sticky_history = yes
+    history_length = 20
+
+    ### Misc/Advanced ###
+    dmenu = /usr/bin/kitty -e fzf:
+    title = Dunst
+    class = Dunst
+    startup_notification = false
+    force_xinerama = false
+
+[experimental]
+    per_monitor_dpi = false
+
+[shortcuts]
+    close = ctrl+space
+    close_all = ctrl+shift+space
+    history = ctrl+backspace
+
+[urgency_low]
+	background = "#1E1E2E"
+	foreground = "#D9E0EE"
+
+[urgency_normal]
+	background = "#1E1E2E"
+	foreground = "#D9E0EE"
+
+[urgency_critical]
+	background = "#1E1E2E"
+	foreground = "#D9E0EE"
+	frame_color = "#F8BD96"
+
+
+
+# vim: ft=conf
+
