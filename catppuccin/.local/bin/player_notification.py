@@ -17,6 +17,7 @@ def notify(player):
     if "xesam:artist" in keys and "xesam:title" in keys:
         artist = metadata["xesam:artist"][0]
         title = metadata["xesam:title"]
+        album = metadata["xesam:album"]
         download_dir = "/tmp/"
         try:
             art_url = metadata["mpris:artUrl"]
@@ -27,9 +28,10 @@ def notify(player):
                 with open(art_filepath, "wb") as handler:
                     handler.write(art_data)
             title = '"{}"'.format(title)
-            artist = '"{}"'.format(artist)
+            artist_album = artist + " - " + album
+            artist_album = '"{}"'.format(artist_album)
             art_filepath = os.path.abspath(art_filepath)
-            os.system(f"notify-send {title} {artist} --icon {art_filepath}")
+            os.system(f"notify-send {title} {artist_album} --icon {art_filepath}")
         except Exception:
             pass
 
