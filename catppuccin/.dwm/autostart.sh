@@ -6,7 +6,7 @@ start() {
 	fi
 }
 
-arr=("xfce4-power-manager" "copyq" "dunst")
+arr=("xfce4-power-manager" "copyq" "dunst" "mpDris2" "snotify")
 
 for value in ${arr[@]}; do
 	start $value
@@ -15,6 +15,8 @@ done
 randr
 nitrogen --restore
 wmname compiz
+sudo chmod o+w /sys/class/backlight/amdgpu_bl0/brightness
+light -I
 
 # compositor
 start picom --experimental-backends --config $HOME/.config/picom/picom.conf

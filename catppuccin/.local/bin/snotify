@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+/usr/bin/python3 ~/.local/bin/player_notification.py
