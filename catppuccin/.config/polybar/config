@@ -125,19 +125,19 @@ exec = ~/.config/polybar/script/scroll_spotify_status.sh
 
 [module/playerctl-prev]
 type = custom/script
-exec = echo "ﭢ"
+exec = echo "玲"
 click-left = playerctl previous
 
 [module/playerctl-play-pause]
 type = custom/ipc
-hook-0 = echo ""
-hook-1 = echo ""
+hook-0 = echo "懶"
+hook-1 = echo "懶"
 initial = 1
 click-left = playerctl play-pause
 
 [module/playerctl-next]
 type = custom/script
-exec = echo  "ﭠ "
+exec = echo  "怜"
 click-left = playerctl next
 
 
