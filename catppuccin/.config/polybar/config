@@ -126,19 +126,19 @@ exec = ~/.config/polybar/script/scroll_spotify_status.sh
 [module/playerctl-prev]
 type = custom/script
 exec = echo "ﭢ"
-click-left = playerctl previous -p ElectronNCM
+click-left = playerctl previous
 
 [module/playerctl-play-pause]
 type = custom/ipc
 hook-0 = echo ""
 hook-1 = echo ""
 initial = 1
-click-left = playerctl play-pause -p ElectronNCM
+click-left = playerctl play-pause
 
 [module/playerctl-next]
 type = custom/script
 exec = echo  "ﭠ "
-click-left = playerctl next -p ElectronNCM
+click-left = playerctl next
 
 
 [module/dwm]
@@ -595,7 +595,7 @@ label-song-ellipsis = true
 icon-play = " "
 icon-play-font = 2
 icon-play-foreground = ${color.GREEN}
-icon-pause = "  "
+icon-pause = " "
 icon-pause-font = 2
 icon-pause-foreground = ${color.YELLOW}
 icon-stop = " "

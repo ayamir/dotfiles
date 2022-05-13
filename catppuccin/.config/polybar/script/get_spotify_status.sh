@@ -9,7 +9,7 @@ PARENT_BAR_PID=$(pgrep -a "polybar" | grep "$PARENT_BAR" | cut -d" " -f1)
 # Examples: spotify, vlc, chrome, mpv and others.
 # Use `playerctld` to always detect the latest player.
 # See more here: https://github.com/altdesktop/playerctl/#selecting-players-to-control
-PLAYER="ElectronNCM"
+PLAYER="playerctld"
 
 # Format of the information displayed
 # Eg. {{ artist }} - {{ album }} - {{ title }}
