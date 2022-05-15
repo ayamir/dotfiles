@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <alias>
+    <family>sans-serif</family>
+    <prefer>
+      <family>Sarasa Gothic SC</family>
+      <family>Sarasa Gothic TC</family>
+      <family>Sarasa Gothic J</family>
+      <family>Sarasa Gothic K</family>
+    </prefer>
+  </alias>
+  <alias>
+    <family>monospace</family>
+    <prefer>
+      <family>JetBrains Mono</family>
+      <family>Sarasa Mono SC</family>
+      <family>Sarasa Mono TC</family>
+      <family>Sarasa Mono J</family>
+      <family>Sarasa Mono K</family>
+    </prefer>
+  </alias>
+</fontconfig>
