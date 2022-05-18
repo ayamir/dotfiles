@@ -3,7 +3,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx = 2;     /* border pixel of windows */
+static const unsigned int borderpx = 5;     /* border pixel of windows */
 static const unsigned int gappx = 5;        /* gaps between windows */
 static const unsigned int snap = 32;        /* snap pixel */
 static const int showbar = 1;               /* 0 means no bar */
@@ -74,6 +74,7 @@ static const Rule rules[] = {
      *	WM_NAME(STRING) = title
      */
     /* class  instance  title   tags mask  isfloating  monitor */
+    {"firefox-nightly", NULL, NULL, 1 << 0, 0, 0},
     {"firefox", NULL, NULL, 1 << 0, 0, 0},
     {"Typora", NULL, NULL, 1 << 0, 0, 1},
 
@@ -90,7 +91,7 @@ static const Rule rules[] = {
     {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, 0},
 
     {"qqmusic", NULL, NULL, 1 << 3, 0, 0},
-    {"Spotify", "spotify", NULL, 1 << 3, 0, 0},
+    {"Spotify", NULL, NULL, 1 << 3, 0, 0},
     {"yesplaymusic", NULL, NULL, 1 << 3, 0, 0},
     {"electron-netease-cloud-music", NULL, NULL, 1 << 3, 0, 0},
     {"music", "st", NULL, 1 << 3, 0, 1},
@@ -105,11 +106,14 @@ static const Rule rules[] = {
     {"icalingua", "icalingua", NULL, 1 << 7, 0, 0},
     {"TelegramDesktop", NULL, NULL, 1 << 7, 0, 1},
 
+    {"stalonetray", NULL, NULL, 1 << 8, 1, 0},
     {"qBittorrent", NULL, NULL, 1 << 8, 0, 0},
     {"Clash for Windows", NULL, NULL, 1 << 8, 0, 1},
 
+    {"wemeetapp", NULL, NULL, 0, 1, -1},
     {"xdman-Main", NULL, NULL, 0, 1, -1},
     {"copyq", NULL, NULL, 0, 1, -1},
+    {"pavucontrol", NULL, NULL, 0, 1, -1},
     {"Nitrogen", NULL, NULL, 0, 1, -1},
     {"lxappearance", NULL, NULL, 0, 1, -1},
     {"Org.gnome.Nautilus", NULL, NULL, 0, 1, -1},
@@ -154,7 +158,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[] = {"kitty", "-e", "--single-instance", NULL};
+static const char *termcmd[] = {"kitty", NULL};
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = {"st",    "-t", scratchpadname, "-g",
                                       "48x12", "-e", "cava",         NULL};
@@ -219,8 +223,8 @@ static Key keys[] = {
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
 
     /* My Own App Start Ways */
-    {MODKEY, XK_e, spawn, CMD("firefox")},
-    {MODKEY, XK_z, spawn, CMD("zathura")},
+    {MODKEY, XK_e, spawn, CMD("firefox-nightly")},
+    {MODKEY, XK_z, spawn, CMD("obsidian")},
     {MODKEY, XK_v, spawn, CMD("glrnvim")},
     {MODKEY | ShiftMask, XK_e, spawn, CMD("google-chrome-stable")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
@@ -232,7 +236,7 @@ static Key keys[] = {
 
     {Mod1Mask | ShiftMask, XK_p, spawn, CMD("sh ~/.dwmpobar")},
 
-    {Mod1Mask, XK_v, spawn, CMD("neovide --multigrid")},
+    {Mod1Mask, XK_v, spawn, CMD("neovide")},
     {Mod1Mask, XK_i, spawn, CMD("idea")},
     {Mod1Mask, XK_c, spawn, CMD("clion")},
     {Mod1Mask, XK_p, spawn, CMD("pycharm")},
