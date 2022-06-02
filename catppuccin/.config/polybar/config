@@ -30,7 +30,7 @@ bottom = false
 fixed-center = true
 
 width = 100%
-height = 40
+height = 45
 offset-x = 0
 offset-y = 0
 
@@ -51,12 +51,12 @@ module-margin-left = 1
 module-margin-right = 1
 
 
-font-0 = "Sono:size=18;3"
-font-1 = "Liga SFMono Nerd Font:size=18;3"
-font-2 = "LiterationMono Nerd Font:size=18;3"
+font-0 = "Sono:size=20;3"
+font-1 = "Liga SFMono Nerd Font:size=20;3"
+font-2 = "LiterationMono Nerd Font:size=20;3"
 font-3 = NotoColorEmoji:pixelsize=8;1:fontformat=truetype:scale=10:antialias=true;3
 font-4 = Weather Icons:style=Regular:size=10;3
-font-5 = Sarasa UI SC:size=18;2
+font-5 = Sarasa UI SC:size=20;2
 
 separator =
 spacing = 0
@@ -79,13 +79,27 @@ enable-ipc = true
 inherit = section/base
 
 modules-left = dwm
-modules-center = mpd
-modules-right = network cpu memory volume backlight battery date
+modules-center = 
+modules-right = cava network cpu memory battery date
 
 [bar/main1]
 inherit = section/base
 
 modules-left = dwm
+modules-center = 
+modules-right = playerctl playerctl-prev playerctl-play-pause playerctl-next volume backlight date
+
+[bar/hypr0]
+inherit = section/base
+
+modules-left = ewmh
+modules-center = mpd
+modules-right = network cpu memory volume backlight battery date
+
+[bar/hypr1]
+inherit = section/base
+
+modules-left = ewmh
 modules-center = playerctl playerctl-prev playerctl-play-pause playerctl-next
 modules-right = network cpu memory volume backlight battery date
 
@@ -119,7 +133,6 @@ type = custom/script
 tail = true
 interval = 1
 ; prefix symbol is shown before the text
-format-prefix = " "
 format = <label>
 exec = ~/.config/polybar/script/scroll_spotify_status.sh
 
@@ -139,6 +152,30 @@ click-left = playerctl play-pause
 type = custom/script
 exec = echo  "怜"
 click-left = playerctl next
+
+[module/ewmh]
+type = internal/xworkspaces
+
+; Only show workspaces defined on the same output as the bar
+;
+; Useful if you want to show monitor specific workspaces
+; on different bars
+;
+; Default: false
+pin-workspaces = true
+
+; Create click handler used to focus desktop
+; Default: true
+enable-click = true
+
+; Create scroll handlers used to cycle desktops
+; Default: true
+enable-scroll = true
+
+; Reverse the scroll direction
+; Default: false
+; New in version 3.6.0
+reverse-scroll = false
 
 
 [module/dwm]
@@ -178,7 +215,7 @@ secondary-layout-symbol = [M]
 label-title = %title%
 label-title-padding = 1
 label-title-foreground = ${color.CYAN}
-label-title-maxlen = 20
+label-title-maxlen = 30
 
 ; Symbol of current layout
 ; Available tokens:
@@ -218,6 +255,15 @@ label-urgent-padding = 1
 label-empty = %name%
 label-empty-background = ${color.BACKGROUND}
 label-empty-padding = 1
+
+[module/cava]
+type = custom/script
+tail = true
+exec = $HOME/.config/polybar/script/cava.sh
+format = <label>
+format-font = 10
+label = %output%
+label-foreground = #F2CDCD
 
 [module/cpu]
 type = internal/cpu
