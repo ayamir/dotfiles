@@ -15,30 +15,33 @@ def notify(player):
     metadata = player.props.metadata
     keys = metadata.keys()
     if "xesam:artist" in keys and "xesam:title" in keys:
-        artist = metadata["xesam:artist"][0]
-        title = metadata["xesam:title"]
-        album = metadata["xesam:album"]
-        download_dir = "/tmp/"
-        try:
-            art_url = metadata["mpris:artUrl"]
-            art_prefix = art_url.split(":")[0]
-            art_filepath = ""
-            if art_prefix == "file":
-                art_filepath = art_url
-            else:
-                art_filename = art_url.split("/")[-1]
-                art_filepath = download_dir + art_filename
-                if not os.path.isfile(art_filepath):
-                    art_data = requests.get(art_url).content
-                    with open(art_filepath, "wb") as handler:
-                        handler.write(art_data)
-            title = '"{}"'.format(title)
-            artist_album = artist + " - " + album
-            artist_album = '"{}"'.format(artist_album)
-            print(art_filepath)
-            os.system(f"notify-send {title} {artist_album} --icon {art_filepath}")
-        except Exception:
-            pass
+        player = metadata["mpris:trackid"]
+        result = player.find("spotify")
+        if result == -1:
+            artist = metadata["xesam:artist"][0]
+            title = metadata["xesam:title"]
+            album = metadata["xesam:album"]
+            download_dir = "/tmp/"
+            try:
+                art_url = metadata["mpris:artUrl"]
+                art_prefix = art_url.split(":")[0]
+                art_filepath = ""
+                if art_prefix == "file":
+                    art_filepath = art_url
+                else:
+                    art_filename = art_url.split("/")[-1]
+                    art_filepath = download_dir + art_filename
+                    if not os.path.isfile(art_filepath):
+                        art_data = requests.get(art_url).content
+                        with open(art_filepath, "wb") as handler:
+                            handler.write(art_data)
+                title = '"{}"'.format(title)
+                artist_album = artist + " - " + album
+                artist_album = '"{}"'.format(artist_album)
+                print(art_filepath)
+                os.system(f"notify-send {title} {artist_album} --icon {art_filepath}")
+            except Exception:
+                pass
 
 
 def on_metadata(player, metadata):
