@@ -19,6 +19,9 @@ nitrogen --restore
 # restore brightness config
 brightness
 
+# goblocks
+start goblocks
+
 # power manager
 start xfce4-power-manager
 
