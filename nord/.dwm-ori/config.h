@@ -3,7 +3,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx = 4; /* border pixel of windows */
+static const unsigned int borderpx = 2; /* border pixel of windows */
 static const unsigned int gappx = 6;
 static const unsigned int snap = 32; /* snap pixel */
 static const int showbar = 1;        /* 0 means no bar */
@@ -14,10 +14,10 @@ static const int user_bh = 35; /* 0 means that dwm will calculate bar height, >=
 /*  monocle mode in the presence of several windows.                        */
 /*  Modes after showtab_nmodes are disabled.                                */
 enum showtab_modes {
-  showtab_never,
-  showtab_auto,
-  showtab_nmodes,
-  showtab_always
+    showtab_never,
+    showtab_auto,
+    showtab_nmodes,
+    showtab_always
 };
 static const int showtab = showtab_never; /* Default tab bar show mode */
 static const int toptab = True;           /* False means bottom tab bar */
@@ -86,7 +86,8 @@ static const Rule rules[] = {
 
     {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, -1},
     {"Firefox", NULL, NULL, 1 << 2, 0, -1},
-    {"Microsoft-edge-dev", NULL, NULL, 1 << 2, 0, -1},
+    {"Microsoft-edge-beta", NULL, NULL, 1 << 2, 0, -1},
+    {"crx__ikhdkkncnoglghljlkmcimlnlhkeamad", NULL, NULL, 1 << 2, 1, -1},
     {"Firefox", "Toolkit", NULL, 1 << 2, 1, -1},
 
     {NULL, "music", NULL, 1 << 3, 0, -1},
@@ -99,6 +100,7 @@ static const Rule rules[] = {
 
     {"Steam", NULL, NULL, 1 << 4, 0, -1},
 
+    {"Vmware", NULL, NULL, 1 << 5, 0, -1},
     {"VirtualBox Machine", NULL, NULL, 1 << 5, 0, -1},
     {"VirtualBox Manager", NULL, NULL, 1 << 5, 0, -1},
 
@@ -140,25 +142,25 @@ static const Layout layouts[] = {
 /* key definitions */
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY, TAG)                                                      \
-  {MODKEY, KEY, view, {.ui = 1 << TAG}},                                       \
-      {MODKEY | ControlMask, KEY, toggleview, {.ui = 1 << TAG}},               \
-      {MODKEY | ShiftMask, KEY, tag, {.ui = 1 << TAG}},                        \
-      {MODKEY | ControlMask | ShiftMask, KEY, toggletag, {.ui = 1 << TAG}},
+    {MODKEY, KEY, view, {.ui = 1 << TAG}},                                     \
+        {MODKEY | ControlMask, KEY, toggleview, {.ui = 1 << TAG}},             \
+        {MODKEY | ShiftMask, KEY, tag, {.ui = 1 << TAG}},                      \
+        {MODKEY | ControlMask | ShiftMask, KEY, toggletag, {.ui = 1 << TAG}},
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define CMD(cmd)                                                               \
-  {                                                                            \
-    .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL }                       \
-  }
+    {                                                                          \
+        .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL }                   \
+    }
 
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *termcmd[] = {"alacritty", "-e", "zsh", NULL};
-static const char *subtermcmd[] = {"wezterm", NULL};
+static const char *subtermcmd[] = {"kitty", "-e", "--single-instance", NULL};
 static const char scratchpadname[] = "scratchpad";
-static const char *scratchpadcmd[] = {"st", "-t",     scratchpadname,
-                                      "-g", "45x12", "-e", "cava", NULL};
+static const char *scratchpadcmd[] = {"st",    "-t", scratchpadname, "-g",
+                                      "48x12", "-e", "cava",         NULL};
 
 static const char *rofidruncmd[] = {"rofi", "-show", "drun", NULL};
 static const char *windowswitchcmd[] = {"rofi", "-show", "window", NULL};
@@ -227,7 +229,7 @@ static Key keys[] = {
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
 
     /* My Own App Start Ways */
-    {MODKEY, XK_e, spawn, CMD("google-chrome-stable")},
+    {MODKEY, XK_e, spawn, CMD("microsoft-edge-beta")},
     {MODKEY, XK_z, spawn, CMD("zathura")},
     {MODKEY, XK_x, spawn, CMD("joplin-desktop")},
     {MODKEY, XK_v, spawn, CMD("glrnvim")},
@@ -237,7 +239,6 @@ static Key keys[] = {
     {MODKEY | ShiftMask, XK_m, spawn,
      CMD("alacritty --class music -e ncmpcpp")},
     {MODKEY | ShiftMask, XK_h, spawn, CMD("alacritty -e htop")},
-    {MODKEY | ShiftMask, XK_e, spawn, CMD("emacs")},
     {MODKEY | ShiftMask, XK_v, spawn,
      CMD("VBoxManage startvm 'Windows10' --type gui")},
 

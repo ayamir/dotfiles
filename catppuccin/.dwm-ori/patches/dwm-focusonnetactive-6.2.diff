@@ -1,0 +1,57 @@
+From 286ca3bb1af08b452bf8140abcc23d4ef61baaa2 Mon Sep 17 00:00:00 2001
+From: bakkeby <bakkeby@gmail.com>
+Date: Tue, 7 Apr 2020 12:33:04 +0200
+Subject: [PATCH] Activate a window in response to _NET_ACTIVE_WINDOW
+
+By default, dwm response to client requests to _NET_ACTIVE_WINDOW client
+messages by setting the urgency bit on the named window.
+
+This patch activates the window instead.
+
+Both behaviours are legitimate according to
+https://specifications.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472702304
+
+One should decide which of these one should perform based on the message
+senders' untestable claims that it represents the end-user. Setting the
+urgency bit is the conservative decision. This patch implements the more
+trusting alternative.
+
+It also allows dwm to work with `wmctrl -a` and other external window
+management utilities
+
+---
+ dwm.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/dwm.c b/dwm.c
+index 4465af1..3919d47 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -514,6 +514,7 @@ clientmessage(XEvent *e)
+ {
+ 	XClientMessageEvent *cme = &e->xclient;
+ 	Client *c = wintoclient(cme->window);
++	unsigned int i;
+ 
+ 	if (!c)
+ 		return;
+@@ -523,8 +524,14 @@ clientmessage(XEvent *e)
+ 			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
+ 				|| (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ && !c->isfullscreen)));
+ 	} else if (cme->message_type == netatom[NetActiveWindow]) {
+-		if (c != selmon->sel && !c->isurgent)
+-			seturgent(c, 1);
++		for (i = 0; i < LENGTH(tags) && !((1 << i) & c->tags); i++);
++		if (i < LENGTH(tags)) {
++			const Arg a = {.ui = 1 << i};
++			selmon = c->mon;
++			view(&a);
++			focus(c);
++			restack(selmon);
++		}
+ 	}
+ }
+ 
+-- 
+2.17.1
+

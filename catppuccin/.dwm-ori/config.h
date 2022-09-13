@@ -3,12 +3,12 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx = 2; /* border pixel of windows */
+static const unsigned int borderpx = 3; /* border pixel of windows */
 static const unsigned int gappx = 6;
 static const unsigned int snap = 32; /* snap pixel */
 static const int showbar = 1;        /* 0 means no bar */
 static const int topbar = 1;         /* 0 means bottom bar */
-static const int user_bh = 35; /* 0 means that dwm will calculate bar height, >=
+static const int user_bh = 0; /* 0 means that dwm will calculate bar height, >=
                                   1 means dwm will user_bh as bar height */
 /*  Display modes of the tab bar: never shown, always shown, shown only in  */
 /*  monocle mode in the presence of several windows.                        */
@@ -28,12 +28,12 @@ static const char *fonts[] = {
 };
 static const char dmenufont[] =
     "Sarasa UI SC:size=10:antialias=true:autohint=true";
-static char normbgcolor[] = "#2E3440";
+static char normbgcolor[] = "#1e1e2e";
 static char normbordercolor[] = "#3B4252";
-static char normfgcolor[] = "#ECEFF4";
+static char normfgcolor[] = "#cdd6f4";
 static char selfgcolor[] = "#D8DEE9";
-static char selbordercolor[] = "#5E81AC";
-static char selbgcolor[] = "#5E81AC";
+static char selbordercolor[] = "#74c7ec";
+static char selbgcolor[] = "#626880";
 static char termcol0[] = "#3b4252";  /* black   */
 static char termcol1[] = "#bf616a";  /* red     */
 static char termcol2[] = "#a3be8c";  /* green   */
@@ -71,55 +71,54 @@ static const Rule rules[] = {
      *	WM_CLASS(STRING) = instance, class
      *	WM_NAME(STRING) = title
      */
-    /* class                            instance                    title tags
-       mask     isfloating   monitor */
-    {"jetbrains-*", "JetBrains Toolbox", NULL, 1 << 1, 1, -1},
-    {"jetbrains-*", "sun-awt-X11-XFramePeer", NULL, 1 << 1, 0, -1},
-    {"jetbrains-*", "jetbrains-*", "win0", 1 << 1, 1, -1},
-    {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, -1},
-    {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, -1},
-    {"jetbrains-idea", NULL, NULL, 1 << 1, 0, -1},
-    {"jetbrains-clion", NULL, NULL, 1 << 1, 0, -1},
-    {"jetbrains-goland", NULL, NULL, 1 << 1, 0, -1},
-    {"jetbrains-pycharm", NULL, NULL, 1 << 1, 0, -1},
-    {"jetbrains-studio", NULL, NULL, 1 << 1, 0, -1},
+    /* class  instance  title   tags mask  isfloating  monitor */
+    {"microsoft-edge-stable", NULL, NULL, 1 << 0, 0, 0},
+    {"firefox", NULL, NULL, 1 << 0, 0, 0},
+    {"Typora", NULL, NULL, 1 << 0, 0, 1},
 
-    {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, -1},
-    {"Firefox", NULL, NULL, 1 << 2, 0, -1},
-    {"Microsoft-edge-beta", NULL, NULL, 1 << 2, 0, -1},
-    {"crx__ikhdkkncnoglghljlkmcimlnlhkeamad", NULL, NULL, 1 << 2, 1, -1},
-    {"Firefox", "Toolkit", NULL, 1 << 2, 1, -1},
+    {"jetbrains-*", "JetBrains Toolbox", NULL, 1 << 1, 1, 0},
+    {"jetbrains-*", "sun-awt-X11-XFramePeer", NULL, 1 << 1, 0, 0},
+    {"jetbrains-*", "jetbrains-*", "win0", 1 << 1, 1, 0},
+    {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, 0},
+    {"jetbrains-*", NULL, "Welcome to*", 1 << 1, 1, 0},
+    {"jetbrains-idea", NULL, NULL, 1 << 1, 0, 0},
+    {"jetbrains-clion", NULL, NULL, 1 << 1, 0, 0},
+    {"jetbrains-pycharm", NULL, NULL, 1 << 1, 0, 0},
+    {"jetbrains-webstorm", NULL, NULL, 1 << 1, 0, 0},
 
-    {NULL, "music", NULL, 1 << 3, 0, -1},
-    {NULL, "SoundConverter", NULL, 1 << 3, 0, -1},
-    {"qqmusic", NULL, NULL, 1 << 3, 0, -1},
-    {"Spotify", "spotify", NULL, 1 << 3, 0, -1},
-    {"yesplaymusic", NULL, NULL, 1 << 3, 0, -1},
-    {"Netease-cloud-music-gtk", NULL, NULL, 1 << 3, 0, -1},
-    {"netease-cloud-music", NULL, NULL, 1 << 3, 0, -1},
+    {"Google-chrome", "google-chrome", NULL, 1 << 2, 0, 0},
 
-    {"Steam", NULL, NULL, 1 << 4, 0, -1},
+    {"qqmusic", NULL, NULL, 1 << 3, 0, 0},
+    {"Spotify", NULL, NULL, 1 << 3, 0, 0},
+    {"yesplaymusic", NULL, NULL, 1 << 3, 0, 0},
+    {"electron-netease-cloud-music", NULL, NULL, 1 << 3, 0, 0},
+    {"music", "st", NULL, 1 << 3, 0, 1},
 
-    {"Vmware", NULL, NULL, 1 << 5, 0, -1},
-    {"VirtualBox Machine", NULL, NULL, 1 << 5, 0, -1},
-    {"VirtualBox Manager", NULL, NULL, 1 << 5, 0, -1},
+    {"Steam", NULL, NULL, 1 << 4, 0, 0},
 
-    {"Qq", "qq", NULL, 1 << 6, 1, -1},
-    {"Freechat", "freechat", NULL, 1 << 6, 0, -1},
-    {"icalingua", NULL, NULL, 1 << 6, 0, -1},
-    {"electron-qq", "electron-qq", NULL, 1 << 6, 0, -1},
-    {"Postman", "postman", NULL, 1 << 6, 0, -1},
+    {"Postman", "postman", NULL, 1 << 5, 0, -1},
+    {"pomotroid", NULL, NULL, 1 << 5, 1, -1},
 
-    {"TelegramDesktop", NULL, NULL, 1 << 7, 0, -1},
+    {"wechat.exe", NULL, NULL, 1 << 6, 0, 1},
+    {"discord", "discord", NULL, 1 << 6, 0, 0},
 
-    {"qv2ray", NULL, NULL, 1 << 8, 0, -1},
-    {"qBittorrent", NULL, NULL, 1 << 8, 0, -1},
+    {"icalingua", "icalingua", NULL, 1 << 7, 0, 0},
+    {"TelegramDesktop", NULL, NULL, 1 << 7, 0, 1},
 
+    {"stalonetray", NULL, NULL, 1 << 8, 1, 0},
+    {"qBittorrent", NULL, NULL, 1 << 8, 0, 0},
+    {"Clash for Windows", NULL, NULL, 1 << 8, 0, 1},
+
+    {"wemeetapp", NULL, NULL, 0, 1, -1},
     {"xdman-Main", NULL, NULL, 0, 1, -1},
+    {"neovide", NULL, NULL, 0, 1, -1},
     {"copyq", NULL, NULL, 0, 1, -1},
+    {"qt5ct", NULL, NULL, 0, 1, -1},
+    {"pavucontrol", NULL, NULL, 0, 1, -1},
     {"Nitrogen", NULL, NULL, 0, 1, -1},
     {"lxappearance", NULL, NULL, 0, 1, -1},
-    {"Qalculate-gtk", NULL, NULL, 0, 1, -1},
+    {"Org.gnome.Nautilus", NULL, NULL, 0, 1, -1},
+
 };
 
 /* layout(s) */
@@ -152,12 +151,15 @@ static const Layout layouts[] = {
     {                                                                          \
         .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL }                   \
     }
+#define SHCMD(cmd)                                                             \
+    {                                                                          \
+        .v = (const char *[]) { "/bin/sh", "-c", cmd, NULL }                   \
+    }
 
 /* commands */
 static char dmenumon[2] =
     "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *termcmd[] = {"alacritty", "-e", "zsh", NULL};
-static const char *subtermcmd[] = {"kitty", "-e", "--single-instance", NULL};
+static const char *termcmd[] = {"kitty", NULL};
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = {"st",    "-t", scratchpadname, "-g",
                                       "48x12", "-e", "cava",         NULL};
@@ -166,7 +168,9 @@ static const char *rofidruncmd[] = {"rofi", "-show", "drun", NULL};
 static const char *windowswitchcmd[] = {"rofi", "-show", "window", NULL};
 
 static const char *dmenucmd[] = {"dmenu_run_history", NULL};
+static const char *searchmenucmd[] = {"searchmenu", NULL};
 static const char *recordmenucmd[] = {"recordmenu", NULL};
+static const char *toggletraycmd[] = {"toggletray", NULL};
 
 static const char *upvol[] = {"/usr/bin/pactl", "set-sink-volume", "0", "+3%",
                               NULL};
@@ -180,29 +184,27 @@ static const char *downbrt[] = {"light", "-U", "5", NULL};
 
 static Key keys[] = {
     /* modifier                     key             function        argument */
-    {MODKEY, XK_Return, spawn, {.v = subtermcmd}},
-    {MODKEY | ShiftMask, XK_Return, spawn, {.v = termcmd}},
+    {MODKEY | ShiftMask, XK_Return, spawn, CMD("st -e zsh")},
+    {MODKEY, XK_Return, spawn, {.v = termcmd}},
     {MODKEY, XK_grave, togglescratch, {.v = scratchpadcmd}},
     {MODKEY, XK_d, spawn, {.v = dmenucmd}},
-    {MODKEY, XK_p, spawn, {.v = rofidruncmd}},
-    {MODKEY, XK_r, spawn, {.v = recordmenucmd}},
+    {MODKEY, XK_r, spawn, {.v = rofidruncmd}},
+    {MODKEY, XK_s, spawn, {.v = searchmenucmd}},
+    {MODKEY, XK_p, spawn, {.v = recordmenucmd}},
     {MODKEY, XK_w, spawn, {.v = windowswitchcmd}},
+    {MODKEY | ShiftMask, XK_t, spawn, {.v = toggletraycmd}},
 
     {MODKEY, XK_b, togglebar, {0}},
     {MODKEY | ControlMask, XK_m, focusmaster, {0}},
-
-    {MODKEY, XK_s, show, {0}},
-    {MODKEY, XK_h, hide, {0}},
-    {MODKEY, XK_j, focusstackhid, {.i = +1}},
-    {MODKEY, XK_k, focusstackhid, {.i = -1}},
-    {MODKEY | ShiftMask, XK_j, shiftviewclients, {.i = -1}},
-    {MODKEY | ShiftMask, XK_k, shiftviewclients, {.i = +1}},
-
+    {MODKEY, XK_j, focusstack, {.i = +1}},
+    {MODKEY, XK_k, focusstack, {.i = -1}},
+    /* {MODKEY, XK_i, incnmaster, {.i = +1}}, */
+    /* {MODKEY, XK_o, incnmaster, {.i = -1}}, */
+    {MODKEY, XK_comma, setmfact, {.f = -0.05}},
+    {MODKEY, XK_period, setmfact, {.f = +0.05}},
     {MODKEY | ControlMask, XK_Return, zoom, {0}},
-
     {MODKEY, XK_Tab, view, {0}},
     {MODKEY, XK_q, killclient, {0}},
-
     {MODKEY, XK_t, setlayout, {.v = &layouts[0]}},
     {MODKEY, XK_f, setlayout, {.v = &layouts[1]}},
     {MODKEY, XK_m, setlayout, {.v = &layouts[2]}},
@@ -211,61 +213,43 @@ static Key keys[] = {
     {MODKEY, XK_i, setlayout, {.v = &layouts[5]}},
     {MODKEY, XK_o, setlayout, {.v = &layouts[6]}},
     {MODKEY | ShiftMask, XK_f, fullscreen, {0}},
-
     {MODKEY | ShiftMask, XK_space, togglefloating, {0}},
-
     {MODKEY, XK_0, view, {.ui = ~0}},
     {MODKEY | ShiftMask, XK_0, tag, {.ui = ~0}},
-
-    {MODKEY, XK_comma, setmfact, {.f = -0.05}},
-    {MODKEY, XK_period, setmfact, {.f = +0.05}},
-    {MODKEY | Mod1Mask, XK_comma, focusmon, {.i = -1}},
-    {MODKEY | Mod1Mask, XK_period, focusmon, {.i = +1}},
-    {MODKEY | ControlMask, XK_comma, tagmon, {.i = -1}},
-    {MODKEY | ControlMask, XK_period, tagmon, {.i = +1}},
-    {MODKEY | ShiftMask, XK_comma, shiftview, {.i = -1}},
-    {MODKEY | ShiftMask, XK_period, shiftview, {.i = +1}},
-
+    {MODKEY, XK_h, focusmon, {.i = -1}},
+    {MODKEY, XK_l, focusmon, {.i = +1}},
+    {MODKEY | ShiftMask, XK_h, tagmon, {.i = -1}},
+    {MODKEY | ShiftMask, XK_l, tagmon, {.i = +1}},
     {MODKEY, XK_F5, xrdb, {.v = NULL}},
 
     /* My Own App Start Ways */
-    {MODKEY, XK_e, spawn, CMD("microsoft-edge-beta")},
-    {MODKEY, XK_z, spawn, CMD("zathura")},
-    {MODKEY, XK_x, spawn, CMD("joplin-desktop")},
+    {MODKEY, XK_e, spawn, CMD("firefox")},
+    {MODKEY, XK_z, spawn, CMD("obsidian")},
     {MODKEY, XK_v, spawn, CMD("glrnvim")},
+    {MODKEY | ShiftMask, XK_e, spawn, CMD("google-chrome-stable")},
     {MODKEY | ShiftMask, XK_q, spawn, CMD("xkill")},
     {MODKEY | ShiftMask, XK_s, spawn, CMD("flameshot gui")},
-    {MODKEY | ShiftMask, XK_n, spawn, CMD("nemo")},
-    {MODKEY | ShiftMask, XK_m, spawn,
-     CMD("alacritty --class music -e ncmpcpp")},
-    {MODKEY | ShiftMask, XK_h, spawn, CMD("alacritty -e htop")},
-    {MODKEY | ShiftMask, XK_v, spawn,
-     CMD("VBoxManage startvm 'Windows10' --type gui")},
+    {MODKEY | ShiftMask, XK_n, spawn, CMD("nautilus")},
+    {MODKEY | ShiftMask, XK_m, spawn, CMD("st -c music -e ncmpcpp")},
 
     {Mod1Mask | ControlMask, XK_Delete, spawn, CMD("betterlockscreen -l")},
 
-    /*IDE start*/
+    {Mod1Mask | ShiftMask, XK_p, spawn, CMD("sh ~/.dwmpobar")},
+
     {Mod1Mask, XK_v, spawn, CMD("neovide")},
-    {Mod1Mask, XK_c, spawn, CMD("clion")},
     {Mod1Mask, XK_i, spawn, CMD("idea")},
+    {Mod1Mask, XK_c, spawn, CMD("clion")},
     {Mod1Mask, XK_p, spawn, CMD("pycharm")},
     {Mod1Mask, XK_g, spawn, CMD("goland")},
-
-    /* Switch nord and light */
-    {MODKEY | ControlMask, XK_n, spawn, CMD("sh ~/.local/bin/switch n dwm")},
-    {MODKEY | ControlMask, XK_l, spawn, CMD("sh ~/.local/bin/switch l dwm")},
-    {MODKEY | ControlMask, XK_s, spawn, CMD("sh ~/.local/bin/switch-dwm")},
 
     /* Mpd control */
     {MODKEY | ControlMask, XK_p, spawn, CMD("mpc toggle")},
     {MODKEY | ControlMask, XK_Left, spawn, CMD("mpc prev")},
     {MODKEY | ControlMask, XK_Right, spawn, CMD("mpc next")},
 
-    /* Touchpad */
-    {MODKEY | ControlMask, XK_e, spawn,
-     CMD("xinput enable 'DELL0828:00 06CB:7E7E Touchpad'")},
-    {MODKEY | ControlMask, XK_d, spawn,
-     CMD("xinput disable 'DELL0828:00 06CB:7E7E Touchpad'")},
+    {Mod1Mask | ControlMask, XK_p, spawn, CMD("playerctl play-pause")},
+    {Mod1Mask | ControlMask, XK_Left, spawn, CMD("playerctl previous")},
+    {Mod1Mask | ControlMask, XK_Right, spawn, CMD("playerctl next")},
 
     /* XF86Keys */
     {0, XF86XK_AudioMute, spawn, {.v = mutevol}},
@@ -274,11 +258,12 @@ static Key keys[] = {
     {0, XF86XK_MonBrightnessUp, spawn, {.v = upbrt}},
     {0, XF86XK_MonBrightnessDown, spawn, {.v = downbrt}},
 
+    {MODKEY | ControlMask, XK_q, quit, {0}},
+    {MODKEY | ControlMask, XK_r, quit, {1}},
+
     TAGKEYS(XK_1, 0) TAGKEYS(XK_2, 1) TAGKEYS(XK_3, 2) TAGKEYS(XK_4, 3)
         TAGKEYS(XK_5, 4) TAGKEYS(XK_6, 5) TAGKEYS(XK_7, 6) TAGKEYS(XK_8, 7)
-            TAGKEYS(XK_9, 8){MODKEY | ShiftMask, XK_Escape, quit, {0}},
-    {MODKEY | ShiftMask, XK_r, quit, {1}},
-};
+            TAGKEYS(XK_9, 8)};
 
 /* button definitions */
 /* click can be ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
