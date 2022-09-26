@@ -45,9 +45,3 @@ This is my neovim's [configuration](https://github.com/ayamir/nvimdots).
    ![Dark-qtile](./nord/Pictures/shot/dark-qtile.png)
 
    ![Light-qtile](./nord/Pictures/shot/light-qtile.png)
-
-## Nvim
-
-![nvim-shot-light](./nord/Pictures/shot/light-nvim.png)
-
-![nvim-shot-nord](./nord/Pictures/shot/nord-nvim.png)
