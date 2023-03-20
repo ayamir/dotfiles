@@ -1,3 +1,7 @@
+if status is-interactive
+and not set -q TMUX
+    exec tmux -u new -A -D -t f4h
+end
 fish_vi_key_bindings
 set -g fish_greeting
 
@@ -5,12 +9,14 @@ set -gx XDG_CONFIG_HOME "/home/ayamir/.config"
 set -gx EDITOR nvim
 set -gx LANG en_US.UTF-8
 set -U SXHKD_SHELL /usr/bin/bash
+set -gx LOCAL_BIN /home/ayamir/.local/bin
+set -gx PATH $LOCAL_BIN $PATH
 
 if status --is-interactive
 	# Envs
-	set -gx http_proxy "http://127.0.0.1:8889"
-	set -gx https_proxy "http://127.0.0.1:8889"
-	set -gx all_proxy "http://127.0.0.1:8889"
+	set -gx http_proxy "http://127.0.0.1:7890"
+	set -gx https_proxy "http://127.0.0.1:7890"
+	set -gx all_proxy "http://127.0.0.1:7890"
 	
 	abbr --add --global .. "cd ./.."
 	abbr --add --global ... "cd ./../.."
@@ -29,10 +35,8 @@ if status --is-interactive
 	abbr --add --global pyins "pip3 install --user"
 	abbr --add --global pyuins "pip3 uninstall"
 
-	abbr --add --global ins "paru -S"
-	abbr --add --global uins "paru -R"
-	abbr --add --global up paru
-	abbr --add --global c "paru -c"
+	abbr --add --global ins "nix-env -iA"
+	abbr --add --global uins "nix-env --uninstall"
 
 	abbr --add --global stlsa "sudo systemctl start"
 	abbr --add --global stlst "sudo systemctl stop"
@@ -42,7 +46,7 @@ if status --is-interactive
 	abbr --add --global stlre "sudo systemctl restart"
 
 	abbr --add --global og "git-open"
-	abbr --add --global gu "gitui"
+	abbr --add --global lg "lazygit"
 	abbr --add --global gc "git clone"
 	abbr --add --global ga "git add"
 	abbr --add --global gr "git restore ."
