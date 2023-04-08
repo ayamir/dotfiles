@@ -2,6 +2,9 @@ if status is-interactive
 and not set -q TMUX
     exec tmux -u new -A -D -t f4h
 end
+if status is-interactive
+    nvm use 16
+end
 fish_vi_key_bindings
 set -g fish_greeting
 
@@ -10,13 +13,14 @@ set -gx EDITOR nvim
 set -gx LANG en_US.UTF-8
 set -U SXHKD_SHELL /usr/bin/bash
 set -gx LOCAL_BIN /home/ayamir/.local/bin
-set -gx PATH $LOCAL_BIN $PATH
+set -gx CARGO_BIN /home/ayamir/.cargo/bin
+set -gx PATH $LOCAL_BIN $CARGO_BIN $PATH
 
 if status --is-interactive
 	# Envs
-	set -gx http_proxy "http://127.0.0.1:7890"
-	set -gx https_proxy "http://127.0.0.1:7890"
-	set -gx all_proxy "http://127.0.0.1:7890"
+	# set -gx http_proxy "http://127.0.0.1:7890"
+	# set -gx https_proxy "http://127.0.0.1:7890"
+	# set -gx all_proxy "http://127.0.0.1:7890"
 	
 	abbr --add --global .. "cd ./.."
 	abbr --add --global ... "cd ./../.."
@@ -25,18 +29,18 @@ if status --is-interactive
 	abbr --add --global vf "nvim ~/.config/fish/config.fish"
 	abbr --add --global sf "source ~/.config/fish/config.fish"
 
-	abbr --add --global ls "lsd"
+	abbr --add --global ls "exa"
 	abbr --add --global l "exa -l --color=auto"
 	abbr --add --global la "exa -alh --color=auto"
-
-	abbr --add --global vc "nvim ~/.config/awesome/rc.lua"
+	abbr --add --global tree "exa -T"
 
 	abbr --add --global py python3
 	abbr --add --global pyins "pip3 install --user"
 	abbr --add --global pyuins "pip3 uninstall"
 
-	abbr --add --global ins "nix-env -iA"
-	abbr --add --global uins "nix-env --uninstall"
+	abbr --add --global ins "sudo emerge"
+	abbr --add --global uins "sudo emerge --depclean"
+	abbr --add --global up "sudo emerge -quvDN @world"
 
 	abbr --add --global stlsa "sudo systemctl start"
 	abbr --add --global stlst "sudo systemctl stop"
@@ -66,11 +70,10 @@ if status --is-interactive
 	abbr --add --global drm "docker rm"
 	abbr --add --global dls "docker images ls"
 
+    abbr --add --global mf "musicfox"
 	abbr --add --global nv "nvim"
 	abbr --add --global x "extract"
 	abbr --add --global ne "neofetch"
-	abbr --add --global rx "rxfetch"
-	abbr --add --global mc "macchina"
 	abbr --add --global uzw "unzip -O cp936"
 	abbr --add --global ra "ranger"
 	abbr --add --global d2u "find . -type f -exec dos2unix {} +"
