@@ -38,14 +38,9 @@ def notify(player):
                 title = '"{}"'.format(title)
                 artist_album = artist + " - " + album
                 artist_album = '"{}"'.format(artist_album)
-                print(art_filepath)
                 os.system(f"notify-send {title} {artist_album} --icon {art_filepath}")
             except Exception:
                 pass
-
-
-def on_metadata(player, metadata):
-    notify(player)
 
 
 def on_play(player, status):
@@ -55,9 +50,7 @@ def on_play(player, status):
 def init_player(name):
     player = Playerctl.Player.new_from_name(name)
     player.connect("playback-status::playing", on_play)
-    player.connect("metadata", on_metadata)
     manager.manage_player(player)
-    notify(player)
 
 
 def on_name_appeared(manager, name):

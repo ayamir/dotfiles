@@ -1,2 +1,19 @@
 #!/usr/bin/env bash
-/usr/bin/python3 ~/.local/bin/player_notification.py
+
+set -e
+
+PYPKG=$HOME/.local/bin/pypkg
+
+if [ ! -d "$PYPKG" ]; then
+	python3 -m venv $PYPKG
+	source $PYPKG/bin/activate
+	pip install pulsectl pygobject requests
+else
+	source $PYPKG/bin/activate
+fi
+
+if ! pgrep -f "player_notification"; then
+	$PYPKG/bin/python ~/.local/bin/player_notification.py
+else
+	echo "player_notification already running"
+fi

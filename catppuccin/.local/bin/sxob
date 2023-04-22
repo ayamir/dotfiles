@@ -1,2 +1,5 @@
 #!/usr/bin/env bash
+
+set -e
+source $HOME/.local/bin/pypkg/bin/activate
 pulse-volume-watcher.py | xob &

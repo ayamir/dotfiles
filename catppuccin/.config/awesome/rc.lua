@@ -28,10 +28,11 @@ require("awful.hotkeys_popup.keys")
 local local_bin = os.getenv("HOME") .. "/.local/bin/"
 local rofi_bin = os.getenv("HOME") .. "/.config/rofi/bin/"
 local randr = local_bin .. "randr"
-local picom = "picom --experimental-backends -b --config " .. theme_dir .. "conf/picom.conf"
+-- local picom = "picom -b --config " .. theme_dir .. "conf/picom.conf"
 local autostart = local_bin .. "awesome-autostart"
+local snotify = local_bin .. "snotify"
 local restore_wall = "nitrogen --restore"
-local random_wall = "python " .. local_bin .. "nitrogen_randomizer.py " .. theme_dir .. "2K"
+-- local random_wall = "python " .. local_bin .. "nitrogen_randomizer.py " .. theme_dir .. "2K"
 local recordmenu = local_bin .. "recordmenu"
 local pycharm = local_bin .. "pycharm"
 local webstorm = local_bin .. "webstorm"
@@ -42,7 +43,7 @@ local rofi_powermenu = rofi_bin .. "rofi_powermenu"
 
 awful.spawn.with_shell(randr)
 awful.spawn.with_shell(restore_wall)
-awful.spawn.with_shell(picom)
+awful.spawn.with_shell(snotify)
 awful.spawn.with_shell(autostart)
 
 -- }}}
@@ -135,12 +136,10 @@ local myawesomemenu = {
 
 local editormenu = {
 	{ "neovim", "kitty -e nvim" },
-	{ "helix", "kitty -e helix" },
-	{ "vscode", "code" },
+	{ "vscode", "vscode" },
 }
 
 local officemenu = {
-	{ "files", "nautilus" },
 	{ "Word", "wps" },
 	{ "Excel", "et" },
 	{ "Power Point", "wpp" },
@@ -149,21 +148,17 @@ local officemenu = {
 local networkmenu = {
 	{ "chrome", "google-chrome-stable" },
 	{ "firefox", "firefox" },
-	{ "nm-editor", "nm-connection-editor" },
 }
 
 local termmenu = {
 	{ "st", "st" },
-	{ "wezterm", "wezterm" },
 	{ "kitty", "kitty" },
-	{ "alacritty", "alacritty" },
 }
 
 local multimediamenu = {
-	{ "netease-cloud-music", "netease-cloud-music" },
 	{ "yesplaymusic", "yesplaymusic" },
 	{ "spotify", "spotify" },
-	{ "ncmpcpp", "alacritty --class music -e ncmpcpp" },
+	{ "ncmpcpp", "kitty --class music -e ncmpcpp" },
 	{ "vlc", "vlc" },
 	{ "pulseaudio", "pavucontrol" },
 }
@@ -310,7 +305,7 @@ local mpris = require("themes.default.mpris")
 local mpd = require("themes.default.mpdarc")
 local spacer = wibox.widget.textbox(" ")
 
-local tag1 = "  "
+local tag1 = "  "
 local tag2 = "  "
 local tag3 = "  "
 local tag4 = "  "
@@ -433,11 +428,6 @@ awful.screen.connect_for_each_screen(function(s)
 				layout = wibox.layout.fixed.horizontal,
 				mpris(),
 				spacer,
-				cpu,
-				spacer,
-				mem,
-				spacer,
-				vol,
 				mytextclock,
 				systray,
 				spacer,
@@ -497,73 +487,73 @@ local globalkeys = gears.table.join(
 
 	-- Standard program
 	awful.key({ modkey }, "d", function()
-		awful.util.spawn(dmenu_run, false)
+		awful.spawn(dmenu_run, false)
 	end, { description = "launch dmenu", group = "launcher" }),
 	awful.key({ modkey }, "c", function()
-		awful.util.spawn(recordmenu, false)
+		awful.spawn(recordmenu, false)
 	end, { description = "launch recordmenu", group = "launcher" }),
 	awful.key({ modkey }, "r", function()
-		awful.util.spawn(rofi_launcher, false)
+		awful.spawn(rofi_launcher, false)
 	end, { description = "launch launcher", group = "launcher" }),
 	awful.key({ modkey }, "w", function()
-		awful.util.spawn(rofi_window, false)
+		awful.spawn(rofi_window, false)
 	end, { description = "launch window", group = "launcher" }),
 	awful.key({ modkey }, "p", function()
-		awful.util.spawn(rofi_powermenu, false)
+		awful.spawn(rofi_powermenu, false)
 	end, { description = "launch powermenu", group = "launcher" }),
 	awful.key({ modkey }, "e", function()
-		awful.util.spawn("firefox")
+		awful.spawn("firefox")
 	end, { description = "launch firefox", group = "launcher" }),
 	awful.key({ modkey }, "x", function()
-		awful.util.spawn("typora")
+		awful.spawn("typora")
 	end, { description = "launch typora", group = "launcher" }),
 	awful.key({ modkey }, "z", function()
-		awful.util.spawn("obsidian")
+		awful.spawn("obsidian")
 	end, { description = "launch obsidian", group = "launcher" }),
 	awful.key({ modkey }, "v", function()
-		awful.util.spawn("glrnvim")
+		awful.spawn("glrnvim")
 	end, { description = "launch nvim", group = "launcher" }),
 	awful.key({ altkey }, "Return", function()
-		awful.spawn(terminal)
+		awful.spawn("kitty --title f4h --class f4h")
 	end, { description = "open kitty", group = "launcher" }),
 
 	awful.key({ modkey, "Shift" }, "q", function()
-		awful.util.spawn("xkill", false)
+		awful.spawn("xkill", false)
 	end, { description = "launch xkill", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "s", function()
-		awful.util.spawn("flameshot gui", false)
+		awful.spawn("flameshot gui", false)
 	end, { description = "launch flameshot", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "e", function()
-		awful.util.spawn("google-chrome-stable")
+		awful.spawn("google-chrome-stable")
 	end, { description = "launch chrome", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "n", function()
-		awful.util.spawn("nautilus")
+		awful.spawn("nautilus")
 	end, { description = "launch nautilus", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "h", function()
-		awful.util.spawn("alacritty -e htop")
+		awful.spawn("alacritty -e htop")
 	end, { description = "launch htop", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "m", function()
-		awful.util.spawn("alacritty --class music -e ncmpcpp")
+		awful.spawn("kitty --class music -e ncmpcpp")
 	end, { description = "launch ncmpcpp", group = "launcher" }),
 
 	awful.key({ altkey, "Control" }, "p", function()
-		awful.util.spawn("playerctl play-pause", false)
+		awful.spawn("playerctl play-pause", false)
 	end, { description = "toggle mpris", group = "launcher" }),
 	awful.key({ altkey, "Control" }, "Left", function()
-		awful.util.spawn("playerctl previous", false)
+		awful.spawn("playerctl previous", false)
 	end, { description = "play previous mpris", group = "launcher" }),
 	awful.key({ altkey, "Control" }, "Right", function()
-		awful.util.spawn("playerctl next", false)
+		awful.spawn("playerctl next", false)
 	end, { description = "play next mpris", group = "launcher" }),
 
 	awful.key({ modkey, "Control" }, "p", function()
-		awful.util.spawn("mpc toggle", false)
+		awful.spawn("mpc toggle", false)
 	end, { description = "mpc toggle", group = "launcher" }),
 	awful.key({ modkey, "Control" }, "Left", function()
-		awful.util.spawn("mpc prev", false)
+		awful.spawn("mpc prev", false)
 	end, { description = "mpc prev", group = "launcher" }),
 	awful.key({ modkey, "Control" }, "Right", function()
-		awful.util.spawn("mpc next", false)
+		awful.spawn("mpc next", false)
 	end, { description = "mpc next", group = "launcher" }),
 
 	awful.key({ modkey }, "Return", function()
@@ -822,7 +812,7 @@ awful.rules.rules = {
 	},
 	{
 		rule_any = {
-			instance = { "Tim.exe", "QQ.exe" },
+			instance = { "Tim.exe", "QQ" },
 		},
 		properties = {
 			focusable = true,
@@ -863,6 +853,7 @@ awful.rules.rules = {
 				"Nitrogen",
 				"Org.gnome.Nautilus",
 				"Timeshift-gtk",
+				"QQ",
 			},
 
 			-- Note that the name property shown in xprop might be set slightly after creation of the client
@@ -890,6 +881,8 @@ awful.rules.rules = {
 	{ rule = { class = "jetbrains-webstorm" }, properties = { screen = 1, tag = tag2 } },
 	{ rule = { class = "jetbrains-pycharm" }, properties = { screen = 1, tag = tag2 } },
 
+	{ rule = { class = "f4h" }, properties = { screen = 2, tag = tag2 } },
+
 	{ rule = { class = "Google-chrome" }, properties = { screen = 1, tag = tag3 } },
 
 	{ rule = { instance = "spotify" }, properties = { screen = 1, tag = tag4 } },
@@ -901,7 +894,7 @@ awful.rules.rules = {
 
 	{ rule = { class = "Steam" }, properties = { screen = 2, tag = tag5 } },
 
-	{ rule = { class = "icalingua" }, properties = { screen = 1, tag = tag6 } },
+	{ rule = { class = "QQ" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "Wine" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "wechat.exe" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "discord" }, properties = { screen = 2, tag = tag6 } },
@@ -911,7 +904,7 @@ awful.rules.rules = {
 	{ rule = { class = "qBittorrent" }, properties = { screen = 1, tag = tag7 } },
 	{ rule = { class = "Clash for Windows" }, properties = { screen = 2, tag = tag7 } },
 
-	{ rule = { class = "Joplin" }, properties = { screen = 1, tag = tag8 } },
+	{ rule = { class = "Obsidan" }, properties = { screen = 1, tag = tag8 } },
 
 	{ rule = { class = "winedbg.exe" }, properties = { screen = 1, tag = tag9 } },
 }

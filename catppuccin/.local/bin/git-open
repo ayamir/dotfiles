@@ -1,0 +1,272 @@
+#!/usr/bin/env bash
+
+# Use git-sh-setup, similar to git-rebase
+# https://www.kernel.org/pub/software/scm/git/docs/git-sh-setup.html
+# https://github.com/git/git/blob/master/git-rebase.sh
+# shellcheck disable=SC2034
+OPTIONS_STUCKLONG=t
+# shellcheck disable=SC2034
+OPTIONS_KEEPDASHDASH=
+# shellcheck disable=SC2034
+OPTIONS_SPEC="\
+git open [options]
+git open [remote] [branch]
+--
+  Opens the GitHub page for a repo/branch in your browser.
+  https://github.com/paulirish/git-open/
+
+  Available options are
+c,commit!     open current commit
+i,issue!      open issues page
+s,suffix=     append this suffix
+p,print!      just print the url
+"
+
+# https://github.com/koalaman/shellcheck/wiki/SC1090
+# shellcheck source=/dev/null
+SUBDIRECTORY_OK='Yes' . "$(git --exec-path)/git-sh-setup"
+
+# Defaults
+is_commit=0
+is_issue=0
+protocol="https"
+print_only=0
+suffix_flag=""
+
+while test $# != 0; do
+  case "$1" in
+  --commit) is_commit=1;;
+  --issue) is_issue=1;;
+  --suffix=*) suffix_flag="$1";;
+  --print) print_only=1;;
+  --) shift; break ;;
+  esac
+  shift
+done
+
+# parse suffix from suffix=value
+IFS='=' read -ra suffix_flag <<< "$suffix_flag"
+function join_by { local IFS="$1"; shift; echo "$*"; }
+suffix=$(join_by "=" "${suffix_flag[@]:1}")
+
+# are we in a git repo?
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+  echo "Not a git repository." 1>&2
+  exit 1
+fi
+
+# choose remote. priority to: provided argument, default in config, detected tracked remote, 'origin'
+branch=${2:-$(git symbolic-ref -q --short HEAD)}
+upstream_branch_full_name=$(git config "branch.$branch.merge")
+upstream_branch=${upstream_branch_full_name#"refs/heads/"}
+tracked_remote=$(git config "branch.$branch.remote")
+default_remote=$(git config open.default.remote)
+remote=${1:-$default_remote}
+remote=${remote:-$tracked_remote}
+remote=${remote:-"origin"}
+
+giturl=$(git ls-remote --get-url "$remote")
+
+if [[ -z "$giturl" ]]; then
+  echo "Git remote is not set for $remote" 1>&2
+  exit 1
+fi
+
+ssh_config=${ssh_config:-"$HOME/.ssh/config"}
+# Resolves an ssh alias defined in ssh_config to it's corresponding hostname
+# echos out result, should be used within subshell $( ssh_resolve $host )
+# echos out nothing if alias could not be resolved
+function ssh_resolve() {
+  domain="$1"
+  ssh_found=true
+  # Filter to only ssh_config lines that start with "Host" or "HostName"
+  resolved=$(while read -r ssh_line; do
+    # Split each line by spaces, of the form:
+    # Host alias [alias...]
+    # Host regex
+    # HostName resolved.domain.com
+    read -r -a ssh_array <<<"${ssh_line}"
+    ssh_optcode="$(echo "${ssh_array[0]}" | tr '[:lower:]' '[:upper:]')"
+    if [[ $ssh_optcode == HOST ]]; then
+      # Host
+      ssh_found=false
+      # Iterate through aliases looking for a match
+      for ssh_index in $(seq 1 $((${#ssh_array[@]} - 1))); do
+        ssh_host=${ssh_array[$ssh_index]}
+        # shellcheck disable=SC2053
+        if [[ $domain == $ssh_host ]]; then
+          # Found a match, next HostName entry will be returned while matched
+          ssh_found=true
+          break
+        fi
+      done
+    elif $ssh_found && [[ $ssh_optcode == HOSTNAME ]]; then
+      # HostName, but only if ssh_found is true (the last Host entry matched)
+      # Replace all instances of %h with the Host alias
+      echo "${ssh_array[1]//%h/$domain}"
+    fi
+  done < <(grep -iE "^\\s*Host(Name)?\\s+" "$ssh_config"))
+  # Take only the last resolved hostname (multiple are overridden)
+  tail -1 <<<"$resolved"
+}
+
+# From git-fetch(5), native protocols:
+# ssh://[user@]host.xz[:port]/path/to/repo.git/
+# git://host.xz[:port]/path/to/repo.git/
+# http[s]://host.xz[:port]/path/to/repo.git/
+# ftp[s]://host.xz[:port]/path/to/repo.git/
+# [user@]host.xz:path/to/repo.git/ - scp-like but is an alternative to ssh.
+# [user@]hostalias:path/to/repo.git/ - handles host aliases defined in ssh_config(5)
+
+# Determine whether this is a url (https, ssh, git+ssh...) or an scp-style path
+if [[ "$giturl" =~ ^[a-z\+]+://.* ]]; then
+  # Trim URL scheme and possible username
+  gitprotocol=${giturl%%://*}
+  uri=${giturl#*://}
+  uri=${uri#*@}
+
+  # Split on first '/ to get server name and path
+  domain=${uri%%/*}
+  urlpath=${uri#*/}
+
+  # Remove port number from non-http/https protocols (ie, ssh)
+  if [[ $gitprotocol != 'https' && $gitprotocol != 'http' ]]; then
+    domain=${domain%:*}
+  fi
+else
+  # Trim possible username from SSH path
+  uri=${giturl##*@}
+
+  # Split on first ':' to get server name and path
+  domain=${uri%%:*}
+  urlpath=${uri#*:}
+
+  # Resolve sshconfig aliases
+  if [[ -e "$ssh_config" ]]; then
+    domain_resolv=$(ssh_resolve "$domain")
+    if [[ -n "$domain_resolv" ]]; then
+      domain="$domain_resolv"
+    fi
+  fi
+fi
+
+# Trim "/" from beginning of URL; "/" and ".git" from end of URL
+urlpath=${urlpath#/} urlpath=${urlpath%/} urlpath=${urlpath%.git}
+
+# If the URL is provided as "http", preserve that
+if [[ $gitprotocol == 'http' ]]; then
+  protocol='http'
+fi
+
+# Allow config options to replace the server or the protocol
+openurl="$protocol://$domain"
+
+function getConfig() {
+  config=$(git config --get-urlmatch "open.$1" "$openurl")
+  echo "${config:-${!1}}"
+}
+
+domain=$(getConfig "domain")
+protocol=$(getConfig "protocol")
+
+# Remote ref to open
+remote_ref=${upstream_branch:-${branch:-$(git describe --tags --exact-match 2>/dev/null || git rev-parse HEAD)}}
+
+# Split arguments on '/'
+IFS='/' read -r -a pathargs <<<"$urlpath"
+
+if (( is_issue )); then
+  # For issues, take the numbers and preprend 'issues/'
+  [[ $remote_ref =~ [0-9]+ ]]
+  providerBranchRef="/issues/${BASH_REMATCH[0]}"
+else
+  # Make # and % characters url friendly
+  #   github.com/paulirish/git-open/pull/24
+  remote_ref=${remote_ref//%/%25} remote_ref=${remote_ref//#/%23}
+  providerBranchRef="/tree/$remote_ref"
+fi
+
+if [[ "$domain" == 'bitbucket.org' ]]; then
+  providerBranchRef="/src/$remote_ref"
+elif [[ "${#pathargs[@]}" -ge 3 && ${pathargs[${#pathargs[@]} - 3]} == 'scm' ]]; then
+  # Bitbucket server always has /scm/ as the third to last segment in the url path, e.g. /scm/ppp/test-repo.git
+  # Anything before the 'scm' is part of the server's root context
+
+  # If there are other context parts, add them, up to (but not including) the found 'scm'
+  pathPref=("${pathargs[*]:0:${#pathargs[@]} - 3}")
+
+  # Replace the 'scm' element, with 'projects'. Keep the first argument, the string 'repos', and finally the rest of the arguments.
+  # shellcheck disable=SC2206
+  pathargs=(${pathPref[@]} 'projects' ${pathargs[${#pathargs[@]} - 2]} 'repos' "${pathargs[@]:${#pathargs[@]} - 1}")
+  IFS='/' urlpath="${pathargs[*]}"
+  providerBranchRef="/browse?at=$remote_ref"
+elif [[ "${#pathargs[@]}" -ge '2' && ${pathargs[${#pathargs[@]} - 2]} == '_git' ]]; then
+  # Visual Studio Team Services and Team Foundation Server always have /_git/ as the second to last segment in the url path
+  if (( is_issue )); then
+    # Switch to workitems, provide work item id if specified
+    urlpath="${urlpath%%/_git/*}/_workitems"
+    # Handle case for the default repository url
+    urlpath="${urlpath#_git\/*}"
+    providerBranchRef="?id=${remote_ref//[^0-9]/}"
+  else
+    # Keep project and repository name, append branch selector.
+    providerBranchRef="?version=GB$remote_ref"
+  fi
+elif [[ "$domain" =~ amazonaws\.com$ ]]; then
+  # AWS Code Commit
+  if (( is_issue )); then
+    echo "Issue feature does not supported on AWS Code Commit." 1>&2
+    exit 1
+  fi
+
+  # Take region name from domain.
+  region=${domain#*.}
+  region=${region%%.*}
+
+  # Replace domain.
+  # Ex. git-codecommit.us-east-1.amazonaws.com -> us-east-1.console.aws.amazon.com
+  domain="${region}.console.aws.amazon.com"
+
+  # Replace URL path.
+  # Ex. v1/repos/example -> codecommit/home?region=us-east-1#/repository/example/browse/
+  urlpath="codecommit/home?region=${region}#/repository/${urlpath##*/}/browse/"
+
+  # Replace branch ref.
+  # Ex. /tree/foobar -> foobar/--/
+  providerBranchRef="${providerBranchRef##*/}/--/"
+fi
+
+openurl="$protocol://$domain/$urlpath"
+
+if (( is_commit )); then
+    sha=$(git rev-parse HEAD)
+    openurl="$openurl/commit/$sha"
+elif [[ $remote_ref != "master" ]]; then
+    # simplify URL for master
+    openurl="$openurl$providerBranchRef"
+fi
+
+if [ "$suffix" ]; then
+    openurl="$openurl/$suffix"
+fi
+
+# get current open browser command
+case $( uname -s ) in
+  Darwin)   open='open';;
+  MINGW*)   open='start';;
+  MSYS*)    open='start';;
+  CYGWIN*)  open='cygstart';;
+  *)        # Try to detect WSL (Windows Subsystem for Linux)
+            if uname -r | grep -q -i Microsoft; then
+              open='powershell.exe -NoProfile Start'
+            else
+              open='xdg-open'
+            fi;;
+esac
+
+if (( print_only )); then
+  BROWSER="echo"
+fi
+
+# open it in a browser
+${BROWSER:-$open} "$openurl"

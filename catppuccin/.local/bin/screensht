@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# stolen from snap
+
+<<screensht
+
+ 		_____ _____ _____ _____ _____ _____ _____ _____ _____
+	   |   __|     | __  |   __|   __|   | |   __|  |  |_   _|
+	   |__   |   --|    -|   __|   __| | | |__   |     | | |
+	   |_____|_____|__|__|_____|_____|_|___|_____|__|__| |_|
+	~ Script to take screenshots using scrot and AwesomeWM API ~
+
+screensht
+
+
+screenshot_dir=$(xdg-user-dir PICTURES)/Screenshots/
+
+# Check save directory
+# Create it if it doesn't exist
+function check_dir() {
+	if [ ! -d "$screenshot_dir" ];
+	then
+		mkdir -p "$screenshot_dir"
+	fi
+}
+
+# Main function
+function shot() {
+
+	check_dir
+
+	file_loc="${screenshot_dir}screensht_$(date +%y-%m-%d_%H:%M:%S).png"
+	
+	scrot_command="$1"
+	notif_message="$2"
+
+	# Execute scrot command
+	${scrot_command} "${file_loc}"
+
+	# Exit if the user cancels the screenshot
+	# So it means there's no new screenshot image file
+	if [ ! -f "${file_loc}" ];
+	then
+		exit;
+	fi
+
+	# Copy to clipboard
+	xclip -selection clipboard -t image/png -i "${screenshot_dir}"/`ls -1 -t "${screenshot_dir}" | head -1` &
+
+	awesome-client "
+
+	-- IMPORTANT NOTE: THIS PART OF THE SCRIPT IS LUA!
+	naughty = require('naughty')
+	awful = require('awful')
+	beautiful = require('beautiful')
+	dpi = beautiful.xresources.apply_dpi
+
+	local open_image = naughty.action {
+		name = 'Open',
+	   	icon_only = false,
+	}
+
+	local delete_image = naughty.action {
+		name = 'Delete',
+	   	icon_only = false,
+	}
+
+	-- Execute the callback when 'Open' is pressed
+	open_image:connect_signal('invoked', function()
+		awful.spawn('xdg-open ' .. '${file_loc}', false)
+	end)
+
+	-- Execute the callback when 'Delete' is pressed
+	delete_image:connect_signal('invoked', function()
+		awful.spawn('gio trash ' .. '${file_loc}', false)
+	end)
+
+	-- Show notification
+	naughty.notification ({
+		app_name = 'Screenshot Tool',
+		icon = '${file_loc}',
+		timeout = 10,
+		title = '<b>Screensht!</b>',
+		message = '${notif_message}',
+		actions = { open_image, delete_image }
+	})
+	"
+
+}
+
+# Check the args passed
+if [ -z "$1" ] || ([ "$1" != 'full' ] && [ "$1" != 'area' ]);
+then
+	echo "
+	Requires an argument:
+	area 	- Area screenshot
+	full 	- Fullscreen screenshot
+
+	Example:
+	./screensht area
+	./screensht full
+	"
+elif [ "$1" = 'full' ];
+then
+	msg="Full screenshot saved and copied to clipboard!"
+	shot 'scrot -q100' "${msg}"
+elif [ "$1" = 'area' ];
+then
+	msg='Area screenshot saved and copied to clipboard!'
+	shot 'scrot -q100 -s -f -b' "${msg}"
+fi
+
