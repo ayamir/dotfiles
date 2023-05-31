@@ -28,7 +28,7 @@ require("awful.hotkeys_popup.keys")
 local local_bin = os.getenv("HOME") .. "/.local/bin/"
 local rofi_bin = os.getenv("HOME") .. "/.config/rofi/bin/"
 local randr = local_bin .. "randr"
--- local picom = "picom -b --config " .. theme_dir .. "conf/picom.conf"
+local picom = "picom -b --config " .. theme_dir .. "conf/picom.conf"
 local autostart = local_bin .. "awesome-autostart"
 local snotify = local_bin .. "snotify"
 local restore_wall = "nitrogen --restore"
@@ -43,6 +43,7 @@ local rofi_powermenu = rofi_bin .. "rofi_powermenu"
 
 awful.spawn.with_shell(randr)
 awful.spawn.with_shell(restore_wall)
+awful.spawn.with_shell(picom)
 awful.spawn.with_shell(snotify)
 awful.spawn.with_shell(autostart)
 
@@ -147,7 +148,7 @@ local officemenu = {
 
 local networkmenu = {
 	{ "chrome", "google-chrome-stable" },
-	{ "firefox", "firefox" },
+	{ "vivaldi", "vivaldi" },
 }
 
 local termmenu = {
@@ -307,13 +308,13 @@ local spacer = wibox.widget.textbox(" ")
 
 local tag1 = "  "
 local tag2 = "  "
-local tag3 = "  "
+local tag3 = "  "
 local tag4 = "  "
 local tag5 = "  "
 local tag6 = "  "
 local tag7 = "  "
-local tag8 = " ﴬ "
-local tag9 = "  "
+local tag8 = "  "
+local tag9 = "  "
 
 awful.screen.connect_for_each_screen(function(s)
 	-- Each screen has its own tag table.
@@ -426,7 +427,6 @@ awful.screen.connect_for_each_screen(function(s)
 			s.mytasklist, -- Middle widget
 			{ -- Right widgets
 				layout = wibox.layout.fixed.horizontal,
-				mpris(),
 				spacer,
 				mytextclock,
 				systray,
@@ -446,7 +446,7 @@ awful.screen.connect_for_each_screen(function(s)
 			s.mytasklist, -- Middle widget
 			{ -- Right widgets
 				layout = wibox.layout.fixed.horizontal,
-				mpd,
+				mpris(),
 				spacer,
 				cpu,
 				spacer,
@@ -502,19 +502,19 @@ local globalkeys = gears.table.join(
 		awful.spawn(rofi_powermenu, false)
 	end, { description = "launch powermenu", group = "launcher" }),
 	awful.key({ modkey }, "e", function()
-		awful.spawn("firefox")
-	end, { description = "launch firefox", group = "launcher" }),
+		awful.spawn("vivaldi")
+	end, { description = "launch vivaldi", group = "launcher" }),
 	awful.key({ modkey }, "x", function()
-		awful.spawn("typora")
-	end, { description = "launch typora", group = "launcher" }),
+		awful.spawn("logseq")
+	end, { description = "launch logseq", group = "launcher" }),
 	awful.key({ modkey }, "z", function()
 		awful.spawn("obsidian")
 	end, { description = "launch obsidian", group = "launcher" }),
 	awful.key({ modkey }, "v", function()
-		awful.spawn("glrnvim")
-	end, { description = "launch nvim", group = "launcher" }),
+		awful.spawn("vscode")
+	end, { description = "launch vscode", group = "launcher" }),
 	awful.key({ altkey }, "Return", function()
-		awful.spawn("kitty --title f4h --class f4h")
+		awful.spawn("kitty --title f4h --class f4h -e fish")
 	end, { description = "open kitty", group = "launcher" }),
 
 	awful.key({ modkey, "Shift" }, "q", function()
@@ -526,14 +526,8 @@ local globalkeys = gears.table.join(
 	awful.key({ modkey, "Shift" }, "e", function()
 		awful.spawn("google-chrome-stable")
 	end, { description = "launch chrome", group = "launcher" }),
-	awful.key({ modkey, "Shift" }, "n", function()
-		awful.spawn("nautilus")
-	end, { description = "launch nautilus", group = "launcher" }),
-	awful.key({ modkey, "Shift" }, "h", function()
-		awful.spawn("alacritty -e htop")
-	end, { description = "launch htop", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "m", function()
-		awful.spawn("kitty --class music -e ncmpcpp")
+		awful.spawn("yesplaymusic")
 	end, { description = "launch ncmpcpp", group = "launcher" }),
 
 	awful.key({ altkey, "Control" }, "p", function()
@@ -559,9 +553,6 @@ local globalkeys = gears.table.join(
 	awful.key({ modkey }, "Return", function()
 		awful.spawn("kitty -e zsh")
 	end, { description = "open kitty with zsh", group = "launcher" }),
-	awful.key({ altkey }, "v", function()
-		awful.spawn("neovide")
-	end, { description = "launch neovide", group = "launcher" }),
 	awful.key({ altkey }, "w", function()
 		awful.spawn(webstorm)
 	end, { description = "launch webstorm", group = "launcher" }),
@@ -860,6 +851,7 @@ awful.rules.rules = {
 			-- and the name shown there might not match defined rules here.
 			name = {
 				"Event Tester", -- xev.
+				"Welcome to CLion",
 			},
 			role = {
 				"AlarmWindow", -- Thunderbird's calendar.
@@ -874,39 +866,38 @@ awful.rules.rules = {
 	{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = false } },
 
 	-- Set Firefox to always map on the tag1 on screen 1.
-	{ rule = { class = "firefox" }, properties = { screen = 1, tag = tag1 } },
+	{ rule = { class = "vivaldi-stable" }, properties = { screen = 1, tag = tag1 } },
 	{ rule = { instance = "Devtools" }, properties = { screen = 2, tag = tag1 } },
 	-- { rule = { class = "Typora" }, properties = { screen = 2, tag = tag1 } },
 
+	{ rule = { class = "jetbrains-clion" }, properties = { screen = 1, tag = tag2 } },
 	{ rule = { class = "jetbrains-webstorm" }, properties = { screen = 1, tag = tag2 } },
 	{ rule = { class = "jetbrains-pycharm" }, properties = { screen = 1, tag = tag2 } },
 
-	{ rule = { class = "f4h" }, properties = { screen = 2, tag = tag2 } },
-
-	{ rule = { class = "Google-chrome" }, properties = { screen = 1, tag = tag3 } },
+	{ rule = { class = "f4h" }, properties = { screen = 1, tag = tag3 } },
 
 	{ rule = { instance = "spotify" }, properties = { screen = 1, tag = tag4 } },
 	{ rule = { class = "Spotify" }, properties = { screen = 1, tag = tag4 } },
-	{ rule = { class = "netease-cloud-music" }, properties = { screen = 1, tag = tag4 } },
-	{ rule = { class = "electron-netease-cloud-music" }, properties = { screen = 1, tag = tag4 } },
+	{ rule = { class = "yesplaymusic" }, properties = { screen = 1, tag = tag4 } },
+
 	{ rule = { instance = "music" }, properties = { screen = 2, tag = tag4 } },
-	{ rule = { class = "yesplaymusic" }, properties = { screen = 2, tag = tag4 } },
 
 	{ rule = { class = "Steam" }, properties = { screen = 2, tag = tag5 } },
 
 	{ rule = { class = "QQ" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "Wine" }, properties = { screen = 1, tag = tag6 } },
 	{ rule = { class = "wechat.exe" }, properties = { screen = 1, tag = tag6 } },
-	{ rule = { class = "discord" }, properties = { screen = 2, tag = tag6 } },
 	{ rule = { class = "TelegramDesktop" }, properties = { screen = 2, tag = tag6 } },
 
 	{ rule = { class = "Solaar" }, properties = { screen = 1, tag = tag7 } },
 	{ rule = { class = "qBittorrent" }, properties = { screen = 1, tag = tag7 } },
-	{ rule = { class = "Clash for Windows" }, properties = { screen = 2, tag = tag7 } },
+	{ rule = { class = "discord" }, properties = { screen = 2, tag = tag7 } },
 
-	{ rule = { class = "Obsidan" }, properties = { screen = 1, tag = tag8 } },
+	{ rule = { class = "Logseq" }, properties = { screen = 1, tag = tag8 } },
+	{ rule = { class = "obsidian" }, properties = { screen = 2, tag = tag8 } },
 
 	{ rule = { class = "winedbg.exe" }, properties = { screen = 1, tag = tag9 } },
+	{ rule = { class = "Clash for Windows" }, properties = { screen = 2, tag = tag9 } },
 }
 -- }}}
 
