@@ -1,4 +1,5 @@
 local wezterm = require("wezterm")
+local c = wezterm.config_builder()
 local mykeys = {
 	{
 		key = "t",
@@ -13,8 +14,9 @@ local mykeys = {
 	{ key = "=", mods = "CTRL", action = "IncreaseFontSize" },
 	{ key = "-", mods = "CTRL", action = "DecreaseFontSize" },
 	{ key = "0", mods = "CTRL", action = "ResetFontSize" },
-	{ key = "C", mods = "CTRL|SHIFT", action = "Copy" },
-	{ key = "V", mods = "CTRL|SHIFT", action = "Paste" },
+	{ key = "C", mods = "CTRL", action = wezterm.action.CopyTo("ClipboardAndPrimarySelection") },
+	{ key = "V", mods = "CTRL", action = wezterm.action.PasteFrom("Clipboard") },
+	{ key = "V", mods = "CTRL", action = wezterm.action.PasteFrom("PrimarySelection") },
 	{ key = "Z", mods = "CTRL", action = "TogglePaneZoomState" },
 	{
 		key = "J",
@@ -37,50 +39,57 @@ for i = 1, 8 do
 	})
 end
 
-return {
-	use_ime = true,
-	default_prog = { "/usr/bin/fish", "-l" },
-	font = wezterm.font_with_fallback({
-		"Sarasa Mono SC Nerd",
-		"JetBrainsMono Nerd Font",
-		"Consolas NF",
-		"FiraCode Nerd Font",
-		"CamingoCode Nerd Font",
-		"Hack Nerd Font",
-		"PlexCodePro Nerd Font Mono",
-		"CodeNewRoman Nerd Font",
-		"Operator Mono Lig",
-	}),
-	front_end = "OpenGL",
-	font_size = 14,
-	color_scheme = "Catppuccin",
-	enable_tab_bar = true,
-	tab_max_width = 20,
-	tab_bar_at_bottom = true,
-	hide_tab_bar_if_only_one_tab = true,
-	text_background_opacity = 1.0,
-	disable_default_key_bindings = true,
-	mouse_bindings = {
-		{
+wezterm.plugin.require("https://github.com/nekowinston/wezterm-bar").apply_to_config(c)
 
-			event = { Up = { streak = 1, button = "Left" } },
-			mods = "NONE",
-			action = wezterm.action({
-				CompleteSelectionOrOpenLinkAtMouseCursor = "Clipboard",
-			}),
-		},
-		{
-			event = { Up = { streak = 1, button = "Left" } },
-			mods = "CTRL",
-			action = "OpenLinkAtMouseCursor",
-		},
-	},
-	keys = mykeys,
-	window_background_opacity = 1.0,
-	-- window_background_image = "/home/ayamir/Pictures/wezterm/nord.jpg",
-	-- window_background_image_hsb = {
-	--     brightness = 2.0,
-	--     hue = 1.0,
-	--     saturation = 1.0
-	-- }
+c.use_ime = true
+c.default_prog = { "/bin/zsh", "-l" }
+c.window_decorations = "RESIZE"
+c.window_padding = {
+	left = 0,
+	right = 0,
+	top = 0,
+	bottom = 0,
 }
+c.font = wezterm.font_with_fallback({
+	"JetBrainsMono Nerd Font",
+	"Sarasa Mono SC Nerd",
+	"Consolas NF",
+	"FiraCode Nerd Font",
+	"CamingoCode Nerd Font",
+	"Hack Nerd Font",
+	"PlexCodePro Nerd Font Mono",
+	"CodeNewRoman Nerd Font",
+	"Operator Mono Lig",
+})
+c.adjust_window_size_when_changing_font_size = false
+c.audible_bell = "Disabled"
+c.clean_exit_codes = { 130 }
+c.default_cursor_style = "BlinkingBar"
+c.command_palette_font_size = 13.0
+c.window_frame = { font_size = 13.0 }
+c.window_background_opacity = 0.95
+c.front_end = "OpenGL"
+c.font_size = 13
+c.mouse_bindings = {
+	{
+
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "NONE",
+		action = wezterm.action({
+			CompleteSelectionOrOpenLinkAtMouseCursor = "Clipboard",
+		}),
+	},
+	{
+		event = { Up = { streak = 1, button = "Left" } },
+		mods = "CTRL",
+		action = "OpenLinkAtMouseCursor",
+	},
+}
+c.keys = mykeys
+
+wezterm.plugin.require("https://github.com/catppuccin/wezterm").apply_to_config(c, {
+	sync = false,
+	sync_flavors = { light = "latte", dark = "mocha" },
+})
+
+return c
