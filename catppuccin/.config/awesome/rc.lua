@@ -148,7 +148,8 @@ local officemenu = {
 
 local networkmenu = {
 	{ "chrome", "google-chrome-stable" },
-	{ "vivaldi", "vivaldi" },
+	{ "microsoft-edge", "microsoft-edge-stable" },
+	{ "firefox", "firefox-bin" },
 }
 
 local termmenu = {
@@ -171,7 +172,6 @@ local settingsmenu = {
 }
 
 local utilsmenu = {
-	{ "screenshot", "flameshot gui" },
 	{ "screenkey", "screenkey" },
 }
 
@@ -286,18 +286,18 @@ local vol = lain.widget.alsa({
 
 vol.widget:buttons(awful.util.table.join(
 	awful.button({}, 1, function() -- left click
-		awful.spawn("pamixer -t")
+		awful.spawn("wpctl set-mute @DEFAULT_SINK@ toggle")
 		vol.update()
 	end),
 	awful.button({}, 3, function() -- middle click
 		awful.spawn("pavucontrol")
 	end),
 	awful.button({}, 4, function() -- scroll up
-		awful.spawn("pamixer -i 3")
+		awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+")
 		vol.update()
 	end),
 	awful.button({}, 5, function() -- scroll down
-		awful.spawn("pamixer -d 3")
+		awful.spawn("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-")
 		vol.update()
 	end)
 ))
@@ -502,8 +502,8 @@ local globalkeys = gears.table.join(
 		awful.spawn(rofi_powermenu, false)
 	end, { description = "launch powermenu", group = "launcher" }),
 	awful.key({ modkey }, "e", function()
-		awful.spawn("vivaldi")
-	end, { description = "launch vivaldi", group = "launcher" }),
+		awful.spawn("microsoft-edge-stable")
+	end, { description = "launch edge", group = "launcher" }),
 	awful.key({ modkey }, "x", function()
 		awful.spawn("logseq")
 	end, { description = "launch logseq", group = "launcher" }),
@@ -521,11 +521,11 @@ local globalkeys = gears.table.join(
 		awful.spawn("xkill", false)
 	end, { description = "launch xkill", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "s", function()
-		awful.spawn("flameshot gui", false)
+		awful.spawn("screensht area", false)
 	end, { description = "launch flameshot", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "e", function()
-		awful.spawn("google-chrome-stable")
-	end, { description = "launch chrome", group = "launcher" }),
+		awful.spawn("nautilus")
+	end, { description = "launch nautilus", group = "launcher" }),
 	awful.key({ modkey, "Shift" }, "m", function()
 		awful.spawn("yesplaymusic")
 	end, { description = "launch ncmpcpp", group = "launcher" }),
@@ -867,6 +867,9 @@ awful.rules.rules = {
 
 	-- Set Firefox to always map on the tag1 on screen 1.
 	{ rule = { class = "vivaldi-stable" }, properties = { screen = 1, tag = tag1 } },
+	{ rule = { class = "firefox-bin" }, properties = { screen = 1, tag = tag1 } },
+	{ rule = { class = "microsoft-edge-stable" }, properties = { screen = 1, tag = tag1 } },
+	{ rule = { class = "google-chrome" }, properties = { screen = 1, tag = tag1 } },
 	{ rule = { instance = "Devtools" }, properties = { screen = 2, tag = tag1 } },
 	-- { rule = { class = "Typora" }, properties = { screen = 2, tag = tag1 } },
 
@@ -896,8 +899,9 @@ awful.rules.rules = {
 	{ rule = { class = "Logseq" }, properties = { screen = 1, tag = tag8 } },
 	{ rule = { class = "obsidian" }, properties = { screen = 2, tag = tag8 } },
 
+	{ rule = { class = "picgo" }, properties = { screen = 1, tag = tag9 } },
 	{ rule = { class = "winedbg.exe" }, properties = { screen = 1, tag = tag9 } },
-	{ rule = { class = "Clash for Windows" }, properties = { screen = 2, tag = tag9 } },
+	{ rule = { class = "clash for windows" }, properties = { screen = 2, tag = tag9 } },
 }
 -- }}}
 
