@@ -1,0 +1,24 @@
+[user]
+	email = lgt986452565@gmail.com
+	name = ayamir
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[http "https://github.com"]
+	proxy = http://127.0.0.1:7890
+[http "https://gitlab.com"]
+	proxy = http://127.0.0.1:7890
+[alias]
+	st = status -sb
+	ll = log --oneline
+	last = log -1 HEAD --stat
+	cm = commit -sm
+	rv = remote -v
+	gl = config --global -l
+    lg = log --graph --pretty=oneline --abbrev-commit
+	se = !git rev-list --all | xargs git grep -F
+[help]
+	autocorrect = 20
