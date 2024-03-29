@@ -43,8 +43,6 @@ bind v split-window -h
 # open new tmux window
 bind w new-window
 
-# edit configuration
-bind e new-window -n "~/.tmux.conf" "EDITOR=\${EDITOR//mvim/nvim} && EDITOR=\${EDITOR//gvim/vim} && \${EDITOR:-nvim} ~/.tmux.conf.local && tmux source ~/.tmux.conf && tmux display \"~/.tmux.conf sourced\""
 # reload configuration
 bind r source-file ~/.tmux.conf \; display '~/.tmux.conf sourced'
 
@@ -124,18 +122,56 @@ bind m run "cut -c3- ~/.tmux.conf | sh -s _toggle_mouse"
 # -- urlview -------------------------------------------------------------------
 bind U run "cut -c3- ~/.tmux.conf | sh -s _urlview #{pane_id}"
 
+# NOTE: you can use vars with $<var> and ${<var>} as long as the str is double quoted: ""
+# WARNING: hex colors can't contain capital letters
+
 # List of plugins
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'catppuccin/tmux'
-
-set -g @catppuccin_flavour 'mocha'
+# set -g @plugin "arcticicestudio/nord-tmux"
 
 # Other examples:
 # set -g @plugin 'github_username/plugin_name'
 # set -g @plugin 'github_username/plugin_name#branch'
 # set -g @plugin 'git@github.com:user/plugin'
 # set -g @plugin 'git@bitbucket.com:user/plugin'
+set -g @plugin 'catppuccin/tmux'
+set -g @catppuccin_flavour 'mocha' # or frappe, macchiato, mocha
+set -g @catppuccin_window_tabs_enabled on # or off to disable window_tabs
+set -g @catppuccin_powerline_icons_theme_enabled on
+set -g @catppuccin_l_left_separator ""
+set -g @catppuccin_l_right_separator ""
+set -g @catppuccin_r_left_separator ""
+set -g @catppuccin_r_right_separator ""
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'
+
+# '@pane-is-vim' is a pane-local option that is set by the plugin on load,
+# and unset when Neovim exits or suspends; note that this means you'll probably
+# not want to lazy-load smart-splits.nvim, as the variable won't be set until
+# the plugin is loaded
+
+# Smart pane switching with awareness of Neovim splits.
+bind-key -n C-h if -F "#{@pane-is-vim}" 'send-keys C-h'  'select-pane -L'
+bind-key -n C-j if -F "#{@pane-is-vim}" 'send-keys C-j'  'select-pane -D'
+bind-key -n C-k if -F "#{@pane-is-vim}" 'send-keys C-k'  'select-pane -U'
+bind-key -n C-l if -F "#{@pane-is-vim}" 'send-keys C-l'  'select-pane -R'
+
+# Smart pane resizing with awareness of Neovim splits.
+bind-key -n M-h if -F "#{@pane-is-vim}" 'send-keys M-h' 'resize-pane -L 3'
+bind-key -n M-j if -F "#{@pane-is-vim}" 'send-keys M-j' 'resize-pane -D 3'
+bind-key -n M-k if -F "#{@pane-is-vim}" 'send-keys M-k' 'resize-pane -U 3'
+bind-key -n M-l if -F "#{@pane-is-vim}" 'send-keys M-l' 'resize-pane -R 3'
+
+tmux_version='$(tmux -V | sed -En "s/^tmux ([0-9]+(.[0-9]+)?).*/\1/p")'
+if-shell -b '[ "$(echo "$tmux_version < 3.0" | bc)" = 1 ]' \
+    "bind-key -n 'C-\\' if -F \"#{@pane-is-vim}\" 'send-keys C-\\'  'select-pane -l'"
+if-shell -b '[ "$(echo "$tmux_version >= 3.0" | bc)" = 1 ]' \
+    "bind-key -n 'C-\\' if -F \"#{@pane-is-vim}\" 'send-keys C-\\\\'  'select-pane -l'"
+
+bind-key -T copy-mode-vi 'C-h' select-pane -L
+bind-key -T copy-mode-vi 'C-j' select-pane -D
+bind-key -T copy-mode-vi 'C-k' select-pane -U
+bind-key -T copy-mode-vi 'C-l' select-pane -R
+bind-key -T copy-mode-vi 'C-\' select-pane -l
