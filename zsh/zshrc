@@ -1,4 +1,5 @@
-# zinit
+# zinit init
+# sh -c "$(curl -fsSL get.zshell.dev)" --
 typeset -A ZI
 ZI[BIN_DIR]="${HOME}/.zi/bin"
 source "${ZI[BIN_DIR]}/zi.zsh"
@@ -40,23 +41,6 @@ fi
 
 prompt grml
 
-# Load Plugins
-_ZSH_PLUGINS="/usr/share/zsh/plugins"
-if [[ -f "$(which brew)" ]]; then
-	_ZSH_PLUGINS="$(brew --prefix)/share"
-fi
-
-# brew install zsh-autosuggestions zsh-fast-syntax-highlighting zsh-history-substring-search
-_enabled_plugins=(
-	zsh-autosuggestions
-	zsh-fast-syntax-highlighting
-	zsh-history-substring-search
-)
-
-for _zsh_plugin in $_enabled_plugins[@]; do
-	[[ ! -r "$_ZSH_PLUGINS/$_zsh_plugin/$_zsh_plugin.zsh" ]] || source $_ZSH_PLUGINS/$_zsh_plugin/$_zsh_plugin.zsh
-done
-
 # zsh-history-substring-search
 bindkey "^[OA" history-substring-search-up
 bindkey "^[OB" history-substring-search-down
@@ -85,7 +69,7 @@ if [[ $(uname) == "Darwin" ]]; then
 	# brew --prefix fzf
 	_FZF_PLUGINS=${_FZF_PLUGINS:="$(brew --prefix fzf)/shell"}
 else
-	_FZF_PLUGINS=${_FZF_PLUGINS:="/usr/share/fzf"}
+	_FZF_PLUGINS=${_FZF_PLUGINS:="$HOME/.local/share/fzf"}
 fi
 
 source $_FZF_PLUGINS/key-bindings.zsh
@@ -131,6 +115,7 @@ fi
 
 # Load path
 _enabled_paths=(
+	'/usr/local/go/bin'
 	'/usr/local/bin'
 	$HOME/'go/bin'
 	$HOME/'.bin'
@@ -143,7 +128,7 @@ if [[ -f "$(which brew)" ]]; then
 fi
 
 for _enabled_path in $_enabled_paths[@]; do
-	[[ -d "$HOME/${_enabled_path}" ]] && PATH="${_enabled_path}:$PATH"
+	[[ -d "${_enabled_path}" ]] && PATH="${_enabled_path}:$PATH"
 done
 
 # Directory operations
@@ -158,7 +143,7 @@ alias lsa='ls -lah'
 alias l='ls -lah'
 alias ll='ls -lh'
 alias la='ls -lAh'
-alias tree='eza -a -T -I .git'
+alias tree='ls -a -T -I .git'
 
 alias -- -='cd -'
 alias 1='cd -'
@@ -182,7 +167,7 @@ alias vi='vim'
 alias vim='nvim'
 alias nv='nvim'
 alias vz='nvim ~/.zshrc'
-alias sz='source ~/.zshrc'
+alias sz='exec zsh'
 alias ne='neofetch'
 
 # Git related aliases
@@ -203,7 +188,12 @@ export LC_CTYPE=en_US.UTF-8
 # Go related envs
 export GO111MODULE=on
 export GOPATH=~/go
-export GOROOT="$(brew --prefix golang)/libexec"
+
+if [[ -f "$(which brew)" ]]; then
+	export GOROOT="$(brew --prefix golang)/libexec"
+else
+	export GOROOT=/usr/local/go
+fi
 
 # Load zinit plugins
 export NVM_COMPLETION=true
@@ -214,3 +204,7 @@ zinit wait lucid light-mode for lukechilds/zsh-nvm
 zinit wait lucid light-mode for atload="function z() { __zoxide_z \"\$@\" }" z-shell/zsh-zoxide
 # brew install tmux
 zinit wait lucid light-mode for laggardkernel/zsh-tmux
+zinit wait lucid light-mode for zsh-users/zsh-completions
+zinit wait lucid light-mode for zsh-users/zsh-autosuggestions
+zinit wait lucid light-mode for zsh-users/zsh-history-substring-search
+zinit wait lucid light-mode for zdharma-continuum/fast-syntax-highlighting
