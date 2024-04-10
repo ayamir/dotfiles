@@ -1,0 +1,216 @@
+# zinit
+typeset -A ZI
+ZI[BIN_DIR]="${HOME}/.zi/bin"
+source "${ZI[BIN_DIR]}/zi.zsh"
+autoload -Uz _zi
+(( ${+_comps} )) && _comps[zi]=_zi
+
+# zsh-completions for macos
+if type brew &>/dev/null; then
+	FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+fi
+
+# zsh-completions for linux
+if [[ -d "${HOME}/.zsh-completions" ]]; then
+	FPATH="${HOME}/.zsh-completions:${FPATH}"
+fi
+
+# download grml-zsh-config
+# wget -O ~/.zshrc.grml https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
+if [[ -f "${HOME}/.zshrc.grml" ]]; then
+	source "${HOME}/.zshrc.grml"
+fi
+
+# bash_completion
+autoload -U +X bashcompinit && bashcompinit
+
+# Disable completion ignore case
+zstyle ':completion:*' matcher-list 'm:{a-z}!={A-Z}'
+
+# Set few items style
+zstyle ':completion:*' menu select
+
+# Set Theme
+# http://bewatermyfriend.org/p/2013/001/
+if [[ -z "${SSH_TTY}" ]]; then
+	zstyle ':prompt:grml:left:setup' items rc change-root path vcs newline percent
+else
+	zstyle ':prompt:grml:left:setup' items rc change-root user at host path vcs newline percent
+fi
+
+prompt grml
+
+# Load Plugins
+_ZSH_PLUGINS="/usr/share/zsh/plugins"
+if [[ -f "$(which brew)" ]]; then
+	_ZSH_PLUGINS="$(brew --prefix)/share"
+fi
+
+# brew install zsh-autosuggestions zsh-fast-syntax-highlighting zsh-history-substring-search
+_enabled_plugins=(
+	zsh-autosuggestions
+	zsh-fast-syntax-highlighting
+	zsh-history-substring-search
+)
+
+for _zsh_plugin in $_enabled_plugins[@]; do
+	[[ ! -r "$_ZSH_PLUGINS/$_zsh_plugin/$_zsh_plugin.zsh" ]] || source $_ZSH_PLUGINS/$_zsh_plugin/$_zsh_plugin.zsh
+done
+
+# zsh-history-substring-search
+bindkey "^[OA" history-substring-search-up
+bindkey "^[OB" history-substring-search-down
+
+# Disable flowcontrol
+# unset Ctrl-S && Ctrl-Q
+unsetopt flowcontrol
+stty -ixon
+
+# bindkey '\eq' push-line
+# Need support heredoc
+bindkey '\eq' push-line-or-edit
+
+# Ctrl-Q, heredoc
+# bindkey '^Q' push-line
+bindkey '^Q' push-line-or-edit
+bindkey '^[Q' push-line-or-edit
+bindkey '^[q' push-line-or-edit
+
+zle -N sudo-command-line
+bindkey '^S' sudo-command-line
+
+# brew install fzf
+# === FZF Plugin ===
+if [[ $(uname) == "Darwin" ]]; then
+	# brew --prefix fzf
+	_FZF_PLUGINS=${_FZF_PLUGINS:="$(brew --prefix fzf)/shell"}
+else
+	_FZF_PLUGINS=${_FZF_PLUGINS:="/usr/share/fzf"}
+fi
+
+source $_FZF_PLUGINS/key-bindings.zsh
+source $_FZF_PLUGINS/completion.zsh
+
+# CTRL-R - Paste the selected command from history into the command line
+# CTRL-T - Paste the selected file path(s) into the command line
+# ALT-C - cd into the selected directory
+
+# Disable fzf CTRL-T, use zsh default
+# bindkey '^T' fzf-file-widget
+bindkey '^T' transpose-chars
+
+# Default ALT-C, For Mac OS: Option-C
+if [[ $(uname) == "Darwin" ]]; then
+	bindkey 'ç' fzf-cd-widget
+fi
+
+fzf-dirs-widget() {
+	# eval cd $(dirs -v | fzf --height 40% --reverse | cut -b3-)
+	local dir=$(dirs -v | fzf --height ${FZF_TMUX_HEIGHT:-40%} --reverse | cut -b3-)
+	if [[ -z "$dir" ]]; then
+		zle redisplay
+		return 0
+	fi
+	eval cd ${dir}
+	local ret=$?
+	unset dir # ensure this doesn't end up appearing in prompt expansion
+	zle reset-prompt
+	return $ret
+}
+
+zle -N fzf-dirs-widget
+
+# Default ALT-X, For Mac OS: Option-X
+if [[ $(uname) == "Darwin" ]]; then
+	bindkey '≈' fzf-dirs-widget
+else
+	bindkey '\ex' fzf-dirs-widget
+fi
+
+# === FZF Plugin ===
+
+# Load path
+_enabled_paths=(
+	'/usr/local/bin'
+	$HOME/'go/bin'
+	$HOME/'.bin'
+	$HOME/'.local/bin'
+	$HOME/'.cargo/bin'
+)
+
+if [[ -f "$(which brew)" ]]; then
+	arrVar+=("Library/Python/3.9/bin")
+fi
+
+for _enabled_path in $_enabled_paths[@]; do
+	[[ -d "$HOME/${_enabled_path}" ]] && PATH="${_enabled_path}:$PATH"
+done
+
+# Directory operations
+# Frok from: https://github.com/ohmyzsh/ohmyzsh/blob/71cc861806f30d8f7fd3d0040db86737cab62581/lib/directories.zsh
+alias -g ..='../'
+alias -g ...='../..'
+alias -g ....='../../..'
+
+# brew install eza
+alias ls="eza"
+alias lsa='ls -lah'
+alias l='ls -lah'
+alias ll='ls -lh'
+alias la='ls -lAh'
+alias tree='eza -a -T -I .git'
+
+alias -- -='cd -'
+alias 1='cd -'
+alias 2='cd -2'
+alias 3='cd -3'
+
+alias md='mkdir -p'
+alias rd=rmdir
+
+function d () {
+  if [[ -n $1 ]]; then
+    dirs "$@"
+  else
+    dirs -v | head -10
+  fi
+}
+compdef _dirs d
+
+# Common aliases
+alias vi='vim'
+alias vim='nvim'
+alias nv='nvim'
+alias vz='nvim ~/.zshrc'
+alias sz='source ~/.zshrc'
+alias ne='neofetch'
+
+# Git related aliases
+alias lg='lazygit'
+alias g++='g++ -std=c++2b'
+alias gpl='git pull'
+alias gps='git push'
+alias gr='git restore .'
+
+# EDITOR settings
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+# Terminal LANG settings
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+
+# Go related envs
+export GO111MODULE=on
+export GOPATH=~/go
+export GOROOT="$(brew --prefix golang)/libexec"
+
+# Load zinit plugins
+export NVM_COMPLETION=true
+export NVM_SYMLINK_CURRENT="true"
+# brew install nvm
+zinit wait lucid light-mode for lukechilds/zsh-nvm
+# brew install zoxide
+zinit wait lucid light-mode for atload="function z() { __zoxide_z \"\$@\" }" z-shell/zsh-zoxide
+# brew install tmux
+zinit wait lucid light-mode for laggardkernel/zsh-tmux
