@@ -1,0 +1,18 @@
+filetype on
+
+set incsearch
+set hlsearch
+set ignorecase
+
+set noswapfile
+set nobackup
+set autoread
+set autowrite
+set confirm
+
+set mouse=nv
+
+set number
+
+noremap j gj
+noremap k gk
