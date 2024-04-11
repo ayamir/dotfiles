@@ -164,7 +164,6 @@ compdef _dirs d
 
 # Common aliases
 alias vi='vim'
-alias vim='nvim'
 alias nv='nvim'
 alias vz='nvim ~/.zshrc'
 alias sz='exec zsh'
