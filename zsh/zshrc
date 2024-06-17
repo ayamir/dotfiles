@@ -181,6 +181,8 @@ alias g++='g++ -std=c++2b'
 alias gpl='git pull'
 alias gps='git push'
 alias gr='git restore .'
+# npm i -g git-open
+alias og='git-open'
 
 # EDITOR settings
 export EDITOR='nvim'
