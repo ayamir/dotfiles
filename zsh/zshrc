@@ -111,6 +111,12 @@ fi
 # === FZF Plugin ===
 
 # Load path
+
+# nodejs manager
+# brew install n
+export N_PREFIX=$HOME/'.n'
+export N_PRESERVE_NPM=1
+
 _enabled_paths=(
 	'/usr/local/go/bin'
 	'/usr/local/bin'
@@ -118,6 +124,7 @@ _enabled_paths=(
 	$HOME/'.bin'
 	$HOME/'.local/bin'
 	$HOME/'.cargo/bin'
+	$HOME/'.n'
 )
 
 if [[ -f "$(which brew)" ]]; then
@@ -165,6 +172,8 @@ alias nv='nvim'
 alias vz='nvim ~/.zshrc'
 alias sz='exec zsh'
 alias ne='neofetch'
+alias grep='rg'
+alias rg='rg --pretty --line-number --smart-case --vimgrep'
 
 # Git related aliases
 alias lg='lazygit'
@@ -200,12 +209,7 @@ fi
 # export all_proxy=http://$hostip:7890
 
 # Load zinit plugins
-export NVM_COMPLETION=true
-export NVM_SYMLINK_CURRENT="true"
-# brew install nvm
-zinit wait lucid light-mode for lukechilds/zsh-nvm
-# brew install zoxide
-zinit wait lucid light-mode for atload="function z() { __zoxide_z \"\$@\" }" z-shell/zsh-zoxide
+zinit wait lucid light-mode for agkozak/zsh-z
 # brew install tmux
 zinit wait lucid light-mode for laggardkernel/zsh-tmux
 zinit wait lucid light-mode for zsh-users/zsh-completions
