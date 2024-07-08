@@ -13,12 +13,6 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# Download grml-zsh-config
-# wget -O ~/.zshrc.grml https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc
-if [[ -f "${HOME}/.zshrc.grml" ]]; then
-	source "${HOME}/.zshrc.grml"
-fi
-
 # bash_completion
 autoload -U +X bashcompinit && bashcompinit
 
@@ -28,15 +22,8 @@ zstyle ':completion:*' matcher-list 'm:{a-z}!={A-Z}'
 # Set few items style
 zstyle ':completion:*' menu select
 
-# Set Theme
-# http://bewatermyfriend.org/p/2013/001/
-if [[ -z "${SSH_TTY}" ]]; then
-	zstyle ':prompt:grml:left:setup' items rc change-root path vcs newline percent
-else
-	zstyle ':prompt:grml:left:setup' items rc change-root user at host path vcs newline percent
-fi
-
-prompt grml
+precmd() { print -rP "%~" }
+export PROMPT="%# "
 
 # zsh-history-substring-search
 bindkey "^[OA" history-substring-search-up
@@ -157,22 +144,13 @@ alias 3='cd -3'
 alias md='mkdir -p'
 alias rd=rmdir
 
-function d () {
-  if [[ -n $1 ]]; then
-    dirs "$@"
-  else
-    dirs -v | head -10
-  fi
-}
-compdef _dirs d
-
 # Common aliases
+alias :q="exit"
 alias vi='vim'
 alias nv='nvim'
 alias vz='nvim ~/.zshrc'
 alias sz='exec zsh'
 alias ne='neofetch'
-alias grep='rg'
 alias rg='rg --pretty --line-number --smart-case --vimgrep'
 
 # Git related aliases
