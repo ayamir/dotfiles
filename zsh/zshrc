@@ -13,8 +13,11 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# bash_completion
-autoload -U +X bashcompinit && bashcompinit
+if [[ -f "$(which brew)" ]]; then
+	fpath+=("$(brew --prefix)/share/zsh/site-functions" $fpath)
+	autoload -Uz compinit
+	compinit -u
+fi
 
 # Disable completion ignore case
 zstyle ':completion:*' matcher-list 'm:{a-z}!={A-Z}'
@@ -22,12 +25,9 @@ zstyle ':completion:*' matcher-list 'm:{a-z}!={A-Z}'
 # Set few items style
 zstyle ':completion:*' menu select
 
-precmd() { print -rP "%~" }
-export PROMPT="%# "
-
 # zsh-history-substring-search
-bindkey "^[OA" history-substring-search-up
-bindkey "^[OB" history-substring-search-down
+bindkey '^P' history-substring-search-up
+bindkey '^N' history-substring-search-down
 
 # Disable flowcontrol
 # unset Ctrl-S && Ctrl-Q
@@ -100,7 +100,6 @@ fi
 # Load path
 
 # nodejs manager
-# brew install n
 export N_PREFIX=$HOME/'.n'
 export N_PRESERVE_NPM=1
 
@@ -162,6 +161,10 @@ alias gr='git restore .'
 # npm i -g git-open
 alias og='git-open'
 
+# Ssh related
+alias jp='ssh -i ~/.ssh/id_rsa_jumper liuguangtian@jumper.sankuai.com'
+alias jumper='ssh liuguangtian@jumper.sankuai.com'
+
 # EDITOR settings
 export EDITOR='nvim'
 export VISUAL='nvim'
@@ -174,10 +177,11 @@ export LC_CTYPE=en_US.UTF-8
 export GO111MODULE=on
 export GOPATH="$HOME/go"
 
-if [[ -f "$(which brew)" ]]; then
-	export GOROOT="$(brew --prefix golang)/libexec"
-elif [[ -d "/usr/local/go" ]]; then
+
+if [[ -d "/usr/local/go" ]]; then
 	export GOROOT=/usr/local/go
+elif [[ -f "$(which brew)" ]]; then
+	export GOROOT="$(brew --prefix golang)/libexec"
 else
 	export GOROOT=/usr/lib/go
 fi
@@ -189,10 +193,29 @@ fi
 # export all_proxy=http://$hostip:7890
 
 # Load zinit plugins
-zinit wait lucid light-mode for agkozak/zsh-z
-# brew install tmux
-zinit wait lucid light-mode for laggardkernel/zsh-tmux
-zinit wait lucid light-mode for zsh-users/zsh-completions
-zinit wait lucid light-mode for zsh-users/zsh-autosuggestions
-zinit wait lucid light-mode for zsh-users/zsh-history-substring-search
-zinit wait lucid light-mode for zdharma-continuum/fast-syntax-highlighting
+zinit ice pick"async.zsh" src"pure.zsh" # with zsh-async library that's bundled with it.
+zinit light sindresorhus/pure
+
+zinit wait lucid light-mode for \
+	laggardkernel/zsh-tmux \
+	zsh-users/zsh-autosuggestions \
+	zsh-users/zsh-history-substring-search \
+	zdharma-continuum/fast-syntax-highlighting \
+	agkozak/zsh-z \
+	jeffreytse/zsh-vi-mode
+
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+# __conda_setup="$('/usr/local/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#     if [ -f "/usr/local/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+#         . "/usr/local/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+#     else
+#         export PATH="/usr/local/Caskroom/miniconda/base/bin:$PATH"
+#     fi
+# fi
+# unset __conda_setup
+# # <<< conda initialize <<<
