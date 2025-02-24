@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-input=$1
 nvim_setting=~/.config/nvim/lua/user/settings.lua
+mode_state_file=~/.mode_switch_state
 
 check_file_exists() {
 	if [ ! -f "$1" ]; then
@@ -24,30 +24,67 @@ set_neovim_background() {
 	done
 }
 
-if [ "$input" == "light" ]; then
-	check_file_exists ~/.tmux.conf.light
-	check_file_exists ~/.config/kitty/kitty.conf.light
+switch_mode() {
+	input=$1
+	if [ "$input" == "light" ]; then
+		check_file_exists ~/.tmux.conf.light
+		check_file_exists ~/.config/kitty/kitty.conf.light
+		ln -sf ~/.tmux.conf.light ~/.tmux.conf
+		ln -sf ~/.config/kitty/kitty.conf.light ~/.config/kitty/kitty.conf
+		sed -i 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
+		kill_process $(pgrep kitty)
+		kill_process $(pgrep nvim)
+		set_neovim_background "light"
+		tmux source-file ~/.tmux.conf
+	elif [ "$input" == "dark" ]; then
+		check_file_exists ~/.tmux.conf.dark
+		check_file_exists ~/.config/kitty/kitty.conf.dark
+		ln -sf ~/.tmux.conf.dark ~/.tmux.conf
+		ln -sf ~/.config/kitty/kitty.conf.dark ~/.config/kitty/kitty.conf
+		sed -i 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
+		kill_process $(pgrep kitty)
+		kill_process $(pgrep nvim)
+		set_neovim_background "dark"
+		tmux source-file ~/.tmux.conf
+	else
+		exit 1
+	fi
+}
 
-	ln -sf ~/.tmux.conf.light ~/.tmux.conf
-	ln -sf ~/.config/kitty/kitty.conf.light ~/.config/kitty/kitty.conf
-	sed -i 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
+get_current_mode() {
+	if [ -f "$mode_state_file" ]; then
+		cat "$mode_state_file"
+	else
+		echo "light"
+	fi
+}
 
-	kill_process $(pgrep kitty)
-	set_neovim_background "light"
-	tmux source-file ~/.tmux.conf
+set_current_mode() {
+	echo "$1" >"$mode_state_file"
+}
 
-elif [ "$input" == "dark" ]; then
-	check_file_exists ~/.tmux.conf.dark
-	check_file_exists ~/.config/kitty/kitty.conf.dark
+toggle_mode() {
+	current_mode=$(get_current_mode)
+	if [ "$current_mode" == "light" ]; then
+		set_current_mode "dark"
+		switch_mode "dark"
+	else
+		set_current_mode "light"
+		switch_mode "light"
+	fi
+}
 
-	ln -sf ~/.tmux.conf.dark ~/.tmux.conf
-	ln -sf ~/.config/kitty/kitty.conf.dark ~/.config/kitty/kitty.conf
-	sed -i 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
-
-	kill_process $(pgrep kitty)
-	set_neovim_background "dark"
-	tmux source-file ~/.tmux.conf
-
+if [ $# -eq 0 ]; then
+	toggle_mode
+elif [ "$1" == "toggle" ]; then
+	toggle_mode
+elif [ "$1" == "light" ]; then
+	set_current_mode "light"
+	switch_mode "light"
+elif [ "$1" == "dark" ]; then
+	set_current_mode "dark"
+	switch_mode "dark"
 else
+	echo "Usage: $0 {light|dark|toggle}"
 	exit 1
 fi
