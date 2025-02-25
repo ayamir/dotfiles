@@ -9,6 +9,15 @@ check_file_exists() {
 	fi
 }
 
+check_macos() {
+	local os_name=$(uname -s)
+	if [ "$os_name" = "Darwin" ]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
 kill_process() {
 	pid=$1
 	if [ -n "$pid" ]; then
@@ -19,6 +28,9 @@ kill_process() {
 set_neovim_background() {
 	background=$1
 	servers=$(lsof -U | grep nvim | grep /run/user | awk '{print $9}')
+	if check_macos; then
+		servers=$(lsof -U | grep nvim | grep /var/folders | awk '{print $8}')
+	fi
 	for server in $servers; do
 		nvim --server $server --remote-send ":set background=$background<CR>"
 	done
@@ -31,7 +43,7 @@ switch_mode() {
 		check_file_exists ~/.config/kitty/kitty.conf.light
 		ln -sf ~/.tmux.conf.light ~/.tmux.conf
 		ln -sf ~/.config/kitty/kitty.conf.light ~/.config/kitty/kitty.conf
-		sed -i 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
+		perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
 		kill_process $(pgrep kitty)
 		kill_process $(pgrep nvim)
 		set_neovim_background "light"
@@ -41,7 +53,7 @@ switch_mode() {
 		check_file_exists ~/.config/kitty/kitty.conf.dark
 		ln -sf ~/.tmux.conf.dark ~/.tmux.conf
 		ln -sf ~/.config/kitty/kitty.conf.dark ~/.config/kitty/kitty.conf
-		sed -i 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
+		perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
 		kill_process $(pgrep kitty)
 		kill_process $(pgrep nvim)
 		set_neovim_background "dark"
