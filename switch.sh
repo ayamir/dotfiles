@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 nvim_setting=~/.config/nvim/lua/user/settings.lua
+vscode_setting=~/.config/Code/User/settings.json
 mode_state_file=~/.mode_switch_state
 
 check_file_exists() {
@@ -44,6 +45,7 @@ switch_mode() {
 		ln -sf ~/.tmux.conf.light ~/.tmux.conf
 		ln -sf ~/.config/kitty/kitty.conf.light ~/.config/kitty/kitty.conf
 		perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
+		perl -i -pe 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
 		kill_process $(pgrep kitty)
 		kill_process $(pgrep nvim)
 		set_neovim_background "light"
@@ -54,6 +56,7 @@ switch_mode() {
 		ln -sf ~/.tmux.conf.dark ~/.tmux.conf
 		ln -sf ~/.config/kitty/kitty.conf.dark ~/.config/kitty/kitty.conf
 		perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
+		perl -i -pe 's/"workbench.colorTheme": "Default Light Modern"/"workbench.colorTheme": "Default Dark Modern"/' "$vscode_setting"
 		kill_process $(pgrep kitty)
 		kill_process $(pgrep nvim)
 		set_neovim_background "dark"
