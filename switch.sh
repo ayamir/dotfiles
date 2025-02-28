@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-check_file_exists() {
-	if [ ! -f "$1" ]; then
-		exit 1
-	fi
-}
-
 check_macos() {
 	local os_name=$(uname -s)
 	if [ "$os_name" = "Darwin" ]; then
@@ -28,6 +22,8 @@ if check_macos; then
 	vscode_setting=~/Library/'Application Support'/Code/User/settings.json
 fi
 alacritty_setting=~/.config/alacritty/alacritty.toml
+kitty_setting=~/.config/kitty/kitty.conf
+tmux_setting=~/.tmux.conf
 mode_state_file=~/.mode_switch_state
 
 set_neovim_background() {
@@ -44,10 +40,8 @@ set_neovim_background() {
 switch_mode() {
 	input=$1
 	if [ "$input" == "light" ]; then
-		check_file_exists ~/.tmux.conf.light
-		check_file_exists ~/.config/kitty/kitty.conf.light
-		ln -sf ~/.tmux.conf.light ~/.tmux.conf
-		ln -sf ~/.config/kitty/kitty.conf.light ~/.config/kitty/kitty.conf
+		perl -i -pe 's/vscode-dark/vscode-light/' "$kitty_setting"
+		perl -i -pe 's/vscode-dark/vscode-light/' "$tmux_setting"
 		perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
 		perl -i -pe 's/vscode_dark.toml/vscode_light.toml/' "$alacritty_setting"
@@ -56,10 +50,8 @@ switch_mode() {
 		set_neovim_background "light"
 		tmux source-file ~/.tmux.conf
 	elif [ "$input" == "dark" ]; then
-		check_file_exists ~/.tmux.conf.dark
-		check_file_exists ~/.config/kitty/kitty.conf.dark
-		ln -sf ~/.tmux.conf.dark ~/.tmux.conf
-		ln -sf ~/.config/kitty/kitty.conf.dark ~/.config/kitty/kitty.conf
+		perl -i -pe 's/vscode-light/vscode-dark/' "$kitty_setting"
+		perl -i -pe 's/vscode-light/vscode-dark/' "$tmux_setting"
 		perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
 		perl -i -pe 's/vscode_light.toml/vscode_dark.toml/' "$alacritty_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Light Modern"/"workbench.colorTheme": "Default Dark Modern"/' "$vscode_setting"
