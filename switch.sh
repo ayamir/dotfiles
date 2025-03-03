@@ -21,6 +21,7 @@ vscode_setting=~/.config/Code/User/settings.json
 if check_macos; then
 	vscode_setting=~/Library/'Application Support'/Code/User/settings.json
 fi
+trae_setting=~/Library/'Application Support'/'Trae CN'/User/settings.json
 alacritty_setting=~/.config/alacritty/alacritty.toml
 kitty_setting=~/.config/kitty/kitty.conf
 tmux_setting=~/.tmux.conf
@@ -43,8 +44,9 @@ switch_mode() {
 		perl -i -pe 's/vscode-dark/vscode-light/' "$kitty_setting"
 		perl -i -pe 's/vscode-dark/vscode-light/' "$tmux_setting"
 		perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
-		perl -i -pe 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
 		perl -i -pe 's/vscode_dark.toml/vscode_light.toml/' "$alacritty_setting"
+		perl -i -pe 's/"workbench.colorTheme": "Dark"/"workbench.colorTheme": "Light"/' "$trae_setting"
+		perl -i -pe 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
 		kill_process $(pgrep kitty)
 		kill_process $(pgrep nvim)
 		set_neovim_background "light"
@@ -54,6 +56,7 @@ switch_mode() {
 		perl -i -pe 's/vscode-light/vscode-dark/' "$tmux_setting"
 		perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
 		perl -i -pe 's/vscode_light.toml/vscode_dark.toml/' "$alacritty_setting"
+		perl -i -pe 's/"workbench.colorTheme": "Light"/"workbench.colorTheme": "Dark"/' "$trae_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Light Modern"/"workbench.colorTheme": "Default Dark Modern"/' "$vscode_setting"
 		kill_process $(pgrep kitty)
 		kill_process $(pgrep nvim)
