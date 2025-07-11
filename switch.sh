@@ -36,7 +36,7 @@ set_neovim_background() {
 		servers=$(lsof -U | grep nvim | grep /var/folders | awk '{print $8}')
 	fi
 	for server in $servers; do
-		nvim --server $server --remote-send ":set background=$background<CR>"
+		nvim --server $server --remote-send ":lua require(\"base46\").toggle_theme()<CR>"
 	done
 }
 
@@ -45,7 +45,7 @@ switch_mode() {
 	if [ "$input" == "light" ]; then
 		perl -i -pe 's/vscode-dark/vscode-light/' "$kitty_setting"
 		perl -i -pe 's/vscode-dark/vscode-light/' "$tmux_setting"
-		perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
+		# perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
 		perl -i -pe 's/vscode-dark.toml/vscode-light.toml/' "$alacritty_setting"
 		perl -i -pe 's/Dark Modern/CLRS/' "$ghostty_settinng"
 		perl -i -pe 's/"workbench.colorTheme": "Dark"/"workbench.colorTheme": "Light"/' "$trae_setting"
@@ -57,7 +57,7 @@ switch_mode() {
 	elif [ "$input" == "dark" ]; then
 		perl -i -pe 's/vscode-light/vscode-dark/' "$kitty_setting"
 		perl -i -pe 's/vscode-light/vscode-dark/' "$tmux_setting"
-		perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
+		# perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
 		perl -i -pe 's/vscode-light.toml/vscode-dark.toml/' "$alacritty_setting"
 		perl -i -pe 's/CLRS/Dark Modern/' "$ghostty_settinng"
 		perl -i -pe 's/"workbench.colorTheme": "Light"/"workbench.colorTheme": "Dark"/' "$trae_setting"
