@@ -43,11 +43,11 @@ set_neovim_background() {
 switch_mode() {
 	input=$1
 	if [ "$input" == "light" ]; then
-		perl -i -pe 's/vscode-dark/vscode-light/' "$kitty_setting"
+		perl -i -pe 's/mocha/latte/' "$kitty_setting"
 		perl -i -pe 's/vscode-dark/vscode-light/' "$tmux_setting"
 		# perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
 		perl -i -pe 's/vscode-dark.toml/vscode-light.toml/' "$alacritty_setting"
-		perl -i -pe 's/Dark Modern/CLRS/' "$ghostty_settinng"
+		perl -i -pe 's/Mocha/Latte/' "$ghostty_settinng"
 		perl -i -pe 's/"workbench.colorTheme": "Dark"/"workbench.colorTheme": "Light"/' "$trae_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
 		osascript ~/clone/dotfiles/macOS/ghostty-reload-config.scpt
@@ -55,11 +55,11 @@ switch_mode() {
 		set_neovim_background "light"
 		tmux source-file ~/.tmux.conf
 	elif [ "$input" == "dark" ]; then
-		perl -i -pe 's/vscode-light/vscode-dark/' "$kitty_setting"
+		perl -i -pe 's/latte/mocha/' "$kitty_setting"
 		perl -i -pe 's/vscode-light/vscode-dark/' "$tmux_setting"
 		# perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
 		perl -i -pe 's/vscode-light.toml/vscode-dark.toml/' "$alacritty_setting"
-		perl -i -pe 's/CLRS/Dark Modern/' "$ghostty_settinng"
+		perl -i -pe 's/Latte/Mocha/' "$ghostty_settinng"
 		perl -i -pe 's/"workbench.colorTheme": "Light"/"workbench.colorTheme": "Dark"/' "$trae_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Light Modern"/"workbench.colorTheme": "Default Dark Modern"/' "$vscode_setting"
 		osascript ~/clone/dotfiles/macOS/ghostty-reload-config.scpt
