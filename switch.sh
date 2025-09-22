@@ -17,6 +17,7 @@ kill_process() {
 }
 
 nvim_setting=~/.config/nvim/lua/user/settings.lua
+chadrc=~/.config/nvim/lua/chadrc.lua
 vscode_setting=~/.config/Code/User/settings.json
 ghostty_settinng=~/.config/ghostty/config
 if check_macos; then
@@ -24,29 +25,43 @@ if check_macos; then
 	ghostty_settinng=~/Library/'Application Support'/com.mitchellh.ghostty/config
 fi
 trae_setting=~/Library/'Application Support'/'Trae CN'/User/settings.json
-alacritty_setting=~/.config/alacritty/alacritty.toml
 kitty_setting=~/.config/kitty/kitty.conf
 tmux_setting=~/.tmux.conf
 mode_state_file=~/.mode_switch_state
 
 set_neovim_background() {
 	background=$1
-	servers=$(lsof -U | grep nvim | grep /run/user | awk '{print $9}')
+	servers=$(lsof -U | grep nvim | grep /run/user | grep -v fzf | awk '{print $9}')
 	if check_macos; then
-		servers=$(lsof -U | grep nvim | grep /var/folders | awk '{print $8}')
+		servers=$(lsof -U | grep nvim | grep /var/folders | grep -v fzf | awk '{print $8}')
 	fi
-	for server in $servers; do
-		nvim --server $server --remote-send ":lua require(\"base46\").toggle_theme()<CR>"
-	done
+	# check if chadrc exist
+	if [ -f "$chadrc" ]; then
+		if background == "dark"; then
+			perl -i -pe 's/theme = "catppuccin_latte"/theme = "catppuccin"/' "$chadrc"
+		else
+			perl -i -pe 's/theme = "catppuccin"/theme = "catppuccin_latte"/' "$chadrc"
+		fi
+		for server in $servers; do
+			nvim --server $server --remote-send ":lua require('base46').toggle_theme_silent()<CR>"
+		done
+	else
+		if background == "dark"; then
+			perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
+		else
+			perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
+		fi
+		for server in $servers; do
+			nvim --server $server --remote-send ":set background=$background<CR>"
+		done
+	fi
 }
 
 switch_mode() {
 	input=$1
 	if [ "$input" == "light" ]; then
 		perl -i -pe 's/mocha/latte/' "$kitty_setting"
-		perl -i -pe 's/vscode-dark/vscode-light/' "$tmux_setting"
-		# perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
-		perl -i -pe 's/vscode-dark.toml/vscode-light.toml/' "$alacritty_setting"
+		perl -i -pe 's/dark/light/' "$tmux_setting"
 		perl -i -pe 's/Mocha/Latte/' "$ghostty_settinng"
 		perl -i -pe 's/"workbench.colorTheme": "Dark"/"workbench.colorTheme": "Light"/' "$trae_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
@@ -56,9 +71,8 @@ switch_mode() {
 		tmux source-file ~/.tmux.conf
 	elif [ "$input" == "dark" ]; then
 		perl -i -pe 's/latte/mocha/' "$kitty_setting"
-		perl -i -pe 's/vscode-light/vscode-dark/' "$tmux_setting"
-		# perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
-		perl -i -pe 's/vscode-light.toml/vscode-dark.toml/' "$alacritty_setting"
+		perl -i -pe 's/light/dark/' "$tmux_setting"
+		perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
 		perl -i -pe 's/Latte/Mocha/' "$ghostty_settinng"
 		perl -i -pe 's/"workbench.colorTheme": "Light"/"workbench.colorTheme": "Dark"/' "$trae_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Light Modern"/"workbench.colorTheme": "Default Dark Modern"/' "$vscode_setting"
