@@ -37,16 +37,20 @@ set_neovim_background() {
 	fi
 	# check if chadrc exist
 	if [ -f "$chadrc" ]; then
-		if background == "dark"; then
-			perl -i -pe 's/theme = "catppuccin_latte"/theme = "catppuccin"/' "$chadrc"
+		# check servers if empty
+		if [ -n "$servers" ]; then
+			for server in $servers; do
+				nvim --server $server --remote-send ":lua require('base46').toggle_theme()<CR>"
+			done
 		else
-			perl -i -pe 's/theme = "catppuccin"/theme = "catppuccin_latte"/' "$chadrc"
+			if [ "$background" == "dark" ]; then
+				perl -i -pe 's/theme = "penumbra_light"/theme = "everforest"/' "$chadrc"
+			else
+				perl -i -pe 's/theme = "everforest"/theme = "penumbra_light"/' "$chadrc"
+			fi
 		fi
-		for server in $servers; do
-			nvim --server $server --remote-send ":lua require('base46').toggle_theme_silent()<CR>"
-		done
 	else
-		if background == "dark"; then
+		if [ "$background" == "dark" ]; then
 			perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
 		else
 			perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
@@ -60,25 +64,26 @@ set_neovim_background() {
 switch_mode() {
 	input=$1
 	if [ "$input" == "light" ]; then
-		perl -i -pe 's/mocha/latte/' "$kitty_setting"
-		perl -i -pe 's/dark/light/' "$tmux_setting"
-		perl -i -pe 's/Mocha/Latte/' "$ghostty_settinng"
+		# perl -i -pe 's/mocha/latte/' "$kitty_setting"
+		# perl -i -pe 's/Mocha/Latte/' "$ghostty_settinng"
+		# osascript ~/clone/dotfiles/macOS/ghostty-reload-config.scpt
+		# kill_process $(pgrep kitty)
+		perl -i -pe 's/everforest/penu/' "$tmux_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Dark"/"workbench.colorTheme": "Light"/' "$trae_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
-		osascript ~/clone/dotfiles/macOS/ghostty-reload-config.scpt
-		kill_process $(pgrep kitty)
 		set_neovim_background "light"
+		~/.local/bin/iterm-theme penumbra_light
 		tmux source-file ~/.tmux.conf
 	elif [ "$input" == "dark" ]; then
-		perl -i -pe 's/latte/mocha/' "$kitty_setting"
-		perl -i -pe 's/light/dark/' "$tmux_setting"
-		perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
-		perl -i -pe 's/Latte/Mocha/' "$ghostty_settinng"
+		# perl -i -pe 's/latte/mocha/' "$kitty_setting"
+		# perl -i -pe 's/Latte/Mocha/' "$ghostty_settinng"
+		# osascript ~/clone/dotfiles/macOS/ghostty-reload-config.scpt
+		# kill_process $(pgrep kitty)
+		perl -i -pe 's/penu/everforest/' "$tmux_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Light"/"workbench.colorTheme": "Dark"/' "$trae_setting"
 		perl -i -pe 's/"workbench.colorTheme": "Default Light Modern"/"workbench.colorTheme": "Default Dark Modern"/' "$vscode_setting"
-		osascript ~/clone/dotfiles/macOS/ghostty-reload-config.scpt
-		kill_process $(pgrep kitty)
 		set_neovim_background "dark"
+		~/.local/bin/iterm-theme everforest_dark_low
 		tmux source-file ~/.tmux.conf
 	else
 		exit 1
