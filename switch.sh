@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 check_macos() {
-	local os_name=$(uname -s)
+	local os_name
+	os_name=$(uname -s)
 	if [ "$os_name" = "Darwin" ]; then
 		return 0
 	else
@@ -10,84 +13,106 @@ check_macos() {
 }
 
 kill_process() {
-	pid=$1
+	local pid=${1:-}
 	if [ -n "$pid" ]; then
 		kill -SIGUSR1 "$pid"
+	fi
+}
+
+safe_perl() {
+	local pattern=$1
+	local file=$2
+
+	if [ -f "$file" ]; then
+		perl -i -pe "$pattern" "$file"
 	fi
 }
 
 nvim_setting=~/.config/nvim/lua/user/settings.lua
 chadrc=~/.config/nvim/lua/chadrc.lua
 vscode_setting=~/.config/Code/User/settings.json
-ghostty_settinng=~/.config/ghostty/config
-if check_macos; then
-	vscode_setting=~/Library/'Application Support'/Code/User/settings.json
-	ghostty_settinng=~/Library/'Application Support'/com.mitchellh.ghostty/config
-fi
-trae_setting=~/Library/'Application Support'/'Trae CN'/User/settings.json
+ghostty_setting=~/.config/ghostty/config
+trae_setting=""
 kitty_setting=~/.config/kitty/kitty.conf
 tmux_setting=~/.tmux.conf
 mode_state_file=~/.mode_switch_state
 
+if check_macos; then
+	vscode_setting=~/Library/'Application Support'/Code/User/settings.json
+	ghostty_setting=~/Library/'Application Support'/com.mitchellh.ghostty/config
+	trae_setting=~/Library/'Application Support'/'Trae CN'/User/settings.json
+fi
+
 set_neovim_background() {
-	background=$1
-	servers=$(lsof -U | grep nvim | grep /run/user | grep -v fzf | awk '{print $9}')
+	local background=$1
+	local servers
+
 	if check_macos; then
-		servers=$(lsof -U | grep nvim | grep /var/folders | grep -v fzf | awk '{print $8}')
+		servers=$(lsof -U 2>/dev/null | awk '/nvim/ && /\/var\/folders/ && !/fzf/ {print $8}')
+	else
+		servers=$(lsof -U 2>/dev/null | awk '/nvim/ && /\/run\/user/ && !/fzf/ {print $9}')
 	fi
-	# check if chadrc exist
+
 	if [ -f "$chadrc" ]; then
-		# check servers if empty
 		if [ -n "$servers" ]; then
 			for server in $servers; do
-				nvim --server $server --remote-send ":lua require('base46').toggle_theme()<CR>"
+				nvim --server "$server" --remote-send ":lua require('base46').toggle_theme()<CR>"
 			done
 		else
-			if [ "$background" == "dark" ]; then
-				perl -i -pe 's/theme = "penumbra_light"/theme = "everforest"/' "$chadrc"
+			if [ "$background" = "dark" ]; then
+				safe_perl 's/theme = "penumbra_light"/theme = "everforest"/' "$chadrc"
 			else
-				perl -i -pe 's/theme = "everforest"/theme = "penumbra_light"/' "$chadrc"
+				safe_perl 's/theme = "everforest"/theme = "penumbra_light"/' "$chadrc"
 			fi
 		fi
 	else
-		if [ "$background" == "dark" ]; then
-			perl -i -pe 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
+		if [ "$background" = "dark" ]; then
+			safe_perl 's/settings\["background"\] = "light"/settings\["background"\] = "dark"/' "$nvim_setting"
 		else
-			perl -i -pe 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
+			safe_perl 's/settings\["background"\] = "dark"/settings\["background"\] = "light"/' "$nvim_setting"
 		fi
-		for server in $servers; do
-			nvim --server $server --remote-send ":set background=$background<CR>"
-		done
+
+		if [ -n "$servers" ]; then
+			for server in $servers; do
+				nvim --server "$server" --remote-send ":set background=$background<CR>"
+			done
+		fi
 	fi
 }
 
 switch_mode() {
-	input=$1
-	if [ "$input" == "light" ]; then
-		# perl -i -pe 's/mocha/latte/' "$kitty_setting"
-		# perl -i -pe 's/Mocha/Latte/' "$ghostty_settinng"
+	local input=$1
+
+	case "$input" in
+	light)
+		# safe_perl 's/mocha/latte/' "$kitty_setting"
+		# safe_perl 's/Mocha/Latte/' "$ghostty_setting"
 		# osascript ~/clone/dotfiles/macOS/ghostty-reload-config.scpt
-		# kill_process $(pgrep kitty)
-		perl -i -pe 's/everforest/penu/' "$tmux_setting"
-		perl -i -pe 's/"workbench.colorTheme": "Dark"/"workbench.colorTheme": "Light"/' "$trae_setting"
-		perl -i -pe 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
+		# kill_process "$(pgrep kitty)"
+		safe_perl 's/everforest/penu/' "$tmux_setting"
+		[ -n "$trae_setting" ] && safe_perl 's/"workbench.colorTheme": "Dark"/"workbench.colorTheme": "Light"/' "$trae_setting"
+		safe_perl 's/"workbench.colorTheme": "Default Dark Modern"/"workbench.colorTheme": "Default Light Modern"/' "$vscode_setting"
 		set_neovim_background "light"
 		~/.local/bin/iterm-theme penumbra_light
-		tmux source-file ~/.tmux.conf
-	elif [ "$input" == "dark" ]; then
-		# perl -i -pe 's/latte/mocha/' "$kitty_setting"
-		# perl -i -pe 's/Latte/Mocha/' "$ghostty_settinng"
+		tmux source-file "$tmux_setting"
+		;;
+	dark)
+		# safe_perl 's/latte/mocha/' "$kitty_setting"
+		# safe_perl 's/Latte/Mocha/' "$ghostty_setting"
 		# osascript ~/clone/dotfiles/macOS/ghostty-reload-config.scpt
-		# kill_process $(pgrep kitty)
-		perl -i -pe 's/penu/everforest/' "$tmux_setting"
-		perl -i -pe 's/"workbench.colorTheme": "Light"/"workbench.colorTheme": "Dark"/' "$trae_setting"
-		perl -i -pe 's/"workbench.colorTheme": "Default Light Modern"/"workbench.colorTheme": "Default Dark Modern"/' "$vscode_setting"
+		# kill_process "$(pgrep kitty)"
+		safe_perl 's/penu/everforest/' "$tmux_setting"
+		[ -n "$trae_setting" ] && safe_perl 's/"workbench.colorTheme": "Light"/"workbench.colorTheme": "Dark"/' "$trae_setting"
+		safe_perl 's/"workbench.colorTheme": "Default Light Modern"/"workbench.colorTheme": "Default Dark Modern"/' "$vscode_setting"
 		set_neovim_background "dark"
 		~/.local/bin/iterm-theme everforest_dark_low
-		tmux source-file ~/.tmux.conf
-	else
-		exit 1
-	fi
+		tmux source-file "$tmux_setting"
+		;;
+	*)
+		echo "Invalid mode: $input" >&2
+		return 1
+		;;
+	esac
 }
 
 get_current_mode() {
@@ -99,12 +124,14 @@ get_current_mode() {
 }
 
 set_current_mode() {
-	echo "$1" >"$mode_state_file"
+	printf '%s
+' "$1" >"$mode_state_file"
 }
 
 toggle_mode() {
+	local current_mode
 	current_mode=$(get_current_mode)
-	if [ "$current_mode" == "light" ]; then
+	if [ "$current_mode" = "light" ]; then
 		set_current_mode "dark"
 		switch_mode "dark"
 	else
@@ -113,17 +140,22 @@ toggle_mode() {
 	fi
 }
 
-if [ $# -eq 0 ]; then
-	toggle_mode
-elif [ "$1" == "toggle" ]; then
-	toggle_mode
-elif [ "$1" == "light" ]; then
-	set_current_mode "light"
-	switch_mode "light"
-elif [ "$1" == "dark" ]; then
-	set_current_mode "dark"
-	switch_mode "dark"
-else
-	echo "Usage: $0 {light|dark|toggle}"
-	exit 1
-fi
+main() {
+	local mode=${1:-toggle}
+
+	case "$mode" in
+	toggle)
+		toggle_mode
+		;;
+	light | dark)
+		set_current_mode "$mode"
+		switch_mode "$mode"
+		;;
+	*)
+		echo "Usage: $0 {light|dark|toggle}" >&2
+		exit 1
+		;;
+	esac
+}
+
+main "$@"
