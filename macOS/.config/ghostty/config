@@ -21,18 +21,17 @@
 # # separated by equals signs.
 # font-family = Google Sans Code
 # font-family = Lilex
-# font-family = JetBrainsMono Nerd Font
 # font-family = Maple Mono NF CN
-# font-family = consolaslxgw
-font-family = "JetBrainsMono Nerd Font"
+font-family = JetBrainsMono Nerd Font
+font-family = Liga consolaslxgw
+font-family = Maple Mono NF CN
 font-style = "SemiBold"
 font-family-italic = "Lilex"
-font-family-italic = "Lilex"
-font-style-italic = "SemiBold"
+font-style-italic = "SemiBold Italic"
 font-family-bold-italic = "Lilex"
-font-style-bold-italic = "Bold"
+font-style-bold-italic = "Bold Italic"
 font-size = 13
-theme = Catppuccin Mocha
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 macos-option-as-alt = true
 link-url = true
 # cursor-invert-fg-bg = true
