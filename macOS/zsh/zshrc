@@ -139,19 +139,47 @@ __notify_threshold=10
 __cmd_start=0
 __last_cmd=""
 
+# 黑名单，这些命令不发通知
+__notify_blacklist=(
+    nvim vim vi nano
+    htop btop top
+    lazygit tig
+    ranger yazi
+    fzf less more bat
+    man ssh
+)
+
 preexec() {
     __cmd_start=$SECONDS
+    # 只取命令名，去掉参数
     __last_cmd="$1"
+    __last_cmd_name="${1%% *}"
+}
+
+__notify() {
+    local title="$1"
+    local body="$2"
+    notify-send "$title" "$body"
+}
+
+__in_blacklist() {
+    local cmd="$1"
+    for b in "${__notify_blacklist[@]}"; do
+        [[ "$cmd" == "$b" ]] && return 0
+    done
+    return 1
 }
 
 precmd() {
-    local exit_code=$?  # 必须第一行就保存
+    local exit_code=$?
     local elapsed=$(( SECONDS - __cmd_start ))
     if (( __cmd_start > 0 && elapsed >= __notify_threshold )); then
-        if (( exit_code == 0 )); then
-            notify-send "✅ 任务完成" "${__last_cmd} (${elapsed}s)"
-        else
-            notify-send "❌ 任务失败: ${__last_cmd}" "exit code: ${exit_code} (${elapsed}s)"
+        if ! __in_blacklist "$__last_cmd_name"; then
+            if (( exit_code == 0 )); then
+                __notify "✅ 任务完成" "${__last_cmd} (${elapsed}s)"
+            else
+                __notify "❌ 任务失败: ${__last_cmd_name}" "exit code: ${exit_code} (${elapsed}s)"
+            fi
         fi
     fi
     __cmd_start=0
