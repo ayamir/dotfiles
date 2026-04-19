@@ -37,6 +37,7 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa --color=always $realpath'
 zstyle ':fzf-tab:*' switch-group ',' '.'  # 用 , . 切换补全组
 
+
 # ─── Prompt ──────────────────────────────────────────────────────
 zinit ice depth=1
 zinit light romkatv/powerlevel10k
@@ -72,6 +73,15 @@ export ALL_PROXY="http://127.0.0.1:7890"
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
 # ─── autosuggestions 配置 ────────────────────────────────────────
+HISTFILE=~/.zsh_history
+HISTSIZE=65535
+SAVEHIST=65535
+setopt share_history          # 多个 session 共享 history
+setopt hist_ignore_dups       # 忽略连续重复命令
+setopt hist_ignore_all_dups   # 忽略所有重复命令
+setopt hist_ignore_space      # 忽略以空格开头的命令
+setopt hist_verify            # 展开历史命令前先确认
+setopt inc_append_history     # 实时写入 history 文件
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 bindkey '→' autosuggest-accept   # 右箭头接受补全
 
@@ -124,6 +134,29 @@ _sudo-command-line() {
 zle -N _sudo-command-line
 bindkey '\e\e' _sudo-command-line  # 按两下 Esc
 
+# 超过 10 秒的命令完成后发送通知
+__notify_threshold=10
+__cmd_start=0
+__last_cmd=""
+
+preexec() {
+    __cmd_start=$SECONDS
+    __last_cmd="$1"
+}
+
+precmd() {
+    local exit_code=$?  # 必须第一行就保存
+    local elapsed=$(( SECONDS - __cmd_start ))
+    if (( __cmd_start > 0 && elapsed >= __notify_threshold )); then
+        if (( exit_code == 0 )); then
+            notify-send "✅ 任务完成" "${__last_cmd} (${elapsed}s)"
+        else
+            notify-send "❌ 任务失败: ${__last_cmd}" "exit code: ${exit_code} (${elapsed}s)"
+        fi
+    fi
+    __cmd_start=0
+}
+
 # ─── Tmux 自动启动 ───────────────────────────────────────────────
 if [[ -o interactive ]] \
     && [[ -z "$TMUX" ]] \
@@ -138,6 +171,7 @@ if [[ -o interactive ]] \
     && [[ -z "$VSCODE_IPC_HOOK" ]]; then
     exec tmux -u new -A -D -t main
 fi
+
 
 # ─── alias ────────────────────────────────────────────────────────
 # alias tree='tree -a -I .git'
