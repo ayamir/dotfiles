@@ -29,6 +29,7 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light Aloxaf/fzf-tab
 zinit light olets/zsh-abbr
+zinit light zsh-users/zsh-history-substring-search
 
 # fish-like completion experience
 zstyle ':completion:*' menu select
@@ -86,6 +87,9 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 bindkey '→' autosuggest-accept   # 右箭头接受补全
 
 # ─── 按键绑定 ────────────────────────────────────────────────────
+bindkey '^[[A' history-substring-search-up   # ↑ 按子串搜索历史
+bindkey '^[[B' history-substring-search-down # ↓ 按子串搜索历史
+
 bindkey '^H'   backward-kill-word    # Ctrl+Backspace
 bindkey '^[^H' backward-kill-word    # Ctrl+Alt+Backspace
 bindkey '^_'   undo                  # Ctrl+/
@@ -263,6 +267,7 @@ fi
 # ─── 外部工具初始化 ──────────────────────────────────────────────
 eval "$(zoxide init zsh)"
 eval "$(mise activate zsh)"
+eval "$(direnv hook zsh)"
 
 # ─── 加载本地额外配置 ────────────────────────────────────────────
 [[ -f ~/.env.zsh ]] && source ~/.env.zsh
