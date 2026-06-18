@@ -1,0 +1,21 @@
+onboarding = false
+
+[ui]
+show_agent_labels_on_pane_borders = true
+
+agent_panel_scope = "all"
+[experimental]
+pane_history = true
+switch_ascii_input_source_in_prefix = false
+
+[theme]
+name = "catppuccin"
+
+[keys]
+open_worktree = "prefix+e"
+remove_worktree = "prefix+shift+e"
+edit_scrollback = ""
+focus_agent = "prefix+alt+1..9"
+previous_agent = "prefix+alt+k"
+next_agent = "prefix+alt+j"
+
