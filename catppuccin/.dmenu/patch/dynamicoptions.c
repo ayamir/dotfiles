@@ -5,7 +5,7 @@ refreshoptions()
 	char* cmd= malloc(dynlen + strlen(text) + 2);
 	if (cmd == NULL)
 		die("malloc:");
-	sprintf(cmd, "%s %s", dynamic, text);
+	snprintf(cmd, dynlen + strlen(text) + 2, "%s %s", dynamic, text);
 	FILE *stream = popen(cmd, "r");
 	if (!stream)
 		die("popen(%s):", cmd);
