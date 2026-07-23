@@ -1,34 +1,74 @@
 onboarding = false
 
-[ui]
-show_agent_labels_on_pane_borders = true
-
-agent_panel_scope = "all"
 [experimental]
 pane_history = true
+
 switch_ascii_input_source_in_prefix = true
-
 [theme]
-name = "solarized-light"
+name = "rose-pine-dawn"
 
+auto_switch = false
+[ui.toast]
+delivery = "herdr"
+
+[ui]
+show_agent_labels_on_pane_borders = true
+prompt_new_tab_name = false
+
+[ui.sound]
+enabled = false
+
+[update]
+channel = "stable"
 
 [keys]
+goto = "prefix+p"
+previous_workspace = "prefix+["
+next_workspace = "prefix+]"
 previous_tab = "prefix+ctrl+h"
 next_tab = "prefix+ctrl+l"
 open_worktree = "prefix+e"
 remove_worktree = "prefix+shift+e"
 edit_scrollback = ""
 focus_agent = "prefix+alt+1..9"
-previous_agent = "prefix+alt+k"
-next_agent = "prefix+alt+j"
-focus_pane_left = ["prefix+h", "ctrl+alt+h"]
-focus_pane_down = ["prefix+j", "ctrl+alt+j"]
-focus_pane_up = ["prefix+k", "ctrl+alt+k"]
-focus_pane_right = ["prefix+l", "ctrl+alt+l"]
+previous_agent = "prefix+,"
+next_agent = "prefix+."
 
-[ui.sound]
-enabled = false
+[[keys.command]]
+key = "prefix+g"
+type = "pane"
+command = "lazygit"
 
-[ui.toast]
-delivery = "herdr"
+[[keys.command]]
+key = "prefix+o"
+type = "popup"
+command = "$HOME/.config/herdr/herdr-file-jump.sh"
+description = "jump to file:line under cursor in nvim pane"
+
+[remote]
+# resume_agents_on_restore = true
+
+[[keys.command]]
+key = "ctrl+h"
+type = "plugin_action"
+command = "smart-splits.nvim.left"
+description = "navigate left (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "plugin_action"
+command = "smart-splits.nvim.down"
+description = "navigate down (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "plugin_action"
+command = "smart-splits.nvim.up"
+description = "navigate up (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "plugin_action"
+command = "smart-splits.nvim.right"
+description = "navigate right (vim/herdr)"
 
