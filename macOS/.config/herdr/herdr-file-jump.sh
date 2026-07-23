@@ -32,22 +32,42 @@ herdr=${HERDR_BIN_PATH:-herdr}
 pane=${HERDR_ACTIVE_PANE_ID:-}
 base_cwd=${HERDR_ACTIVE_PANE_CWD:-$PWD}
 
-# Pause so the user can read a message before the popup auto-closes on exit.
+# herdr's CLI writes error JSON to stderr and exits nonzero, while payloads go to
+# stdout. Capture stderr here so we can surface the real cause of each failure.
+err_file=$(mktemp)
+trap 'rm -f "$err_file"' EXIT
+
+# Show a message, then wait for a keypress so the user can read it before the
+# popup auto-closes on exit.
 notify() {
-  printf '%s\n' "$*" >&2
+  printf '%s\n\n' "$*" >&2
   printf 'press any key to close…' >&2
   read -rsn1 _ || true
 }
 
+# Pull the human-readable "message" out of herdr's error JSON; fall back to the
+# raw text if it does not look like our error envelope.
+herdr_err_msg() {
+  local raw=$1 msg
+  msg=$(sed -n 's/.*"message":"\([^"]*\)".*/\1/p' <<<"$raw")
+  printf '%s' "${msg:-$raw}"
+}
+
+# --- case: no source pane -------------------------------------------------
 if [[ -z $pane ]]; then
   notify "herdr-file-jump: no source pane (HERDR_ACTIVE_PANE_ID unset)."
   exit 0
 fi
 
-# Grab the source pane's current viewport as plain text.
-visible=$("$herdr" pane read "$pane" --source visible 2>/dev/null || true)
-if [[ -z $visible ]]; then
-  notify "herdr-file-jump: source pane has no visible text."
+# --- case: pane read failed (pane gone, server down, bad binary) ----------
+if ! visible=$("$herdr" pane read "$pane" --source visible 2>"$err_file"); then
+  notify "herdr-file-jump: could not read pane $pane: $(herdr_err_msg "$(cat "$err_file")")"
+  exit 0
+fi
+
+# --- case: screen is blank or whitespace-only -----------------------------
+if [[ -z ${visible//[[:space:]]/} ]]; then
+  notify "herdr-file-jump: source pane $pane screen is empty."
   exit 0
 fi
 
@@ -101,8 +121,9 @@ while IFS= read -r word; do
   [[ -n $word ]] && add_candidate "$word"
 done < <(tr -s '[:space:]' '\n' <<<"$visible")
 
+# --- case: no file paths on the screen ------------------------------------
 if [[ ${#candidates[@]} -eq 0 ]]; then
-  notify "herdr-file-jump: no file paths found on screen."
+  notify "herdr-file-jump: no existing file paths found on pane $pane's screen."
   exit 0
 fi
 
@@ -111,6 +132,7 @@ selection=$(
     fzf --delimiter=$'\t' --with-nth=1 \
         --prompt='jump> ' --height=100% --border --reverse
 ) || exit 0
+# --- case: selection cancelled (Esc / no pick) ----------------------------
 [[ -z $selection ]] && exit 0
 
 IFS=$'\t' read -r _display abspath line col <<<"$selection"
@@ -120,4 +142,8 @@ args=("$abspath")
 [[ -n $col ]] && args+=(--column "$col")
 [[ -n ${HERDR_ACTIVE_WORKSPACE_ID:-} ]] && args+=(--workspace "$HERDR_ACTIVE_WORKSPACE_ID")
 
-"$herdr" edit "${args[@]}"
+# --- case: edit failed (no workspace, send failed, etc.) ------------------
+if ! "$herdr" edit "${args[@]}" >/dev/null 2>"$err_file"; then
+  notify "herdr-file-jump: could not open $abspath: $(herdr_err_msg "$(cat "$err_file")")"
+  exit 0
+fi
