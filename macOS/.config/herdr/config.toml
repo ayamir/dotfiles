@@ -2,8 +2,9 @@ onboarding = false
 
 [experimental]
 pane_history = true
-
 switch_ascii_input_source_in_prefix = true
+kitty_graphics = true
+
 [theme]
 name = "rose-pine-dawn"
 
@@ -23,16 +24,22 @@ channel = "stable"
 
 [keys]
 goto = "prefix+p"
-previous_workspace = "prefix+["
-next_workspace = "prefix+]"
 previous_tab = "prefix+ctrl+h"
 next_tab = "prefix+ctrl+l"
 open_worktree = "prefix+e"
 remove_worktree = "prefix+shift+e"
 edit_scrollback = ""
+
+# agent
 focus_agent = "prefix+alt+1..9"
-previous_agent = "prefix+,"
-next_agent = "prefix+."
+previous_agent = "prefix+alt+k"
+next_agent = "prefix+alt+j"
+
+# workspace
+switch_workspace = "prefix+ctrl+1..9"
+previous_workspace = "prefix+ctrl+k"
+next_workspace = "prefix+ctrl+j"
+close_workspace = "prefix+shift+d"
 
 [[keys.command]]
 key = "prefix+g"
@@ -71,4 +78,3 @@ key = "ctrl+l"
 type = "plugin_action"
 command = "smart-splits.nvim.right"
 description = "navigate right (vim/herdr)"
-
