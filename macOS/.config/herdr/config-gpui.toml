@@ -1,0 +1,63 @@
+# Herdr GUI settings, independent of the daemon config.
+# Save at $XDG_CONFIG_HOME/herdr/config-gpui.toml (default ~/.config/herdr/).
+# Omitted settings use defaults. Font sizes are logical pixels, inclusive 8..48.
+# Font families below are examples; leave them commented to use platform defaults.
+# Fonts must be installed locally; none are bundled.
+# Powerline separators and Nerd Font icons live in the Private Use Area, which
+# no text face covers. Each section falls back to the installed "Nerd Font"
+# families automatically; set fallback to choose them yourself, or to [] for
+# none. Uninstalled names are ignored, and at most 8 are accepted per section.
+# Restart the GUI or use its GUI config reload action after editing.
+
+# Built-ins: Default, Nord, Dracula, Catppuccin Mocha, Catppuccin Latte.
+# Also accepts a Ghostty theme name, an absolute path, or a ~/ path.
+theme = "Rose Pine Dawn"
+
+# Ask before closing a tab (closing terminates its terminal processes).
+# Pane close confirmation is independent and remains enabled.
+confirm_close_tab = true
+# Show the Agents section below Spaces in the sidebar.
+show_agents = true
+
+[sidebar]
+# Default: "Menlo" on macOS, "DejaVu Sans Mono" on Linux.
+family = "GeistMono Nerd Font"
+size = 12
+# fallback = ["Symbols Nerd Font Mono"]
+
+[tabs]
+# Default: "Menlo" on macOS, "DejaVu Sans Mono" on Linux.
+family = "GeistMono Nerd Font"
+size = 12
+# fallback = ["Symbols Nerd Font Mono"]
+
+[terminal]
+# Default: "Menlo" on macOS, "DejaVu Sans Mono" on Linux.
+family = "GeistMono Nerd Font"
+size = 14
+# fallback = ["Symbols Nerd Font Mono"]
+
+[ui]
+# Default: ".SystemUIFont" on macOS, "DejaVu Sans" on Linux.
+# family = "DejaVu Sans"
+size = 12
+# fallback = ["Symbols Nerd Font Mono"]
+
+# Native GitHub sign-in uses the public Herdr GPUI GitHub App by default.
+# Optionally override with your own Device Flow-enabled app's public client ID.
+# Never put an App ID, client secret, private key, or token here.
+# HERDR_GITHUB_OAUTH_CLIENT_ID overrides this field when set.
+# [github]
+# oauth_client_id = "YOUR_REGISTERED_PUBLIC_CLIENT_ID"
+# Explicit opt-in when an OS credential store is not available, which on macOS
+# means every unsigned development build; signed release builds use the Keychain
+# and ignore this field. macOS development builds always use the file store.
+# WARNING: saves an UNENCRYPTED token in the separate 0600 github-credentials file.
+# Other software running as you and backups can read it. Default is false.
+# allow_plaintext_credentials = false
+
+# Optional behaviors, all off unless turned on here. Unknown keys are rejected.
+[features]
+# Open a space's menu when the pointer rests on its sidebar row, without a
+# right click. Moving the pointer anywhere but into that menu closes it again.
+sidebar_hover_menu = true
