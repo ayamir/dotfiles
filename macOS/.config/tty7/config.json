@@ -1,0 +1,175 @@
+{
+  "font_family": "GeistMono Nerd Font Propo",
+  "font_fallbacks": [
+    "Menlo",
+    "Hasklug Nerd Font Mono",
+    "Maple Mono NF CN",
+    "Apple Color Emoji"
+  ],
+  "font_family_bold": null,
+  "font_family_italic": "Lilex Nerd Font Propo",
+  "font_features": {
+    "calt": 1,
+    "liga": 1
+  },
+  "font_thicken": true,
+  "font_size": 13.0,
+  "line_height": 1.4,
+  "ui_font_size": 16.0,
+  "ui_font_family": null,
+  "theme": "light",
+  "theme_preset": "rose_pine_dawn-custom",
+  "theme_follow_system": true,
+  "theme_preset_light": "rose_pine_dawn-custom",
+  "theme_preset_dark": "rose_pine",
+  "theme_legible_palette": true,
+  "window_opacity": 1.0,
+  "window_blur": false,
+  "window_backdrop": "auto",
+  "dim_inactive_panes": true,
+  "keybindings": {
+    "ResizePaneRight": "ctrl-space shift-l",
+    "TmuxSelectPaneRight": "ctrl-b l",
+    "TmuxNewTab": "ctrl-b c",
+    "TmuxSelectPaneDown": "ctrl-b j",
+    "FocusPaneDown": "ctrl-space j",
+    "FocusPrevPane": "ctrl-space [",
+    "TmuxSplitDown": "ctrl-b \"",
+    "TmuxSelectPaneUp": "ctrl-b k",
+    "FocusPaneRight": "ctrl-space l",
+    "TmuxPrevTab": "ctrl-b p",
+    "NextTab": "ctrl-space ctrl-l",
+    "TmuxNextTab": "ctrl-b n",
+    "SwapPanePrev": "ctrl-space {",
+    "TmuxClosePane": "ctrl-b x",
+    "FocusPaneLeft": "ctrl-space h",
+    "TmuxNextPane": "ctrl-b o",
+    "TmuxPrevPane": "ctrl-b ;",
+    "SwapPaneNext": "ctrl-space }",
+    "ResizePaneUp": "ctrl-space shift-k",
+    "PrevTab": "ctrl-space ctrl-h",
+    "FocusPaneUp": "ctrl-space k",
+    "TmuxSplitRight": "ctrl-b %",
+    "FocusNextPane": "ctrl-space ]",
+    "TmuxSelectPaneLeft": "ctrl-b h",
+    "TmuxSendPrefix": "ctrl-b ctrl-b",
+    "ResizePaneLeft": "ctrl-space shift-h",
+    "TmuxToggleMaximizePane": "ctrl-b z",
+    "SplitDown": "ctrl-space -",
+    "ResizePaneDown": "ctrl-space shift-j",
+    "TmuxLastTab": "ctrl-b tab",
+    "SplitRight": "ctrl-space v"
+  },
+  "keybinding_preset": "default",
+  "prefix": "ctrl-a",
+  "shell": {
+    "program": "fish",
+    "args": []
+  },
+  "custom_shells": [],
+  "link_url": true,
+  "link_file_open": "system",
+  "link_file_command": null,
+  "ssh_loopback_forward": true,
+  "cursor_blink": true,
+  "scrollback_limit": 100000,
+  "new_tab_position": "end",
+  "tab_bar_position": "left",
+  "sidebar_width": 236.10156,
+  "sidebar_collapsed": true,
+  "right_panel_visible": false,
+  "right_panel_width": 335.59375,
+  "right_panel_tab": "changes",
+  "diff_view": "unified",
+  "document_layout": "dock",
+  "document_ratio": 0.5,
+  "scm_graph_expanded": false,
+  "editor_soft_wrap": false,
+  "editor_markdown_preview": false,
+  "sidebar_grouping": "repo",
+  "sidebar_collapsed_groups": [],
+  "sidebar_diff_preview": true,
+  "notify_on_command_finish": "unfocused",
+  "check_for_updates": true,
+  "update_channel": "stable",
+  "auto_download_updates": true,
+  "install_cli_on_path": true,
+  "gui_language": "en",
+  "notify_threshold_secs": 10,
+  "restore_session": true,
+  "show_tray_icon": true,
+  "bell": "visual",
+  "prompt_editor": true,
+  "tab_completion": true,
+  "history_search": true,
+  "cursor_style": "block",
+  "macos_option_as_alt": true,
+  "mouse_hide_while_typing": true,
+  "focus_follows_mouse": true,
+  "mouse_scroll_multiplier": 1.0,
+  "smooth_scroll": true,
+  "mouse_reporting": true,
+  "mouse_zoom_modifier": "none",
+  "clipboard_trim_trailing_spaces": true,
+  "copy_on_select": true,
+  "http_proxy": null,
+  "smart_select": true,
+  "word_separators": ",│`|:\"' ()[]{}<>\t",
+  "startup_mode": "fullscreen",
+  "remember_window_size": true,
+  "working_directory": {
+    "strategy": "home",
+    "path": "/User/bytedance"
+  },
+  "env": {},
+  "ssh_profiles": [],
+  "verify_host_keys": true,
+  "ssh_warn_on_close": true,
+  "ssh_profile_frecency": {
+    "c432d499-f650-49a8-9a3d-8b5b2fd9bfcc": {
+      "count": 100,
+      "last_used": 1790663297
+    },
+    "19401408-b31c-474c-b88f-4f953f2bd417": {
+      "count": 1,
+      "last_used": 1790432126
+    },
+    "fe8f0dec-7769-412f-a44f-329802ef6953": {
+      "count": 6,
+      "last_used": 1786951266
+    },
+    "2d8ba893-b74a-4b44-8a99-88078f839bed": {
+      "count": 1,
+      "last_used": 1784014076
+    }
+  },
+  "command_frecency": {
+    "code-panel": {
+      "count": 1,
+      "last_used": 1786280236
+    },
+    "new-worktree-tab": {
+      "count": 4,
+      "last_used": 1785505263
+    },
+    "switch-workspace": {
+      "count": 33,
+      "last_used": 1789141659
+    },
+    "delete-workspace": {
+      "count": 1,
+      "last_used": 1789141588
+    },
+    "left-sidebar": {
+      "count": 3,
+      "last_used": 1785375606
+    },
+    "ssh-remote-files": {
+      "count": 1,
+      "last_used": 1787833346
+    }
+  },
+  "agent_commands": {},
+  "restore_agent_sessions": true,
+  "per_pane_history": false
+}
