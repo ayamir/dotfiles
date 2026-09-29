@@ -1,0 +1,5 @@
+reorder_workspaces = true
+variant = "auto"
+split_corner = true
+show_tab = true
+blocked_hold = true
