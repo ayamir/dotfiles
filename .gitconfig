@@ -12,13 +12,16 @@
 [http "https://gitlab.com"]
 	proxy = http://127.0.0.1:7890
 [alias]
+	ps = push
+	pr = pull --rebase
+	pl = pull
 	st = status -sb
 	ll = log --oneline
 	last = log -1 HEAD --stat
 	cm = commit -sm
 	rv = remote -v
 	gl = config --global -l
-    lg = log --graph --pretty=oneline --abbrev-commit
+	lg = log --graph --pretty=oneline --abbrev-commit
 	se = !git rev-list --all | xargs git grep -F
 [help]
 	autocorrect = 20
