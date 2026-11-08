@@ -1,0 +1,251 @@
+# ============================================================
+#  ~/.zshrc — 可移植 zsh 配置（零框架，工具全部可选）
+# ============================================================
+# 设计原则
+#   1. 只用 zsh 原生功能；第三方工具/插件「存在才加载」，缺了不报错
+#   2. 不写死机器路径：Homebrew 前缀、插件位置都在运行时探测
+#   3. 私密 / 机器专属配置放 ~/.zshrc.local（不进仓库，最后加载，可覆盖一切）
+#   4. 安装：bash setup.sh
+#
+# 段落顺序有意义：
+#   brew shellenv → fpath/compinit → 补全 zstyle → 插件
+#   → 语法高亮 / 自动建议（必须最后加载）
+
+# ---------- 平台与工具探测 ----------
+# 找第一个可读的文件 source；全都没有就安静返回，不报错
+source_first() {
+  local f
+  for f in "$@"; do
+    [[ -r $f ]] && { source "$f"; return 0 }
+  done
+  return 1
+}
+
+# Homebrew shellenv 必须最先做：后面的 fpath、插件路径都依赖它
+if [[ -z ${HOMEBREW_PREFIX:-} ]] && command -v brew >/dev/null 2>&1; then
+  eval "$(brew shellenv)"
+fi
+
+# brew 不在 PATH 时按架构找：Apple Silicon / Intel / Linux
+if [[ -z ${HOMEBREW_PREFIX:-} ]]; then
+  for b in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+    [[ -x $b ]] && { eval "$("$b" shellenv)"; break }
+  done
+fi
+
+# 还是没找到（没装 brew）：退到存在的那个前缀，保证后面的路径拼得出来
+if [[ -z ${HOMEBREW_PREFIX:-} ]]; then
+  for d in /opt/homebrew /usr/local /home/linuxbrew/.linuxbrew; do
+    [[ -d $d ]] && { HOMEBREW_PREFIX=$d; break }
+  done
+fi
+
+# ---------- 基本 ----------
+export LANG=${LANG:-en_US.UTF-8}
+export EDITOR=${EDITOR:-nvim}
+export VISUAL=$EDITOR
+export PAGER=${PAGER:-less}
+export LESS='-R -F -X -i -M'
+export CLICOLOR=1
+
+# 历史记录
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt EXTENDED_HISTORY        # 记录时间戳与耗时
+setopt INC_APPEND_HISTORY      # 实时写入，多终端共享
+setopt SHARE_HISTORY           # 多终端历史互通
+setopt HIST_IGNORE_DUPS        # 忽略重复
+setopt HIST_IGNORE_SPACE       # 空格开头的命令不记录
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY             # 展开历史命令前先确认
+
+# 目录跳转/补全行为
+setopt AUTO_CD                 # 直接输入目录名即可进入
+setopt AUTO_PUSHD              # cd 自动入栈
+setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT
+setopt INTERACTIVE_COMMENTS    # 交互式支持 # 注释
+setopt NO_BEEP
+
+# ---------- 补全 ----------
+# brew 提供的补全目录（zoxide 等）须在 compinit 之前进入 fpath
+typeset -U fpath
+for d in \
+  $HOMEBREW_PREFIX/share/zsh/site-functions \
+  $HOMEBREW_PREFIX/share/zsh-completions \
+  /usr/local/share/zsh/site-functions \
+  /usr/share/zsh/site-functions; do
+  [[ -d $d ]] && fpath=($d $fpath)
+done
+mkdir -p ${XDG_CACHE_HOME:-$HOME/.cache}/zsh
+autoload -Uz compinit && compinit -C   # -C 跳过安全检查，启动更快
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # 大小写不敏感
+zstyle ':completion:*' list-colors ''        # 彩色补全
+zstyle ':completion:*' group-name ''         # 分组标题（配合下面的 descriptions）
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache
+zstyle ':completion:*:descriptions' format '%F{yellow}%d%f'
+zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/sbin /sbin \
+  $HOMEBREW_PREFIX/bin /usr/local/bin /usr/bin /bin
+
+# ---------- 缩写（zsh-abbr；缩写定义在 user-abbreviations）----------
+source_first \
+  ${XDG_DATA_HOME:-$HOME/.local/share}/zsh-abbr/zsh-abbr.plugin.zsh \
+  ${XDG_DATA_HOME:-$HOME/.local/share}/zsh-abbr/zsh-abbr.zsh \
+  $HOMEBREW_PREFIX/share/zsh-abbr/zsh-abbr.plugin.zsh
+
+# ---------- 函数 ----------
+mkcd() { mkdir -p "$@" && cd "$_" }
+
+# 解压常见格式（配合 alias x）
+extract() {
+  local file="$1"
+  case "$file" in
+    *.tar.bz2) tar xjf "$file"    ;;
+    *.tar.gz)  tar xzf "$file"    ;;
+    *.tar.xz)  tar xJf "$file"    ;;
+    *.tar.zst) tar --zstd -xf "$file" ;;
+    *.tar)     tar xf  "$file"    ;;
+    *.bz2)     bunzip2 "$file"    ;;
+    *.gz)      gunzip  "$file"    ;;
+    *.zip)     unzip   "$file"    ;;
+    *.7z)      7z x    "$file"    ;;
+    *.rar)     unar -o . "$file" ;;
+    *.zst)     zstd -d "$file"    ;;
+    *)         echo "不支持的格式: $file" ;;
+  esac
+}
+
+# ---------- 工具增强（存在才生效）----------
+# ls/ll/la/lt/l/cat 的缩写已移入 user-abbreviations（默认用 eza/bat）
+# delta 只作 git 分页器；不接管 PAGER，避免 man 等工具被截走
+command -v delta >/dev/null && export GIT_PAGER='delta'
+
+# fzf：Ctrl-R 历史搜索 / Ctrl-T 文件 / Alt-C 目录
+if command -v fzf >/dev/null; then
+  export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+  if command -v fd >/dev/null; then
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+  fi
+  # fzf >= 0.48 推荐方式，自动处理补全与快捷键
+  if fzf --zsh >/dev/null 2>&1; then
+    source <(fzf --zsh)
+  else
+    source_first \
+      $HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh \
+      /usr/local/opt/fzf/shell/completion.zsh \
+      /usr/share/fzf/completion.zsh \
+      ~/.fzf/shell/completion.zsh
+    source_first \
+      $HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh \
+      /usr/local/opt/fzf/shell/key-bindings.zsh \
+      /usr/share/fzf/key-bindings.zsh \
+      ~/.fzf/shell/key-bindings.zsh
+  fi
+fi
+
+# fzf-tab：用 fzf 做 Tab 补全（须在 fzf 之后加载）
+if command -v fzf >/dev/null && source_first \
+  $HOMEBREW_PREFIX/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh \
+  /usr/share/fzf-tab/fzf-tab.zsh \
+  ${XDG_DATA_HOME:-$HOME/.local/share}/fzf-tab/fzf-tab.zsh; then
+  # < / > 切换补全分组
+  zstyle ':fzf-tab:*' switch-group '<' '>'
+  # cd 补全时预览目录内容
+  if command -v eza >/dev/null; then
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+  else
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls -1 --color=always $realpath'
+  fi
+fi
+
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+command -v direnv >/dev/null && eval "$(direnv hook zsh)"
+
+# mise：多语言版本管理（Node/Python/Ruby/Go 等），需在 compinit 之后激活以便补全
+command -v mise >/dev/null && eval "$(mise activate zsh)"
+
+# atuin：现代历史记录（接管 Ctrl-R；须在 autosuggestions 之前加载，以便用 atuin 做建议）
+command -v atuin >/dev/null && eval "$(atuin init zsh --disable-up-arrow --disable-ai)"
+
+# 语法高亮 + 自动配对 + 自动建议（必须最后 source：后加载者优先生效）
+source_first \
+  $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  ${XDG_DATA_HOME:-$HOME/.local/share}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+source_first \
+  $HOMEBREW_PREFIX/share/zsh-autopair/autopair.zsh \
+  /usr/local/share/zsh-autopair/autopair.zsh \
+  /usr/share/zsh-autopair/autopair.zsh \
+  ${XDG_DATA_HOME:-$HOME/.local/share}/zsh-autopair/autopair.zsh
+
+source_first \
+  $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  ${XDG_DATA_HOME:-$HOME/.local/share}/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# ---------- PATH 设置 ----------
+typeset -U path  # 自动去重
+
+# 目录存在才加入 PATH；$2 为 append 时追加，否则前置
+add_to_path() {
+  [[ -d "$1" ]] || return 0
+  if [[ "$2" == append ]]; then
+    path+=("$1")
+  else
+    path=("$1" $path)
+  fi
+}
+
+# 高优先级（前置）；列表越靠后，最终优先级越高
+for d in \
+  /usr/local/bin \
+  /usr/local/sbin \
+  ~/.cargo/bin \
+  ${XDG_DATA_HOME:-$HOME/.local/share}/mise/shims \
+  ~/.local/bin; do
+  add_to_path "$d"
+done
+
+# 约定目录：即使暂不存在也加入，go install / 手动放脚本后无需重载 shell
+path=(~/go/bin ~/bin $path)
+
+# 低优先级（追加）
+for d in \
+  ${XDG_DATA_HOME:-$HOME/.local/share}/pnpm \
+  ~/.deno/bin \
+  ~/.bun/bin \
+  ~/.yarn/bin \
+  ~/.config/yarn/global/node_modules/.bin \
+  /opt/local/bin \
+  /opt/local/sbin \
+  /Library/Developer/CommandLineTools/usr/bin; do
+  add_to_path "$d" append
+done
+
+# pip --user（目录随 Python 版本变化，用通配符动态加入；只在 macOS 存在）
+for d in ~/Library/Python/*/bin(N); do
+  add_to_path "$d" append
+done
+
+# ---------- 提示符 ----------
+# 由 Cobalt Spark 主题接管（放最后 source）；没装就保持 zsh 原生提示符。
+# 换主题：改这里，或在 ~/.zshrc.local 里覆盖。
+COBALT_SPARK_DIR=${COBALT_SPARK_DIR:-$HOME/clone/cobalt-spark}
+COBALT_SPARK_THEME_GIT_HIDDEN_PREFIXES=(feature feat fix)   # 必须在 source 之前设置
+if source_first "$COBALT_SPARK_DIR/cobalt-spark.plugin.zsh"; then
+  bindkey -M emacs '^X^P' cobalt-spark-copy-cwd   # 复制当前目录
+fi
+
+# ---------- 机器 / 个人覆盖层（最后加载，可覆盖以上一切）----------
+# 放 token、GUI App 集成、机器专属 PATH 等不进仓库的东西。
+[[ -r ${ZDOTDIR:-$HOME}/.zshrc.local ]] && source ${ZDOTDIR:-$HOME}/.zshrc.local

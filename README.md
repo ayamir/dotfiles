@@ -1,5 +1,21 @@
 # Intro
 
+## Zsh config
+
+Portable, framework-free zsh setup in [`zsh/`](./zsh). Works on macOS (Apple Silicon + Intel) and Linux: no hardcoded paths, and every third-party tool is optional — a missing one is skipped instead of printing an error on startup.
+
+```sh
+bash zsh/setup.sh --dry-run   # 先看会做什么
+bash zsh/setup.sh             # 装机
+```
+
+- `zsh/zshrc` — 配置本体。Homebrew 前缀、插件位置全部运行时探测。
+- `zsh/user-abbreviations` — zsh-abbr 缩写（`ls`→eza、`cat`→bat、git 快捷方式…）。
+- `zsh/setup.sh` — 装依赖、备份并软链 `~/.zshrc`。
+- `~/.zshrc.local` — 机器/个人专属配置，最后加载、不进 Git。
+
+---
+
 This repo include 3 color scheme's config:
 
 - [Catppuccin](./catppuccin)
