@@ -1,0 +1,20 @@
+# 生成: bash setup.sh --snapshot
+zsh 5.9
+eza 0.23.5
+bat 0.26.1
+fzf 0.74.5
+fd 10.5.0
+ripgrep 15.2.0
+zoxide 0.10.0
+direnv 2.38.2
+mise 2026.10.23
+zsh-autosuggestions 0.7.1
+zsh-syntax-highlighting 0.8.0
+fzf-tab 1.3.0
+zsh-autopair 1.0
+atuin 18.24.3
+git-delta 0.20.1
+lazygit 0.66.2
+fastfetch 2.70.0
+neovim 0.12.6
+fswatch 1.22.0

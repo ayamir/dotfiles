@@ -11,8 +11,11 @@ bash zsh/setup.sh             # 装机
 
 - `zsh/zshrc` — 配置本体。Homebrew 前缀、插件位置全部运行时探测。
 - `zsh/user-abbreviations` — zsh-abbr 缩写（`ls`→eza、`cat`→bat、git 快捷方式…）。
-- `zsh/setup.sh` — 装依赖、备份并软链 `~/.zshrc`。
+- `zsh/versions.lock` — 环境快照（zsh 与各工具精确版本）；`bash zsh/setup.sh --snapshot` 重写，装完会自动逐项比对。
+- `zsh/setup.sh` — 装依赖、备份并软链 `~/.zshrc`，装完核对版本。
 - `~/.zshrc.local` — 机器/个人专属配置，最后加载、不进 Git。
+
+同一份配置镜像在 [chip-os/global_script `zsh/`](https://github.com/chip-os/global_script/tree/main/zsh)，那边不依赖本仓库，可单独 clone 给新机器用；在哪个目录跑 `setup.sh`，`~/.zshrc` 就指向哪一份。
 
 ---
 
