@@ -9,6 +9,9 @@
 --
 -- Hyprland 只能对上其中一部分，对应关系见下面各段；对不上的写在文件末尾。
 
+-- 工作区切换：保留四指手势的跟手效果，松手后用较缓的横向滑动收尾。
+hl.animation({ leaf = "workspaces", enabled = true, speed = 4.5, bezier = "easeInOutCubic", style = "slide" })
+
 -- ---------- 1. 布局 ----------
 -- spiral.dwindle → dwindle（Omarchy 的默认值，这里显式写出来，免得主题或更新把它改掉）
 hl.config({ general = { layout = "dwindle" } })
@@ -27,37 +30,65 @@ o.workspace_mode({ workspace = 6, mode = "floating" })
 -- ---------- 3. 应用固定到工作区 ----------
 -- 对应 awesome 的 { rule = { class = ... }, properties = { tag = tagN } }。
 -- tag 序号就是这里的工作区号（tag1 → workspace 1）。
+--
+-- Hyprland 的 class / title 匹配用的是正则，所以这里一律 ^...$ 锚定：
+-- 不锚定的话 "code-oss" 会连 code-oss-dev 一起抓走，"google-chrome" 同理。
+--
+-- 落位以 2026-11-15 的实际桌面为准（每行第一个注释写着当时那个工作区里是谁），
+-- 后面缀着的条目是 awesome 时期留下、继续留在原 tag 上的常用应用。
 local apps = {
-  { -- tag1：浏览器
-    "vivaldi-stable", "firefox", "firefox-bin", "microsoft-edge-stable",
-    "google-chrome", "chromium", "brave-browser", "BraveSoftware",
+  { -- 1：浏览器 —— google-chrome
+    classes = {
+      "^google-chrome$", "^vivaldi-stable$", "^firefox$", "^firefox-bin$",
+      "^microsoft-edge-stable$", "^chromium$", "^brave-browser$", "^BraveSoftware$",
+    },
   },
-  { -- tag2：IDE / 编辑器
-    "jetbrains-clion", "jetbrains-webstorm", "jetbrains-pycharm", "code-oss",
+  { -- 2：设计 / 文档 —— so.stencil.tern（Stencil）
+    classes = { "^so\\.stencil\\.tern$" },
   },
-  { "f4h" }, -- tag3：文件浏览
-  { -- tag4：音乐
-    "spotify", "Spotify", "yesplaymusic",
+  { -- 3：IDE / 编辑器 —— code-oss-dev
+    classes = {
+      "^code-oss-dev$", "^code-oss$",
+      "^jetbrains-clion$", "^jetbrains-webstorm$", "^jetbrains-pycharm$",
+    },
   },
-  { "steam", "Steam" }, -- tag5：游戏
-  { -- tag6：IM（该工作区是浮动模式，见上一段）
-    "QQ", "Wine", "wechat.exe", "TelegramDesktop",
+  { -- 4：Paseo（awesome 的 tag4 是音乐，一并留在这）
+    classes = { "^Paseo$", "^spotify$", "^Spotify$", "^yesplaymusic$" },
   },
-  { -- tag7：工具
-    "Solaar", "qBittorrent", "discord", "clash for windows", "clash-verge",
+  { -- 5：IM —— 飞书（class 为空，只能靠标题；awesome 的 tag5 是游戏）
+    classes = { "^steam$", "^Steam$" },
+    titles = { "^飞书" },
   },
-  { -- tag8：笔记
-    "Logseq", "obsidian",
+  { -- 6：IM / 聊天（该工作区是浮动模式，见上一段）—— Discord（Chrome PWA）
+    classes = {
+      "^chrome-discord\\.com__channels_@me-Default$",
+      "^QQ$", "^Wine$", "^wechat\\.exe$", "^TelegramDesktop$",
+    },
   },
-  { -- tag9：杂项
-    "picgo", "winedbg.exe",
+  { -- 7：工具 —— clash-verge
+    classes = {
+      "^clash-verge$", "^clash for windows$",
+      "^Solaar$", "^qBittorrent$", "^discord$",
+    },
+  },
+  { -- 8：传输 / 笔记 —— LocalSend
+    classes = {
+      "^org\\.localsend\\.localsend_app$",
+      "^Logseq$", "^obsidian$",
+    },
+  },
+  { -- 9：杂项 —— magpie
+    classes = { "^magpie$", "^picgo$", "^winedbg\\.exe$" },
   },
 }
 
-for workspace, classes in ipairs(apps) do
-  for _, class in ipairs(classes) do
+for workspace, app in ipairs(apps) do
+  for _, class in ipairs(app.classes or {}) do
     -- awesome 把窗口塞进 tag 但不切视图；Hyprland 的 workspace 规则同样不抢焦点
     o.window({ class = class }, { workspace = tostring(workspace) })
+  end
+  for _, title in ipairs(app.titles or {}) do
+    o.window({ title = title }, { workspace = tostring(workspace) })
   end
 end
 
