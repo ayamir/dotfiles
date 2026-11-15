@@ -1,0 +1,28 @@
+# ============================================================
+#  ~/.zshrc.local — 本机专属覆盖层（不进 Git，最后加载）
+# ============================================================
+# ---------- 提示符 ----------
+# 上游 zshrc 想让 cobalt-spark 接管提示符（没装时只剩赤裸的 `host% `）。
+# Omarchy 自带 starship 且跟着主题变色，这里用 starship，与 bash 保持一致。
+# 想换作者那套：git clone https://github.com/ayamir/cobalt-spark ~/clone/cobalt-spark
+# （它在 zshrc 里比本文件先加载，会盖掉下面这行；两者只能选一个）
+if (( $+commands[starship] )); then
+  eval "$(starship init zsh)"
+fi
+
+# ---------- 本机包管理缩写 ----------
+if (( $+commands[yay] )); then
+  {   # 覆盖成功会打印 "Added ..."，安静一点
+    abbr -S --force "ins"="yay -S"
+    abbr -S --force "uins"="yay -Rns"
+    abbr -S --force "up"="yay -Syu"
+    abbr -S --force "c"="yay -Sc"
+    abbr -S --force "lsb"="pacman -Q"
+    abbr -S --force "reins"="yay -S"
+    abbr -S --force "cin"="pacman -Si"
+    abbr -S --force "srb"="pacman -Ss"
+  } >/dev/null
+fi
+
+# 机器专属 PATH 示例
+# export PATH="$HOME/.local/bin:$PATH"

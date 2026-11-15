@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Clash Verge
+Comment=Clash Verge startup script
+Exec=/usr/bin/clash-verge 
+StartupNotify=false
+Terminal=false

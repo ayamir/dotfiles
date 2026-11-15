@@ -74,12 +74,15 @@ typeset -U fpath
 for d in \
   $HOMEBREW_PREFIX/share/zsh/site-functions \
   $HOMEBREW_PREFIX/share/zsh-completions \
+  ~/.zfunc \
   /usr/local/share/zsh/site-functions \
   /usr/share/zsh/site-functions; do
   [[ -d $d ]] && fpath=($d $fpath)
 done
 mkdir -p ${XDG_CACHE_HOME:-$HOME/.cache}/zsh
-autoload -Uz compinit && compinit -C   # -C 跳过安全检查，启动更快
+# -u：信任自己的补全目录、不再询问；不加 -C 是为了让 compinit 每次检查
+# fpath 里有没有新增/删除的补全文件（装了新包、往 ~/.zfunc 放新函数都能自动生效）
+autoload -Uz compinit && compinit -u
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'  # 大小写不敏感
 zstyle ':completion:*' list-colors ''        # 彩色补全
@@ -89,12 +92,21 @@ zstyle ':completion:*' cache-path ${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compcache
 zstyle ':completion:*:descriptions' format '%F{yellow}%d%f'
 zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/sbin /sbin \
   $HOMEBREW_PREFIX/bin /usr/local/bin /usr/bin /bin
+# 与 omarchy 官方 bash 补全一致：隐藏 omarchy-* 独立二进制，统一用 omarchy 调度器
+zstyle ':completion:*:-command-:*' ignored-patterns 'omarchy-*'
+
+# ---------- 复用系统里的 bash 补全（bashcompinit 桥接，懒加载）----------
+# 原生 zsh 补全（含 zsh-completions 包）优先，只有没有对应 zsh 补全的命令
+# 才在首次补全时 source 它的 bash 补全脚本。
+# 不需要就 export ZSH_NO_BASHCOMP=1（放 ~/.zshrc.local）
+source_first ${ZDOTDIR:-$HOME}/.zfunc/bashcomp-bridge.zsh
 
 # ---------- 缩写（zsh-abbr；缩写定义在 user-abbreviations）----------
 source_first \
   ${XDG_DATA_HOME:-$HOME/.local/share}/zsh-abbr/zsh-abbr.plugin.zsh \
   ${XDG_DATA_HOME:-$HOME/.local/share}/zsh-abbr/zsh-abbr.zsh \
-  $HOMEBREW_PREFIX/share/zsh-abbr/zsh-abbr.plugin.zsh
+  $HOMEBREW_PREFIX/share/zsh-abbr/zsh-abbr.plugin.zsh \
+  /usr/share/zsh/plugins/zsh-abbr/zsh-abbr.plugin.zsh
 
 # ---------- 函数 ----------
 mkcd() { mkdir -p "$@" && cd "$_" }
@@ -118,8 +130,15 @@ extract() {
   esac
 }
 
+# ---------- 别名 ----------
+# ls 用 alias 而不是缩写：参数固定，不重写命令行缓冲区（缩写会把 `ls ` 展开成完整命令）。
+# 参数对齐 Omarchy 默认 bash 的 alias ls。
+if command -v eza >/dev/null; then
+  alias ls='eza -lh --group-directories-first --icons=auto'
+fi
+
 # ---------- 工具增强（存在才生效）----------
-# ls/ll/la/lt/l/cat 的缩写已移入 user-abbreviations（默认用 eza/bat）
+# ll/la/lt/l/cat 的缩写已移入 user-abbreviations（默认用 eza/bat）；ls 见上面的别名
 # delta 只作 git 分页器；不接管 PAGER，避免 man 等工具被截走
 command -v delta >/dev/null && export GIT_PAGER='delta'
 
@@ -152,6 +171,7 @@ fi
 if command -v fzf >/dev/null && source_first \
   $HOMEBREW_PREFIX/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh \
   /usr/share/fzf-tab/fzf-tab.zsh \
+  /usr/share/zsh/plugins/fzf-tab/fzf-tab.zsh \
   ${XDG_DATA_HOME:-$HOME/.local/share}/fzf-tab/fzf-tab.zsh; then
   # < / > 切换补全分组
   zstyle ':fzf-tab:*' switch-group '<' '>'
@@ -184,6 +204,7 @@ source_first \
   $HOMEBREW_PREFIX/share/zsh-autopair/autopair.zsh \
   /usr/local/share/zsh-autopair/autopair.zsh \
   /usr/share/zsh-autopair/autopair.zsh \
+  /usr/share/zsh/plugins/zsh-autopair/autopair.zsh \
   ${XDG_DATA_HOME:-$HOME/.local/share}/zsh-autopair/autopair.zsh
 
 source_first \

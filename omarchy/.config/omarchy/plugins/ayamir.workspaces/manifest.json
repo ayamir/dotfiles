@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "ayamir.workspaces",
+  "name": "My Workspaces",
+  "version": "1.0.0",
+  "author": "Omarchy",
+  "description": "Workspace number indicators",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Workspaces.qml"
+  },
+  "barWidget": {
+    "displayName": "My Workspaces",
+    "description": "Workspace number indicators",
+    "category": "Compositor",
+    "allowMultiple": false
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.workspaces"
+  }
+}

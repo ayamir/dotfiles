@@ -1,0 +1,11 @@
+#!/bin/bash
+# owe theme-set hook. Install with: omarchy hook install theme-set hooks/theme-set.d/10-owe-sync
+# $1 holds the theme slug. The hook only pings the daemon. It does no heavy work.
+set -u
+
+THEME_NAME="${1:-}"
+SOCK="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/owe/owed.sock"
+
+if [[ -S $SOCK ]]; then
+  printf '{"cmd":"refresh"}\n' | socat - "UNIX-CONNECT:$SOCK" >/dev/null 2>&1 || true
+fi
