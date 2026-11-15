@@ -12,9 +12,9 @@ bash omarchy/install.sh             # 装机：备份 → 软链/复制 → hypr
 
 | 文件 | 改了什么 |
 |---|---|
-| `.config/hypr/workspaces.lua` | **新增**：工作区布局与窗口落位（按 [`catppuccin/.config/awesome/rc.lua`](../catppuccin/.config/awesome/rc.lua) 移植） |
+| `.config/hypr/workspaces.lua` | **新增**：工作区布局与窗口落位（按 [`catppuccin/.config/awesome/rc.lua`](../catppuccin/.config/awesome/rc.lua) 移植）；450 ms 横向切换动画 |
 | `.config/hypr/hyprland.lua` | `require("hypr.workspaces")` |
-| `.config/hypr/input.lua` | 触控板自然滚动 |
+| `.config/hypr/input.lua` | 触控板自然滚动；四指左右滑动切换已有工作区（180 px 行程、10% 进度确认切换） |
 | `.config/hypr/monitors.lua` | `eDP-2` 屏幕（scale 2） |
 | `.config/omarchy/plugins/ayamir.workspaces/` | Omarchy 工作区组件的用户克隆版，固定显示 1–9 号工作区 |
 | `.config/chrome-flags.conf`、`.config/chromium-flags.conf` | Chrome 和 Chromium 的应用缩放设为 0.8（重启浏览器后生效） |
