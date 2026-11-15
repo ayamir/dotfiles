@@ -131,6 +131,8 @@ extract() {
 }
 
 # ---------- 别名 ----------
+alias x='extract'
+
 # ls 用 alias 而不是缩写：参数固定，不重写命令行缓冲区（缩写会把 `ls ` 展开成完整命令）。
 # 参数对齐 Omarchy 默认 bash 的 alias ls。
 if command -v eza >/dev/null; then
