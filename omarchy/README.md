@@ -13,7 +13,8 @@ bash omarchy/install.sh             # 装机：备份 → 软链/复制 → hypr
 | 文件 | 改了什么 |
 |---|---|
 | `.config/hypr/workspaces.lua` | **新增**：工作区布局与窗口落位（按 [`catppuccin/.config/awesome/rc.lua`](../catppuccin/.config/awesome/rc.lua) 移植）；450 ms 横向切换动画 |
-| `.config/hypr/hyprland.lua` | `require("hypr.workspaces")` |
+| `.config/hypr/hyprland.lua` | 加载工作区和 HyprExpo 配置 |
+| `.config/hypr/hyprexpo.lua` | 四指上滑显示 1–9 工作区窗口预览；四指下滑或 Esc 返回；点击预览切换 |
 | `.config/hypr/input.lua` | 触控板自然滚动；四指左右滑动切换已有工作区（180 px 行程、10% 进度确认切换） |
 | `.config/hypr/monitors.lua` | `eDP-2` 屏幕（scale 2） |
 | `.config/omarchy/plugins/ayamir.workspaces/` | Omarchy 工作区组件的用户克隆版，固定显示 1–9 号工作区 |
@@ -22,7 +23,7 @@ bash omarchy/install.sh             # 装机：备份 → 软链/复制 → hypr
 | `.config/kitty/kitty.conf` | JetBrainsMono Nerd Font / 9pt |
 | `.config/alacritty/alacritty.toml` | 字体 family 用 Nerd Font |
 | `.config/starship.toml` | 双行提示符（第一行目录+git，第二行 `❯`） |
-| `.config/omarchy/shell.json` | bar 布局、时钟、idle，以及克隆的工作区组件 |
+| `.config/omarchy/shell.json` | bar 布局、时钟、克隆的工作区组件；禁用空闲自动锁屏和屏保（两个 idle 超时均为 0） |
 | `.config/omarchy/shell.toml` | shell 字号 |
 | `.config/omarchy/branding/` | about / screensaver 文字 |
 | `.config/omarchy/extensions/omarchy-menu.jsonc` | 菜单项 |
@@ -37,6 +38,20 @@ bash omarchy/install.sh             # 装机：备份 → 软链/复制 → hypr
 
 内置工作区组件的克隆版保存在仓库；第三方 shell 插件不 vendored，装的时候现拉：`omarchy plugin add <git-url>`（见 `install.sh` 里的 `PLUGINS`）。
 Superwhisper 的面板插件是 `/opt/superwhisper` 自带的软链，脚本会在包存在时补上。
+
+## HyprExpo 窗口预览
+
+完成配置安装后，在 Omarchy 桌面终端运行（无需 sudo）：
+
+```sh
+bash omarchy/scripts/install-hyprexpo.sh
+```
+
+脚本为 Hyprland **0.56.2** 固定安装上游兼容提交 `59bf4d378cecde9ed849e9c562306738b1583016`，先检查运行版本和开发头文件，再从 GitHub 下载编译，备份配置并验证加载结果。需要 `git`、`make`、`g++`、`pkg-config`、`python3` 和匹配的 Hyprland 开发依赖。
+
+编译产物放在 `~/.local/lib/hyprland/hyprexpo/`，不提交到仓库。未安装插件时配置会跳过加载；四指左右切换工作区的配置继续保留。Hyprland 升级后需要重新确认插件兼容版本。
+
+安装日志保存在 `~/.local/state/hyprexpo/`（设置了 `XDG_STATE_HOME` 时跟随该目录）。
 
 ## 改完记得同步回仓库
 

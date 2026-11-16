@@ -34,3 +34,6 @@ o.window({ title = "^(图片|Image)$" }, { float = true, center = true, size = {
 
 -- 工作区布局与窗口落位（按 awesome 的 rc.lua 移植）
 require("hypr.workspaces")
+
+-- 四指上滑显示工作区预览。
+require("hypr.hyprexpo")

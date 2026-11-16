@@ -25,6 +25,7 @@ COPY_FILES=(.config/git/config .config/omarchy/shell.json)
 # 其余稳定的配置和用户插件软链到仓库（改哪个都等于改仓库）
 LINK_FILES=(
   .config/hypr/hyprland.lua
+  .config/hypr/hyprexpo.lua
   .config/hypr/input.lua
   .config/hypr/monitors.lua
   .config/hypr/workspaces.lua
